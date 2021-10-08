@@ -36,7 +36,7 @@ I'm just some bored college student who puts waaaaay too much effort into shitpo
 
 Kernel level:
 
-Stage 1 (C/asm):
+Stage 1 (C/asm): Essential system modules
 - Bootloading code with GRUB
 - Bus driver module
 - Network driver module
@@ -46,7 +46,7 @@ Stage 1 (C/asm):
 - Dispatcher module
 - HCI Peripheral module
 
-Stage 2 (C++):
+Stage 2 (C++): Logical system modules
 - System run and generic hardware access module
 - Network protocol module
 - Logical filesystem module
@@ -54,7 +54,7 @@ Stage 2 (C++):
 - Task scheduler module
 - HCI class driver module
 
-Stage 3 (C++):
+Stage 3 (C++): Bridge modules
 - Python extension module
 - Device model module
 - Page cache module
@@ -64,7 +64,7 @@ Stage 3 (C++):
 - Interpreter module
 - Compilation module
 
-Stage 4 (Python):
+Stage 4 (Python): Virtual systems modules
 - Proc module
 - Filesystem module
 - Protocol family module
@@ -73,7 +73,7 @@ Stage 4 (Python):
 - Tasks module
 - Input subsystems module
 
-Stage 5 (Python):
+Stage 5 (Python): System calls modules
 - System calls module
 - Sockets module
 - Files and directories module
@@ -83,7 +83,7 @@ Stage 5 (Python):
 
 User level:
 
-Stage 6 (Python):
+Stage 6 (Python): User interface modules
 - Bash shell module
 - System package manager module
 - Python package manager module
@@ -93,5 +93,5 @@ Stage 6 (Python):
 - Security module
 - Extendability module
 
-Stage 7 (Python):
+Stage 7 (Python): Extension modules
 - GUI interface module
