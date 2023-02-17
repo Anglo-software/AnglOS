@@ -4,5 +4,7 @@ unnamed-os.iso
 kernel/kernel.d
 kernel/kernel.o
 kernel/unnamed-os.elf
+kernel/libc/test.d
+kernel/libc/test.o
 loopback_dev
 unnamed-os.hdd

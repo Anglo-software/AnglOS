@@ -1,7 +1,7 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <limine.h>
-#include "test.h"
+#include "libc/test.h"
  
 // The Limine requests can be placed anywhere, but it is important that
 // the compiler does not optimise them away, so, usually, they should
@@ -29,7 +29,7 @@ void _start(void) {
     // We should now be able to call the Limine terminal to print out
     // a simple "Hello World" to screen.
     struct limine_terminal *terminal = terminal_request.response->terminals[0];
-    char* str = "Welcome to Unnamed-OS!";
+    char* str = "Welcome to Unnamed-OS!\r\nGlad to have you here!";
     terminal_request.response->write(terminal, str, strlen(str));
  
     // We're done, just hang...
