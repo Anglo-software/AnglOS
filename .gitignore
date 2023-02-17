@@ -1,2 +1,6 @@
 .vscode/c_cpp_properties.json
 .vscode/settings.json
+unnamed-os.iso
+kernel/kernel.d
+kernel/kernel.o
+kernel/unnamed-os.elf
