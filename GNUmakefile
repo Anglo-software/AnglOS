@@ -35,7 +35,7 @@ kernel:
 barebones.iso: limine kernel
 	rm -rf iso_root
 	mkdir -p iso_root
-	cp kernel/kernel.elf \
+	cp kernel/unnamed-os.elf \
 		limine.cfg limine/limine.sys limine/limine-cd.bin limine/limine-cd-efi.bin iso_root/
 	xorriso -as mkisofs -b limine-cd.bin \
 		-no-emul-boot -boot-load-size 4 -boot-info-table \
@@ -57,16 +57,16 @@ barebones.hdd: limine kernel
 	mkdir -p img_mount
 	sudo mount `cat loopback_dev`p1 img_mount
 	sudo mkdir -p img_mount/EFI/BOOT
-	sudo cp -v kernel/kernel.elf limine.cfg limine/limine.sys img_mount/
+	sudo cp -v kernel/unnamed-os.elf limine.cfg limine/limine.sys img_mount/
 	sudo cp -v limine/BOOTX64.EFI img_mount/EFI/BOOT/
 	sync
 	sudo umount img_mount
 	sudo losetup -d `cat loopback_dev`
-	rm -rf loopback_dev img_mount
 
 .PHONY: clean
 clean:
 	rm -rf iso_root barebones.iso barebones.hdd
+	rm -rf loopback_dev img_mount
 	$(MAKE) -C kernel clean
 
 .PHONY: distclean
