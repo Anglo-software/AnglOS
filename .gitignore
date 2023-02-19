@@ -8,3 +8,8 @@ kernel/libc/test.d
 kernel/libc/test.o
 loopback_dev
 unnamed-os.hdd
+kernel/boot/kernel.d
+kernel/libc/string.o
+kernel/boot/kernel.o
+kernel/libc/string.d
+limine
