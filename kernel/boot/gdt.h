@@ -4,20 +4,13 @@
 #define GDT_H
 
 struct gdt_segment_descriptor {
-    uint16_t limit_low;      // Lower 16 bits of limit
-    uint16_t base_low;       // Lower 16 bits of base
-    uint8_t  base_middle;    // Middle 8 bits of base
-    uint8_t  a          : 1; // Accessed bit
-    uint8_t  rw         : 1; // Read/write bit
-    uint8_t  dc         : 1; // Direction/conforming bit
-    uint8_t  e          : 1; // Executable bit
-    uint8_t  dt         : 1; // Descriptor type bit
-    uint8_t  dpl        : 2; // Descriptor privilege level
-    uint8_t  p          : 1; // Present bit
-    uint8_t  limit_high : 4; // High 4 bits of limit
-    uint8_t  flags      : 4; // Flags
-    uint8_t  base_high;      // High 8 bits of base
-};
+    uint16_t limit;       // Lower 16 bits of limit
+    uint16_t base_low;    // Lower 16 bits of base
+    uint8_t  base_middle; // Middle 8 bits of base
+    uint8_t  access;      // Access bits
+    uint8_t  granularity; // High 4 bits of limit and flags
+    uint8_t  base_high;   // High 8 bits of base
+} __attribute__((packed));
 /**
  * Flags:
  * [G][D][L][R]
@@ -89,14 +82,14 @@ struct gdt_system_segment_descriptor {
  */
 
 struct gdt_ptr_struct {
-    uint16_t size;   // Size of GDT in bytes minus 1
-    uint64_t offset; // Linear address of the GDT (virtual address)
-}
+    uint16_t limit;  // Size of GDT in bytes minus 1
+    uint64_t ptr;    // Linear address of the GDT (virtual address)
+} __attribute__((packed));
 
 typedef struct gdt_segment_descriptor gdt_seg_t;
 typedef struct gdt_system_segment_descriptor gdt_sys_seg_t;
 typedef struct gdt_ptr_struct gdt_ptr_t;
 
-static void init_gdt();
+void init_gdt();
 
 #endif

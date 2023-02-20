@@ -17,3 +17,4 @@ kernel/boot/gdt.d
 kernel/libc/string/strlen.d
 kernel/libc/string/strlen.o
 kernel/boot/gdt.o
+kernel/boot/setgdt.o

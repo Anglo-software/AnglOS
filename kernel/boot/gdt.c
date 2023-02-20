@@ -1,42 +1,79 @@
-#include <boot/gdt.h>
+#include "gdt.h"
 
-extern void gdt_flush(uint32_t);
+extern void setGDT(uint64_t);
+extern void reloadSegments();
 
-// Internal function prototypes.
-static void gdt_set_gate(int32_t, uint32_t, uint32_t, uint8_t, uint8_t);
+static gdt_seg_t gdt_entries[] = {
+    {0},
+    {
+        .limit       = 0xffff,
+        .base_low    = 0x0000,
+        .base_middle = 0x00,
+        .access      = 0b10011010,
+        .granularity = 0b00000000,
+        .base_high   = 0x00
+    },
+    {
+        .limit       = 0xffff,
+        .base_low    = 0x0000,
+        .base_middle = 0x00,
+        .access      = 0b10010010,
+        .granularity = 0b00000000,
+        .base_high   = 0x00
+    },
+    {
+        .limit       = 0xffff,
+        .base_low    = 0x0000,
+        .base_middle = 0x00,
+        .access      = 0b10011010,
+        .granularity = 0b11001111,
+        .base_high   = 0x00
+    },
+    {
+        .limit       = 0xffff,
+        .base_low    = 0x0000,
+        .base_middle = 0x00,
+        .access      = 0b10010010,
+        .granularity = 0b11001111,
+        .base_high   = 0x00
+    },
+    {
+        .limit       = 0x0000,
+        .base_low    = 0x0000,
+        .base_middle = 0x00,
+        .access      = 0b10011010,
+        .granularity = 0b00100000,
+        .base_high   = 0x00
+    },
+    {
+        .limit       = 0x0000,
+        .base_low    = 0x0000,
+        .base_middle = 0x00,
+        .access      = 0b10010010,
+        .granularity = 0b00000000,
+        .base_high   = 0x00
+    },
+    {
+        .limit       = 0x0000,
+        .base_low    = 0x0000,
+        .base_middle = 0x00,
+        .access      = 0b11111010,
+        .granularity = 0b00100000,
+        .base_high   = 0x00
+    },
+    {
+        .limit       = 0x0000,
+        .base_low    = 0x0000,
+        .base_middle = 0x00,
+        .access      = 0b11110010,
+        .granularity = 0b00000000,
+        .base_high   = 0x00
+    }
+};
 
-gdt_seg_t gdt_entries[5];
-gdt_ptr_t gdt_ptr;
+gdt_ptr_t gdt_ptr = {.limit = sizeof(gdt_entries) - 1, .ptr = (uint64_t)gdt_entries};
 
-static void init_gdt() {
-    gdt_ptr.size = (sizeof(gdt_seg_t) * 5) - 1;
-    gdt_ptr.offset = (uint32_t)&gdt_entries;
-
-    gdt_set_gate(0, 0, 0, 0, 0);                         // Null segment
-    gdt_set_gate(1, 0x00000000, 0xFFFFFFFF, 0x9A, 0xCF); // Kernel code segment
-    gdt_set_gate(1, 0x00000000, 0xFFFFFFFF, 0x92, 0xCF); // Kernel data segment
-    gdt_set_gate(1, 0x00000000, 0xFFFFFFFF, 0xFA, 0xCF); // User code segment
-    gdt_set_gate(1, 0x00000000, 0xFFFFFFFF, 0xF2, 0xCF); // User data segment
-}
-
-static void gdt_set_gate(int32_t num, uint32_t base, uint32_t limit, uint8_t access, uint8_t flags) {
-    gdt_entries[num].base_low    = (base & 0xFFFF);
-    gdt_entries[num].base_middle = (base >> 16) & 0xFF;
-    gdt_entries[num].base_high   = (base >> 24) & 0xFF;
-    gdt_entries[num].limit_low   = (limit & 0xFFFF);
-    gdt_entries[num].limit_high  = (limit >> 16) & 0x0F;
-    gdt_entries[num].flags       = flags;
-    gdt_entries[num].access      = access;
-}
-
-static void gdt_set_sys_gate(int32_t num, uint64_t base, uint32_t limit, uint8_t access, uint8_t flags) {
-    gdt_entries[num].base_low    = (base & 0xFFFF);
-    gdt_entries[num].base_middle = (base >> 16) & 0xFF;
-    gdt_entries[num].base_high   = (base >> 24) & 0xFF;
-    gdt_entries[num].limit_low   = (limit & 0xFFFF);
-    gdt_entries[num].limit_high  = (limit >> 16) & 0x0F;
-    gdt_entries[num].flags       = flags;
-    gdt_entries[num].access      = access;
-    gdt_entries[num].base_extra  = (base >> 32) & 0xFFFFFFFF;
-    gdt_entries[num].reserved    = 0x00000000;
+void init_gdt() {
+    setGDT((uint64_t)&gdt_ptr);
+    reloadSegments();
 }

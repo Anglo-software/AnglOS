@@ -1,7 +1,7 @@
 #include <basic_includes.h>
-#include <boot/limine.h>
+#include "limine.h"
 #include <libc/string.h>
-#include <boot/gdt.h>
+#include "gdt.h"
  
 // The Limine requests can be placed anywhere, but it is important that
 // the compiler does not optimise them away, so, usually, they should
@@ -70,6 +70,8 @@ void _start(void) {
     if (stack_request.response == NULL) {
         done();
     }
+
+    init_gdt();
  
     // We should now be able to call the Limine terminal to print out
     // a simple "Hello World" to screen.
