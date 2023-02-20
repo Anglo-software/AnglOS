@@ -13,3 +13,7 @@ kernel/libc/string.o
 kernel/boot/kernel.o
 kernel/libc/string.d
 limine
+kernel/boot/gdt.d
+kernel/libc/string/strlen.d
+kernel/libc/string/strlen.o
+kernel/boot/gdt.o

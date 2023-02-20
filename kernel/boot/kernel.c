@@ -1,7 +1,7 @@
-#include <stdint.h>
-#include <stddef.h>
+#include <basic_includes.h>
 #include <boot/limine.h>
 #include <libc/string.h>
+#include <boot/gdt.h>
  
 // The Limine requests can be placed anywhere, but it is important that
 // the compiler does not optimise them away, so, usually, they should
@@ -97,9 +97,6 @@ void _start(void) {
         printi(terminal, i, 5, 16);
         print(terminal, "\033[0m");
     }
-
-    print(terminal, "   -->   Press any key to continue...");
-    print(terminal, "\033[5m");
  
     // We're done, just hang...
     done();
