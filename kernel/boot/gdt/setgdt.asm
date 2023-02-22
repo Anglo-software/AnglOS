@@ -1,7 +1,8 @@
-[GLOBAL setGDT]    ; Allows the C code to call gdt_flush().
+[GLOBAL setGDT]
 [GLOBAL reloadSegments]
 
 setGDT:
+    cli
     mov rax, rdi ; Get the pointer to the GDT, passed as a parameter.
     lgdt [rax]         ; Load the new GDT pointer
     ret
@@ -20,4 +21,5 @@ reloadSegments:
     mov   fs, ax
     mov   gs, ax
     mov   ss, ax
+    sti
     ret

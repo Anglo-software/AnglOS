@@ -1,7 +1,8 @@
 #include <basic_includes.h>
 #include "limine.h"
 #include <libc/string.h>
-#include "gdt.h"
+#include "gdt/gdt.h"
+#include "tss/tss.h"
  
 // The Limine requests can be placed anywhere, but it is important that
 // the compiler does not optimise them away, so, usually, they should
