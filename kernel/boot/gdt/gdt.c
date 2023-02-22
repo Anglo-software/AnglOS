@@ -35,7 +35,7 @@ void gdt_add_descriptor(uint64_t base, uint32_t limit, uint8_t access, uint8_t g
     gdt[gindex].limit = limit & 0xFFFF;
 
     gdt[gindex].flags = access;
-    gdt[gindex].granularity = granularity | (limit >> 16) & 0x0F;
+    gdt[gindex].granularity = granularity | ((limit >> 16) & 0x0F);
 
     gindex++;
 }
