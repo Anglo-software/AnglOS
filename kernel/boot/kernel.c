@@ -1,6 +1,6 @@
 #include <basic_includes.h>
 #include "limine.h"
-#include <libc/string.h>
+#include "libc/string.h"
 #include "gdt/gdt.h"
 #include "tss/tss.h"
  

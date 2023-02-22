@@ -1,7 +1,7 @@
 #include <libc/string.h>
 
-size_t strlen(const char* str) {
+size_t strlen(const char * __s) {
     size_t len = 0;
-    while (str[len] != '\0') { len++; }
+    for (; !!*__s; __s++, len++);
     return len;
 }
