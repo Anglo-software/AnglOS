@@ -32,4 +32,6 @@ typedef struct {
     } base_frame;
 } isr_xframe_t;
 
+void isr_common_handler(isr_xframe_t* frame);
+
 #endif

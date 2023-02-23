@@ -1,17 +1,19 @@
-extern isr_exception_handler
+extern isr_common_handler
 extern isr_keyboard_handler
+global isr_xframe_assembler_common
 
 %macro isr_err_stub 1
 isr_stub_%+%1:
+    push rax
     push %1
-    jmp isr_xframe_assembler
+    jmp isr_xframe_assembler_common
 %endmacro
 
 %macro isr_no_err_stub 1
 isr_stub_%+%1:
     push 0
     push %1
-    jmp isr_xframe_assembler
+    jmp isr_xframe_assembler_common
 %endmacro
 
 %macro isr_keyboard_stub 1
@@ -61,7 +63,7 @@ pop rax
 mov cr0, rax
 %endmacro
 
-isr_xframe_assembler:
+isr_xframe_assembler_common:
     push rbp
     mov rbp, rsp
     pushagrd
@@ -75,7 +77,7 @@ isr_xframe_assembler:
     mov ss, ax
 
     lea rdi, [rsp + 0x10]
-    call isr_exception_handler
+    call isr_common_handler
 
     pop rax
     pop rax
@@ -88,6 +90,7 @@ isr_xframe_assembler:
     iretq
 
 isr_xframe_assembler_keyboard:
+    cli
     push rbp
     mov rbp, rsp
     pushagrd
@@ -111,6 +114,7 @@ isr_xframe_assembler_keyboard:
     popagrd
     pop rbp
     add rsp, 0x10
+    sti
     iretq
 
 isr_no_err_stub 0
