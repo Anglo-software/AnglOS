@@ -6,7 +6,9 @@
 
 int init_terminal();
 void print(char* str);
-void printi(int val, size_t num_digits, uint8_t base);
-char* itoa(int value, char* result, int base);
+void printi(int64_t val, size_t num_digits, uint8_t base);
+void printui(uint64_t val, size_t num_digits, uint8_t base);
+char* itoa(int64_t value, char* result, int base);
+char* uitoa(uint64_t value, char* result, int base);
 
 #endif

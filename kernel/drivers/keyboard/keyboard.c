@@ -17,10 +17,6 @@ static unsigned char* scan_code_1_shift = "\0""\0""!@#$%^&*()_+""\x80""\x09""QWE
 
 int init_keyboard() {
     pic_unmask_irq(0x01);
-    send_keyboard_command(0xEE, true);
-    if (get_keyboard_byte() != 0xEE) {
-        return -1;
-    }
     return 0;
 }
 
@@ -43,10 +39,15 @@ int send_keyboard_command(uint8_t command, bool has_ack) {
     if (!(get_keyboard_status() & 0x2)) {
         outb(KEYBOARD_COMMAND_PORT, command);
         if (has_ack) {
-            while (get_keyboard_byte() != 0xFA) {
-                if (get_keyboard_byte() == 0xFE) {
-                    return send_keyboard_command(command, has_ack);
-                }
+            while (!(get_keyboard_status() & 0x1));
+            if (get_keyboard_byte() == 0xFA) {
+                return 0;
+            }
+            else if (get_keyboard_byte() == 0xFE) {
+                return send_keyboard_command(command, has_ack);
+            }
+            else {
+                return -1;
             }
         }
         return 0;

@@ -7,3 +7,7 @@ unnamed-os.hdd
 limine
 *.o
 *.d
+ovmf-x64/OVMF-X64.zip
+ovmf-x64/OVMF-X64.zip:Zone.Identifier
+ovmf-x64/OVMF.fd
+ovmf-x64/readme.txt

@@ -4,7 +4,6 @@ global isr_xframe_assembler_common
 
 %macro isr_err_stub 1
 isr_stub_%+%1:
-    push rax
     push %1
     jmp isr_xframe_assembler_common
 %endmacro
