@@ -5,6 +5,8 @@
 #include "drivers/io.h"
 #include "boot/terminal/terminal.h"
 
+void irq_keyboard_handler(registers_t* registers);
+
 static bool shift_pressed = false;
 static bool ctrl_pressed = false;
 static bool alt_pressed = false;
@@ -16,6 +18,7 @@ static unsigned char* scan_code_1_shift = "\0""\0""!@#$%^&*()_+""\x80""\x09""QWE
                                           "\x83""ASDFGHJKL:\"~""\x84""\\""ZXCVBNM<>?""\x84""*""\x85"" ";
 
 int init_keyboard() {
+    register_interrupt_handler(IRQ1, irq_keyboard_handler);
     pic_unmask_irq(0x01);
     return 0;
 }
@@ -65,7 +68,7 @@ bool is_letter(char c) {
     return (0x61 <= c) && (c <= 0x7A);
 }
 
-void isr_keyboard_handler(isr_xframe_t* frame) {
+void irq_keyboard_handler(registers_t* registers) {
     int scan = get_keyboard_byte();
 
     bool released = (scan & 0b10000000) >> 7;
@@ -78,7 +81,7 @@ void isr_keyboard_handler(isr_xframe_t* frame) {
         else if (scan_code_1[scan2] == LEFT_CONTROL) {
             ctrl_pressed = true;
         }
-        else if (scan_code_1[scan2] == LEFT_SHIFT) {
+        else if (scan_code_1[scan2] == LEFT_ALT) {
             alt_pressed = true;
         }
         else if (scan_code_1[scan2] == BACKSPACE) {
@@ -88,6 +91,10 @@ void isr_keyboard_handler(isr_xframe_t* frame) {
             print("\r\n");
         }
         else if (prev_scan != 0xE0) {
+            if (ctrl_pressed && scan_code_1[scan2] == 'c') {
+                print("\033[2J\033[H");
+                goto end;
+            }
             char str[2];
             if (!shift_pressed) {
                 str[0] = scan_code_1[scan2];
@@ -125,10 +132,12 @@ void isr_keyboard_handler(isr_xframe_t* frame) {
         else if (scan_code_1[scan2] == LEFT_CONTROL) {
             ctrl_pressed = false;
         }
-        else if (scan_code_1[scan2] == LEFT_SHIFT) {
+        else if (scan_code_1[scan2] == LEFT_ALT) {
             alt_pressed = false;
         }
     }
+
+    end:
 
     prev_scan = scan;
 

@@ -6,14 +6,14 @@ static volatile struct limine_terminal_request terminal_request = {
     .revision = 0
 };
 
-struct limine_terminal *terminal;
+struct limine_terminal* terminal;
 
-int init_terminal() {
+struct limine_terminal* init_terminal() {
     if (terminal_request.response == NULL) {
-        return -1;
+        return NULL;
     }
     terminal = terminal_request.response->terminals[0];
-    return 0;
+    return terminal;
 }
 
 void print(char* str) {
@@ -66,7 +66,6 @@ char* uitoa(uint64_t value, char* result, int base) {
         *ptr++ = "zyxwvutsrqponmlkjihgfedcba9876543210123456789abcdefghijklmnopqrstuvwxyz" [35 + (tmp_value - value * base)];
     } while ( value );
 
-    if (tmp_value < 0) *ptr++ = '-';
     *ptr-- = '\0';
     while(ptr1 < ptr) {
         tmp_char = *ptr;

@@ -18,7 +18,7 @@ static uint8_t ist_index = 0;
 //     return ist_index;
 // }
 
-uint8_t stack[4096];
+uint8_t stack[8192];
 
 void init_tss(int num_cpu) {
     uint64_t tss_base = (uint64_t)&tss_descriptors[num_cpu];
@@ -26,7 +26,7 @@ void init_tss(int num_cpu) {
     
     // tss_add_stack(num_cpu);
     // tss_add_stack(num_cpu);
-    tss_descriptors[num_cpu].ist[ist_index] = (uint64_t)stack + 4096;
+    tss_descriptors[num_cpu].ist[ist_index] = (uint64_t)stack + 8192;
 
     tss_descriptors[num_cpu].rsp[0] = tss_descriptors[num_cpu].ist[0];
 

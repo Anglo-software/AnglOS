@@ -1,5 +1,6 @@
 .PHONY: all
 all: unnamed-os.iso
+	 cd kernel && objdump -d unnamed-os.elf > unnamed-os.dump && cd ..
 
 .PHONY: all-hdd
 all-hdd: unnamed-os.hdd
@@ -67,6 +68,7 @@ unnamed-os.hdd: limine kernel
 clean:
 	rm -rf iso_root unnamed-os.iso unnamed-os.hdd
 	rm -rf loopback_dev img_mount
+	# rm -rf kernel/unnamed-os.dump
 	$(MAKE) -C kernel clean
 
 .PHONY: distclean

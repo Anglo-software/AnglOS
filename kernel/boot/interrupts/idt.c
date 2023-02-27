@@ -1,16 +1,13 @@
 #include "../interrupts/idt.h"
 #include "../gdt/gdt.h"
 #include "../tss/tss.h"
+#include "isr.h"
 
 static
 __attribute__((aligned(4096)))
 idt_desc_t idt[IDT_MAX_DESCRIPTORS];
 
 static idtr_t idtr;
-
-static bool vectors[IDT_MAX_DESCRIPTORS];
-
-extern uint64_t isr_stub_table[];
 
 void idt_set_descriptor(uint8_t vector, uintptr_t isr, uint8_t flags, uint8_t ist) {
     idt_desc_t* descriptor = &idt[vector];
@@ -28,26 +25,7 @@ void init_idt() {
     idtr.base = (uintptr_t)&idt[0];
     idtr.limit = (uint16_t)sizeof(idt_desc_t) * IDT_MAX_DESCRIPTORS - 1;
 
-    for (uint8_t vector = 0; vector < IDT_CPU_EXCEPTION_COUNT; vector++) {
-        idt_set_descriptor(vector, isr_stub_table[vector], IDT_DESCRIPTOR_EXCEPTION, TSS_IST_EXCEPTION);
-        vectors[vector] = true;
-    }
+    isr_install();
 
     idt_reload(&idtr);
-}
-
-uint8_t idt_allocate_vector() {
-    for (unsigned int i = 0; i < IDT_MAX_DESCRIPTORS; i++) {
-        if (!vectors[i]) {
-            vectors[i] = true;
-            return (uint8_t)i;
-        }
-    }
-
-    return 0;
-}
-
-void idt_free_vector(uint8_t vector) {
-    idt_set_descriptor(vector, 0, 0, 0);
-    vectors[vector] = false;
 }
