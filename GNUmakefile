@@ -7,19 +7,19 @@ all-hdd: unnamed-os.hdd
 
 .PHONY: run
 run: unnamed-os.iso
-	qemu-system-x86_64 -M q35 -m 2G -cdrom unnamed-os.iso -boot d
+	qemu-system-x86_64 -M q35 -m 8G -cdrom unnamed-os.iso -boot d
 
 .PHONY: run-uefi
 run-uefi: ovmf-x64 unnamed-os.iso
-	qemu-system-x86_64 -M q35 -m 2G -bios ovmf-x64/OVMF.fd -cdrom unnamed-os.iso -boot d
+	qemu-system-x86_64 -M q35 -m 8G -bios ovmf-x64/OVMF.fd -cdrom unnamed-os.iso -boot d
 
 .PHONY: run-hdd
 run-hdd: unnamed-os.hdd
-	qemu-system-x86_64 -M q35 -m 2G -hda unnamed-os.hdd
+	qemu-system-x86_64 -M q35 -m 8G -hda unnamed-os.hdd
 
 .PHONY: run-hdd-uefi
 run-hdd-uefi: ovmf-x64 unnamed-os.hdd
-	qemu-system-x86_64 -M q35 -m 2G -bios ovmf-x64/OVMF.fd -hda unnamed-os.hdd
+	qemu-system-x86_64 -M q35 -m 8G -bios ovmf-x64/OVMF.fd -hda unnamed-os.hdd
 
 ovmf-x64:
 	mkdir -p ovmf-x64

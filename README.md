@@ -1,14 +1,38 @@
 # Unnamed-OS Documentation
 
-## File organization:
+## Memory map:
 
 ```
-kernel/boot ------- After-boot code and core kernel facilities
-kernel/drivers ---- Various device drivers (keyboard, VGA, etc.)
-kernel/fs --------- Filesystem code
-kernel/libc ------- Implementation of the C standard library
-kernel/sched ------ Scheduler
-kernel/threads ---- Multithreading code
-kernel/user ------- Userspace-enabling code
-kernel/vm --------- Virtual memory code
+Address Start | Address End | Size (hex) | Type
+       0x1000 |     0xA0000 |      9F000 | USEABLE
+     0x100000 |    0x800000 |     700000 | USEABLE
+     0x800000 |    0x808000 |       8000 | ACPI NVS
+     0x808000 |    0x810000 |       8000 | USEABLE
+     0x810000 |    0x900000 |      F0000 | ACPI NVS
+     0x900000 |  0x7A161000 |   79861000 | USEABLE
+   0x7A161000 |  0x7A436000 |     2D5000 | BOOTLOADER RECLAIMABLE
+   0x7A436000 |  0x7BF8F000 |    1B59000 | USEABLE
+   0x7BF8F000 |  0x7BFA5000 |      16000 | BOOTLOADER RECLAIMABLE
+   0x7BFA5000 |  0x7E496000 |    24F1000 | USEABLE
+   0x7E496000 |  0x7E49C000 |       6000 | RESERVED
+   0x7E49C000 |  0x7E4A5000 |       9000 | USEABLE
+   0x7E4A5000 |  0x7E4DF000 |      3A000 | BOOTLOADER RECLAIMABLE
+   0x7E4DF000 |  0x7E4F9000 |      1A000 | KERNEL AND MODULES
+   0x7E4F9000 |  0x7E504000 |       B000 | RESERVED
+   0x7E504000 |  0x7EF1F000 |     A1B000 | USEABLE
+   0x7EF1F000 |  0x7EFE0000 |      C1000 | RESERVED
+   0x7EFE0000 |  0x7F8EF000 |     90F000 | USEABLE
+   0x7F8EF000 |  0x7F9EF000 |     100000 | RESERVED
+   0x7F9EF000 |  0x7FAEF000 |     100000 | RESERVED
+   0x7FAEF000 |  0x7FB6F000 |      80000 | RESERVED
+   0x7FB6F000 |  0x7FB7F000 |      10000 | ACPI RECLAIMABLE
+   0x7FB7F000 |  0x7FBFF000 |      80000 | ACPI NVS
+   0x7FBFF000 |  0x7FE00000 |     201000 | USEABLE
+   0x7FE00000 |  0x7FEF8000 |      F8000 | BOOTLOADER RECLAIMABLE
+   0x7FEF8000 |  0x7FF58000 |      60000 | USEABLE
+   0x7FF58000 |  0x7FF78000 |      20000 | RESERVED
+   0x7FF78000 |  0x80000000 |      88000 | ACPI NVS
+   0xB0000000 |  0xC0000000 |   10000000 | RESERVED
+   0xC0000000 |  0xC01D4C00 |     1D4C00 | FRAMEBUFFER
+  0x100000000 | 0x280000000 |  180000000 | USEABLE
 ```
