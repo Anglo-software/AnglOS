@@ -1,7 +1,5 @@
-#include <basic_includes.h>
-
-#ifndef KEYBOARD_H
-#define KEYBOARD_H
+#pragma once
+#include "basic_includes.h"
 
 #define KEYBOARD_DATA_PORT 0x60
 #define KEYBOARD_STATUS_REGISTER 0x64
@@ -20,5 +18,3 @@ uint8_t get_keyboard_byte();
 uint8_t get_keyboard_status();
 void send_end_of_transmission();
 bool is_letter(char);
-
-#endif

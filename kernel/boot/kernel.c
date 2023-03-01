@@ -6,7 +6,7 @@
 #include "interrupts/idt.h"
 #include "terminal/terminal.h"
 #include "drivers/keyboard/keyboard.h"
-#include "drivers/8529/pic.h"
+#include "drivers/8259/pic.h"
 
 
 static volatile struct limine_stack_size_request stack_request = {

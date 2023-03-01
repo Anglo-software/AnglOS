@@ -1,7 +1,5 @@
-#include <basic_includes.h>
-
-#ifndef GDT_H
-#define GDT_H
+#pragma once
+#include "basic_includes.h"
 
 #define GDT_MAX_DESCRIPTORS         0x2000
 #define GDT_DESCRIPTOR_SIZE         0x08
@@ -60,5 +58,3 @@ void        gdt_add_descriptor(uint64_t base, uint32_t limit, uint8_t access, ui
 void        gdt_reload(gdtr_t* gdtr, uint16_t code, uint16_t data);
 uint16_t    gdt_install_tss(uint64_t tss);
 void        init_gdt();
-
-#endif

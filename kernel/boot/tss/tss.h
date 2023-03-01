@@ -1,7 +1,5 @@
-#include <basic_includes.h>
-
-#ifndef TSS_H
-#define TSS_H
+#pragma once
+#include "basic_includes.h"
 
 #define TSS_MAX_CPUS 1
 
@@ -21,5 +19,3 @@ typedef struct tss {
 void    init_tss(int num_cpu);
 uint8_t tss_add_stack(int num_cpu);
 void    tss_reload(uint16_t selector);
-
-#endif

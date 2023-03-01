@@ -1,7 +1,5 @@
-#include <basic_includes.h>
-
-#ifndef IO_H
-#define IO_H
+#pragma once
+#include "basic_includes.h"
 
 inline
 __attribute__((always_inline)) 
@@ -88,5 +86,3 @@ uint64_t rdmsr(uint64_t msr) {
 
     return value;
 }
-
-#endif

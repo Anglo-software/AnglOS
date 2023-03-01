@@ -1,7 +1,5 @@
-#include <basic_includes.h>
-
-#ifndef PIC_H
-#define PIC_H
+#pragma once
+#include "basic_includes.h"
 
 #define PIC_MASTER          0x20
 #define PIC_SLAVE		    0xA0
@@ -27,5 +25,3 @@ void pic_remap_offsets(uint8_t irq_offset);
 void pic_mask_irq(uint8_t irq);
 void pic_unmask_irq(uint8_t irq);
 void pic_send_eoi(uint8_t irq);
-
-#endif

@@ -1,7 +1,5 @@
-#include <basic_includes.h>
-
-#ifndef STRING_H
-#define STRING_H
+#pragma once
+#include "basic_includes.h"
 
 // mem functions
 void *memcpy(void *dest, const void *src, size_t n);
@@ -28,5 +26,3 @@ char *strpbrk(const char *, const char *accept);
 char *strstr(const char *haystack, const char *needle);
 char *strtok(char *, const char * delim);
 size_t strxfrm(char *dest, const char *src, size_t n);
-
-#endif

@@ -1,7 +1,7 @@
 #include "keyboard.h"
 #include "boot/interrupts/isr.h"
 #include "boot/interrupts/idt.h"
-#include "drivers/8529/pic.h"
+#include "drivers/8259/pic.h"
 #include "drivers/io.h"
 #include "boot/terminal/terminal.h"
 

@@ -14,7 +14,7 @@ ffffffff80000012:	49 89 c1             	mov    %rax,%r9
 ffffffff80000015:	48 89 f9             	mov    %rdi,%rcx
 ffffffff80000018:	48 83 c7 01          	add    $0x1,%rdi
 ffffffff8000001c:	49 f7 f8             	idiv   %r8
-ffffffff8000001f:	0f b6 92 f3 26 00 80 	movzbl -0x7fffd90d(%rdx),%edx
+ffffffff8000001f:	0f b6 92 d3 25 00 80 	movzbl -0x7fffda2d(%rdx),%edx
 ffffffff80000026:	88 57 ff             	mov    %dl,-0x1(%rdi)
 ffffffff80000029:	48 85 c0             	test   %rax,%rax
 ffffffff8000002c:	75 e2                	jne    ffffffff80000010 <itoa.part.0+0x10>
@@ -42,10 +42,10 @@ ffffffff8000006a:	66 0f 1f 44 00 00    	nopw   0x0(%rax,%rax,1)
 
 ffffffff80000070 <init_terminal>:
 ffffffff80000070:	f3 0f 1e fa          	endbr64 
-ffffffff80000074:	48 8b 05 cd 39 00 00 	mov    0x39cd(%rip),%rax        # ffffffff80003a48 <terminal_request+0x28>
+ffffffff80000074:	48 8b 05 ed 37 00 00 	mov    0x37ed(%rip),%rax        # ffffffff80003868 <terminal_request+0x28>
 ffffffff8000007b:	48 85 c0             	test   %rax,%rax
 ffffffff8000007e:	74 15                	je     ffffffff80000095 <init_terminal+0x25>
-ffffffff80000080:	48 8b 05 c1 39 00 00 	mov    0x39c1(%rip),%rax        # ffffffff80003a48 <terminal_request+0x28>
+ffffffff80000080:	48 8b 05 e1 37 00 00 	mov    0x37e1(%rip),%rax        # ffffffff80003868 <terminal_request+0x28>
 ffffffff80000087:	48 8b 40 10          	mov    0x10(%rax),%rax
 ffffffff8000008b:	48 8b 00             	mov    (%rax),%rax
 ffffffff8000008e:	48 89 05 6b 3f 00 00 	mov    %rax,0x3f6b(%rip)        # ffffffff80004000 <terminal>
@@ -59,9 +59,9 @@ ffffffff800000a4:	55                   	push   %rbp
 ffffffff800000a5:	48 89 fd             	mov    %rdi,%rbp
 ffffffff800000a8:	53                   	push   %rbx
 ffffffff800000a9:	48 83 ec 08          	sub    $0x8,%rsp
-ffffffff800000ad:	48 8b 05 94 39 00 00 	mov    0x3994(%rip),%rax        # ffffffff80003a48 <terminal_request+0x28>
+ffffffff800000ad:	48 8b 05 b4 37 00 00 	mov    0x37b4(%rip),%rax        # ffffffff80003868 <terminal_request+0x28>
 ffffffff800000b4:	48 8b 58 18          	mov    0x18(%rax),%rbx
-ffffffff800000b8:	e8 d3 12 00 00       	call   ffffffff80001390 <strlen>
+ffffffff800000b8:	e8 b3 11 00 00       	call   ffffffff80001270 <strlen>
 ffffffff800000bd:	48 8b 3d 3c 3f 00 00 	mov    0x3f3c(%rip),%rdi        # ffffffff80004000 <terminal>
 ffffffff800000c4:	48 83 c4 08          	add    $0x8,%rsp
 ffffffff800000c8:	48 89 ee             	mov    %rbp,%rsi
@@ -103,10 +103,10 @@ ffffffff80000133:	83 f8 22             	cmp    $0x22,%eax
 ffffffff80000136:	77 38                	ja     ffffffff80000170 <printi+0x90>
 ffffffff80000138:	48 89 e6             	mov    %rsp,%rsi
 ffffffff8000013b:	e8 c0 fe ff ff       	call   ffffffff80000000 <itoa.part.0>
-ffffffff80000140:	48 8b 05 01 39 00 00 	mov    0x3901(%rip),%rax        # ffffffff80003a48 <terminal_request+0x28>
+ffffffff80000140:	48 8b 05 21 37 00 00 	mov    0x3721(%rip),%rax        # ffffffff80003868 <terminal_request+0x28>
 ffffffff80000147:	4c 89 e7             	mov    %r12,%rdi
 ffffffff8000014a:	48 8b 58 18          	mov    0x18(%rax),%rbx
-ffffffff8000014e:	e8 3d 12 00 00       	call   ffffffff80001390 <strlen>
+ffffffff8000014e:	e8 1d 11 00 00       	call   ffffffff80001270 <strlen>
 ffffffff80000153:	4c 89 e6             	mov    %r12,%rsi
 ffffffff80000156:	48 8b 3d a3 3e 00 00 	mov    0x3ea3(%rip),%rdi        # ffffffff80004000 <terminal>
 ffffffff8000015d:	48 89 c2             	mov    %rax,%rdx
@@ -168,7 +168,7 @@ ffffffff80000212:	49 89 c0             	mov    %rax,%r8
 ffffffff80000215:	48 89 f9             	mov    %rdi,%rcx
 ffffffff80000218:	48 f7 f6             	div    %rsi
 ffffffff8000021b:	48 8d 7f 01          	lea    0x1(%rdi),%rdi
-ffffffff8000021f:	0f b6 92 f3 26 00 80 	movzbl -0x7fffd90d(%rdx),%edx
+ffffffff8000021f:	0f b6 92 d3 25 00 80 	movzbl -0x7fffda2d(%rdx),%edx
 ffffffff80000226:	88 57 ff             	mov    %dl,-0x1(%rdi)
 ffffffff80000229:	49 39 f0             	cmp    %rsi,%r8
 ffffffff8000022c:	73 e2                	jae    ffffffff80000210 <printui+0x70>
@@ -186,10 +186,10 @@ ffffffff8000024e:	40 88 71 01          	mov    %sil,0x1(%rcx)
 ffffffff80000252:	88 50 ff             	mov    %dl,-0x1(%rax)
 ffffffff80000255:	48 39 c1             	cmp    %rax,%rcx
 ffffffff80000258:	77 e6                	ja     ffffffff80000240 <printui+0xa0>
-ffffffff8000025a:	48 8b 05 e7 37 00 00 	mov    0x37e7(%rip),%rax        # ffffffff80003a48 <terminal_request+0x28>
+ffffffff8000025a:	48 8b 05 07 36 00 00 	mov    0x3607(%rip),%rax        # ffffffff80003868 <terminal_request+0x28>
 ffffffff80000261:	4c 89 e7             	mov    %r12,%rdi
 ffffffff80000264:	48 8b 58 18          	mov    0x18(%rax),%rbx
-ffffffff80000268:	e8 23 11 00 00       	call   ffffffff80001390 <strlen>
+ffffffff80000268:	e8 03 10 00 00       	call   ffffffff80001270 <strlen>
 ffffffff8000026d:	4c 89 e6             	mov    %r12,%rsi
 ffffffff80000270:	48 8b 3d 89 3d 00 00 	mov    0x3d89(%rip),%rdi        # ffffffff80004000 <terminal>
 ffffffff80000277:	48 89 c2             	mov    %rax,%rdx
@@ -240,7 +240,7 @@ ffffffff800002f2:	49 89 c1             	mov    %rax,%r9
 ffffffff800002f5:	4c 89 c1             	mov    %r8,%rcx
 ffffffff800002f8:	48 f7 f7             	div    %rdi
 ffffffff800002fb:	4d 8d 40 01          	lea    0x1(%r8),%r8
-ffffffff800002ff:	0f b6 92 f3 26 00 80 	movzbl -0x7fffd90d(%rdx),%edx
+ffffffff800002ff:	0f b6 92 d3 25 00 80 	movzbl -0x7fffda2d(%rdx),%edx
 ffffffff80000306:	41 88 50 ff          	mov    %dl,-0x1(%r8)
 ffffffff8000030a:	49 39 f9             	cmp    %rdi,%r9
 ffffffff8000030d:	73 e1                	jae    ffffffff800002f0 <uitoa+0x20>
@@ -356,7 +356,7 @@ ffffffff800004d2:	66 89 05 47 3b 00 00 	mov    %ax,0x3b47(%rip)        # fffffff
 ffffffff800004d9:	ba 30 00 00 00       	mov    $0x30,%edx
 ffffffff800004de:	be 28 00 00 00       	mov    $0x28,%esi
 ffffffff800004e3:	48 c7 c7 28 40 00 80 	mov    $0xffffffff80004028,%rdi
-ffffffff800004ea:	e9 01 0f 00 00       	jmp    ffffffff800013f0 <gdt_reload>
+ffffffff800004ea:	e9 e1 0d 00 00       	jmp    ffffffff800012d0 <gdt_reload>
 ffffffff800004ef:	90                   	nop
 
 ffffffff800004f0 <gdt_add_descriptor>:
@@ -449,7 +449,7 @@ ffffffff8000063f:	31 c0                	xor    %eax,%eax
 ffffffff80000641:	e8 1a 00 00 00       	call   ffffffff80000660 <isr_install>
 ffffffff80000646:	48 c7 c7 00 50 01 80 	mov    $0xffffffff80015000,%rdi
 ffffffff8000064d:	48 83 c4 08          	add    $0x8,%rsp
-ffffffff80000651:	e9 1a 10 00 00       	jmp    ffffffff80001670 <idt_reload>
+ffffffff80000651:	e9 fa 0e 00 00       	jmp    ffffffff80001550 <idt_reload>
 ffffffff80000656:	66 2e 0f 1f 84 00 00 	cs nopw 0x0(%rax,%rax,1)
 ffffffff8000065d:	00 00 00 
 
@@ -459,243 +459,243 @@ ffffffff80000664:	48 83 ec 08          	sub    $0x8,%rsp
 ffffffff80000668:	31 ff                	xor    %edi,%edi
 ffffffff8000066a:	b9 01 00 00 00       	mov    $0x1,%ecx
 ffffffff8000066f:	ba 8f 00 00 00       	mov    $0x8f,%edx
-ffffffff80000674:	48 c7 c6 be 14 00 80 	mov    $0xffffffff800014be,%rsi
+ffffffff80000674:	48 c7 c6 9e 13 00 80 	mov    $0xffffffff8000139e,%rsi
 ffffffff8000067b:	e8 50 ff ff ff       	call   ffffffff800005d0 <idt_set_descriptor>
 ffffffff80000680:	b9 01 00 00 00       	mov    $0x1,%ecx
 ffffffff80000685:	ba 8f 00 00 00       	mov    $0x8f,%edx
-ffffffff8000068a:	48 c7 c6 c7 14 00 80 	mov    $0xffffffff800014c7,%rsi
+ffffffff8000068a:	48 c7 c6 a7 13 00 80 	mov    $0xffffffff800013a7,%rsi
 ffffffff80000691:	bf 01 00 00 00       	mov    $0x1,%edi
 ffffffff80000696:	e8 35 ff ff ff       	call   ffffffff800005d0 <idt_set_descriptor>
 ffffffff8000069b:	b9 01 00 00 00       	mov    $0x1,%ecx
 ffffffff800006a0:	ba 8f 00 00 00       	mov    $0x8f,%edx
-ffffffff800006a5:	48 c7 c6 d0 14 00 80 	mov    $0xffffffff800014d0,%rsi
+ffffffff800006a5:	48 c7 c6 b0 13 00 80 	mov    $0xffffffff800013b0,%rsi
 ffffffff800006ac:	bf 02 00 00 00       	mov    $0x2,%edi
 ffffffff800006b1:	e8 1a ff ff ff       	call   ffffffff800005d0 <idt_set_descriptor>
 ffffffff800006b6:	b9 01 00 00 00       	mov    $0x1,%ecx
 ffffffff800006bb:	ba 8f 00 00 00       	mov    $0x8f,%edx
-ffffffff800006c0:	48 c7 c6 d9 14 00 80 	mov    $0xffffffff800014d9,%rsi
+ffffffff800006c0:	48 c7 c6 b9 13 00 80 	mov    $0xffffffff800013b9,%rsi
 ffffffff800006c7:	bf 03 00 00 00       	mov    $0x3,%edi
 ffffffff800006cc:	e8 ff fe ff ff       	call   ffffffff800005d0 <idt_set_descriptor>
 ffffffff800006d1:	b9 01 00 00 00       	mov    $0x1,%ecx
 ffffffff800006d6:	ba 8f 00 00 00       	mov    $0x8f,%edx
-ffffffff800006db:	48 c7 c6 e2 14 00 80 	mov    $0xffffffff800014e2,%rsi
+ffffffff800006db:	48 c7 c6 c2 13 00 80 	mov    $0xffffffff800013c2,%rsi
 ffffffff800006e2:	bf 04 00 00 00       	mov    $0x4,%edi
 ffffffff800006e7:	e8 e4 fe ff ff       	call   ffffffff800005d0 <idt_set_descriptor>
 ffffffff800006ec:	b9 01 00 00 00       	mov    $0x1,%ecx
 ffffffff800006f1:	ba 8f 00 00 00       	mov    $0x8f,%edx
-ffffffff800006f6:	48 c7 c6 eb 14 00 80 	mov    $0xffffffff800014eb,%rsi
+ffffffff800006f6:	48 c7 c6 cb 13 00 80 	mov    $0xffffffff800013cb,%rsi
 ffffffff800006fd:	bf 05 00 00 00       	mov    $0x5,%edi
 ffffffff80000702:	e8 c9 fe ff ff       	call   ffffffff800005d0 <idt_set_descriptor>
 ffffffff80000707:	b9 01 00 00 00       	mov    $0x1,%ecx
 ffffffff8000070c:	ba 8f 00 00 00       	mov    $0x8f,%edx
-ffffffff80000711:	48 c7 c6 f4 14 00 80 	mov    $0xffffffff800014f4,%rsi
+ffffffff80000711:	48 c7 c6 d4 13 00 80 	mov    $0xffffffff800013d4,%rsi
 ffffffff80000718:	bf 06 00 00 00       	mov    $0x6,%edi
 ffffffff8000071d:	e8 ae fe ff ff       	call   ffffffff800005d0 <idt_set_descriptor>
 ffffffff80000722:	b9 01 00 00 00       	mov    $0x1,%ecx
 ffffffff80000727:	ba 8f 00 00 00       	mov    $0x8f,%edx
-ffffffff8000072c:	48 c7 c6 fd 14 00 80 	mov    $0xffffffff800014fd,%rsi
+ffffffff8000072c:	48 c7 c6 dd 13 00 80 	mov    $0xffffffff800013dd,%rsi
 ffffffff80000733:	bf 07 00 00 00       	mov    $0x7,%edi
 ffffffff80000738:	e8 93 fe ff ff       	call   ffffffff800005d0 <idt_set_descriptor>
 ffffffff8000073d:	b9 01 00 00 00       	mov    $0x1,%ecx
 ffffffff80000742:	ba 8f 00 00 00       	mov    $0x8f,%edx
-ffffffff80000747:	48 c7 c6 06 15 00 80 	mov    $0xffffffff80001506,%rsi
+ffffffff80000747:	48 c7 c6 e6 13 00 80 	mov    $0xffffffff800013e6,%rsi
 ffffffff8000074e:	bf 08 00 00 00       	mov    $0x8,%edi
 ffffffff80000753:	e8 78 fe ff ff       	call   ffffffff800005d0 <idt_set_descriptor>
 ffffffff80000758:	b9 01 00 00 00       	mov    $0x1,%ecx
 ffffffff8000075d:	ba 8f 00 00 00       	mov    $0x8f,%edx
-ffffffff80000762:	48 c7 c6 0d 15 00 80 	mov    $0xffffffff8000150d,%rsi
+ffffffff80000762:	48 c7 c6 ed 13 00 80 	mov    $0xffffffff800013ed,%rsi
 ffffffff80000769:	bf 09 00 00 00       	mov    $0x9,%edi
 ffffffff8000076e:	e8 5d fe ff ff       	call   ffffffff800005d0 <idt_set_descriptor>
 ffffffff80000773:	b9 01 00 00 00       	mov    $0x1,%ecx
 ffffffff80000778:	ba 8f 00 00 00       	mov    $0x8f,%edx
-ffffffff8000077d:	48 c7 c6 16 15 00 80 	mov    $0xffffffff80001516,%rsi
+ffffffff8000077d:	48 c7 c6 f6 13 00 80 	mov    $0xffffffff800013f6,%rsi
 ffffffff80000784:	bf 0a 00 00 00       	mov    $0xa,%edi
 ffffffff80000789:	e8 42 fe ff ff       	call   ffffffff800005d0 <idt_set_descriptor>
 ffffffff8000078e:	b9 01 00 00 00       	mov    $0x1,%ecx
 ffffffff80000793:	ba 8f 00 00 00       	mov    $0x8f,%edx
-ffffffff80000798:	48 c7 c6 1d 15 00 80 	mov    $0xffffffff8000151d,%rsi
+ffffffff80000798:	48 c7 c6 fd 13 00 80 	mov    $0xffffffff800013fd,%rsi
 ffffffff8000079f:	bf 0b 00 00 00       	mov    $0xb,%edi
 ffffffff800007a4:	e8 27 fe ff ff       	call   ffffffff800005d0 <idt_set_descriptor>
 ffffffff800007a9:	b9 01 00 00 00       	mov    $0x1,%ecx
 ffffffff800007ae:	ba 8f 00 00 00       	mov    $0x8f,%edx
-ffffffff800007b3:	48 c7 c6 24 15 00 80 	mov    $0xffffffff80001524,%rsi
+ffffffff800007b3:	48 c7 c6 04 14 00 80 	mov    $0xffffffff80001404,%rsi
 ffffffff800007ba:	bf 0c 00 00 00       	mov    $0xc,%edi
 ffffffff800007bf:	e8 0c fe ff ff       	call   ffffffff800005d0 <idt_set_descriptor>
 ffffffff800007c4:	b9 01 00 00 00       	mov    $0x1,%ecx
 ffffffff800007c9:	ba 8f 00 00 00       	mov    $0x8f,%edx
-ffffffff800007ce:	48 c7 c6 2b 15 00 80 	mov    $0xffffffff8000152b,%rsi
+ffffffff800007ce:	48 c7 c6 0b 14 00 80 	mov    $0xffffffff8000140b,%rsi
 ffffffff800007d5:	bf 0d 00 00 00       	mov    $0xd,%edi
 ffffffff800007da:	e8 f1 fd ff ff       	call   ffffffff800005d0 <idt_set_descriptor>
 ffffffff800007df:	b9 01 00 00 00       	mov    $0x1,%ecx
 ffffffff800007e4:	ba 8f 00 00 00       	mov    $0x8f,%edx
-ffffffff800007e9:	48 c7 c6 32 15 00 80 	mov    $0xffffffff80001532,%rsi
+ffffffff800007e9:	48 c7 c6 12 14 00 80 	mov    $0xffffffff80001412,%rsi
 ffffffff800007f0:	bf 0e 00 00 00       	mov    $0xe,%edi
 ffffffff800007f5:	e8 d6 fd ff ff       	call   ffffffff800005d0 <idt_set_descriptor>
 ffffffff800007fa:	b9 01 00 00 00       	mov    $0x1,%ecx
 ffffffff800007ff:	ba 8f 00 00 00       	mov    $0x8f,%edx
-ffffffff80000804:	48 c7 c6 39 15 00 80 	mov    $0xffffffff80001539,%rsi
+ffffffff80000804:	48 c7 c6 19 14 00 80 	mov    $0xffffffff80001419,%rsi
 ffffffff8000080b:	bf 0f 00 00 00       	mov    $0xf,%edi
 ffffffff80000810:	e8 bb fd ff ff       	call   ffffffff800005d0 <idt_set_descriptor>
 ffffffff80000815:	b9 01 00 00 00       	mov    $0x1,%ecx
 ffffffff8000081a:	ba 8f 00 00 00       	mov    $0x8f,%edx
-ffffffff8000081f:	48 c7 c6 42 15 00 80 	mov    $0xffffffff80001542,%rsi
+ffffffff8000081f:	48 c7 c6 22 14 00 80 	mov    $0xffffffff80001422,%rsi
 ffffffff80000826:	bf 10 00 00 00       	mov    $0x10,%edi
 ffffffff8000082b:	e8 a0 fd ff ff       	call   ffffffff800005d0 <idt_set_descriptor>
 ffffffff80000830:	b9 01 00 00 00       	mov    $0x1,%ecx
 ffffffff80000835:	ba 8f 00 00 00       	mov    $0x8f,%edx
-ffffffff8000083a:	48 c7 c6 4b 15 00 80 	mov    $0xffffffff8000154b,%rsi
+ffffffff8000083a:	48 c7 c6 2b 14 00 80 	mov    $0xffffffff8000142b,%rsi
 ffffffff80000841:	bf 11 00 00 00       	mov    $0x11,%edi
 ffffffff80000846:	e8 85 fd ff ff       	call   ffffffff800005d0 <idt_set_descriptor>
 ffffffff8000084b:	b9 01 00 00 00       	mov    $0x1,%ecx
 ffffffff80000850:	ba 8f 00 00 00       	mov    $0x8f,%edx
-ffffffff80000855:	48 c7 c6 54 15 00 80 	mov    $0xffffffff80001554,%rsi
+ffffffff80000855:	48 c7 c6 34 14 00 80 	mov    $0xffffffff80001434,%rsi
 ffffffff8000085c:	bf 12 00 00 00       	mov    $0x12,%edi
 ffffffff80000861:	e8 6a fd ff ff       	call   ffffffff800005d0 <idt_set_descriptor>
 ffffffff80000866:	b9 01 00 00 00       	mov    $0x1,%ecx
 ffffffff8000086b:	ba 8f 00 00 00       	mov    $0x8f,%edx
-ffffffff80000870:	48 c7 c6 5d 15 00 80 	mov    $0xffffffff8000155d,%rsi
+ffffffff80000870:	48 c7 c6 3d 14 00 80 	mov    $0xffffffff8000143d,%rsi
 ffffffff80000877:	bf 13 00 00 00       	mov    $0x13,%edi
 ffffffff8000087c:	e8 4f fd ff ff       	call   ffffffff800005d0 <idt_set_descriptor>
 ffffffff80000881:	b9 01 00 00 00       	mov    $0x1,%ecx
 ffffffff80000886:	ba 8f 00 00 00       	mov    $0x8f,%edx
-ffffffff8000088b:	48 c7 c6 66 15 00 80 	mov    $0xffffffff80001566,%rsi
+ffffffff8000088b:	48 c7 c6 46 14 00 80 	mov    $0xffffffff80001446,%rsi
 ffffffff80000892:	bf 14 00 00 00       	mov    $0x14,%edi
 ffffffff80000897:	e8 34 fd ff ff       	call   ffffffff800005d0 <idt_set_descriptor>
 ffffffff8000089c:	b9 01 00 00 00       	mov    $0x1,%ecx
 ffffffff800008a1:	ba 8f 00 00 00       	mov    $0x8f,%edx
-ffffffff800008a6:	48 c7 c6 6f 15 00 80 	mov    $0xffffffff8000156f,%rsi
+ffffffff800008a6:	48 c7 c6 4f 14 00 80 	mov    $0xffffffff8000144f,%rsi
 ffffffff800008ad:	bf 15 00 00 00       	mov    $0x15,%edi
 ffffffff800008b2:	e8 19 fd ff ff       	call   ffffffff800005d0 <idt_set_descriptor>
 ffffffff800008b7:	b9 01 00 00 00       	mov    $0x1,%ecx
 ffffffff800008bc:	ba 8f 00 00 00       	mov    $0x8f,%edx
-ffffffff800008c1:	48 c7 c6 78 15 00 80 	mov    $0xffffffff80001578,%rsi
+ffffffff800008c1:	48 c7 c6 58 14 00 80 	mov    $0xffffffff80001458,%rsi
 ffffffff800008c8:	bf 16 00 00 00       	mov    $0x16,%edi
 ffffffff800008cd:	e8 fe fc ff ff       	call   ffffffff800005d0 <idt_set_descriptor>
 ffffffff800008d2:	b9 01 00 00 00       	mov    $0x1,%ecx
 ffffffff800008d7:	ba 8f 00 00 00       	mov    $0x8f,%edx
-ffffffff800008dc:	48 c7 c6 81 15 00 80 	mov    $0xffffffff80001581,%rsi
+ffffffff800008dc:	48 c7 c6 61 14 00 80 	mov    $0xffffffff80001461,%rsi
 ffffffff800008e3:	bf 17 00 00 00       	mov    $0x17,%edi
 ffffffff800008e8:	e8 e3 fc ff ff       	call   ffffffff800005d0 <idt_set_descriptor>
 ffffffff800008ed:	b9 01 00 00 00       	mov    $0x1,%ecx
 ffffffff800008f2:	ba 8f 00 00 00       	mov    $0x8f,%edx
-ffffffff800008f7:	48 c7 c6 8a 15 00 80 	mov    $0xffffffff8000158a,%rsi
+ffffffff800008f7:	48 c7 c6 6a 14 00 80 	mov    $0xffffffff8000146a,%rsi
 ffffffff800008fe:	bf 18 00 00 00       	mov    $0x18,%edi
 ffffffff80000903:	e8 c8 fc ff ff       	call   ffffffff800005d0 <idt_set_descriptor>
 ffffffff80000908:	b9 01 00 00 00       	mov    $0x1,%ecx
 ffffffff8000090d:	ba 8f 00 00 00       	mov    $0x8f,%edx
-ffffffff80000912:	48 c7 c6 93 15 00 80 	mov    $0xffffffff80001593,%rsi
+ffffffff80000912:	48 c7 c6 73 14 00 80 	mov    $0xffffffff80001473,%rsi
 ffffffff80000919:	bf 19 00 00 00       	mov    $0x19,%edi
 ffffffff8000091e:	e8 ad fc ff ff       	call   ffffffff800005d0 <idt_set_descriptor>
 ffffffff80000923:	b9 01 00 00 00       	mov    $0x1,%ecx
 ffffffff80000928:	ba 8f 00 00 00       	mov    $0x8f,%edx
-ffffffff8000092d:	48 c7 c6 9c 15 00 80 	mov    $0xffffffff8000159c,%rsi
+ffffffff8000092d:	48 c7 c6 7c 14 00 80 	mov    $0xffffffff8000147c,%rsi
 ffffffff80000934:	bf 1a 00 00 00       	mov    $0x1a,%edi
 ffffffff80000939:	e8 92 fc ff ff       	call   ffffffff800005d0 <idt_set_descriptor>
 ffffffff8000093e:	b9 01 00 00 00       	mov    $0x1,%ecx
 ffffffff80000943:	ba 8f 00 00 00       	mov    $0x8f,%edx
-ffffffff80000948:	48 c7 c6 a5 15 00 80 	mov    $0xffffffff800015a5,%rsi
+ffffffff80000948:	48 c7 c6 85 14 00 80 	mov    $0xffffffff80001485,%rsi
 ffffffff8000094f:	bf 1b 00 00 00       	mov    $0x1b,%edi
 ffffffff80000954:	e8 77 fc ff ff       	call   ffffffff800005d0 <idt_set_descriptor>
 ffffffff80000959:	b9 01 00 00 00       	mov    $0x1,%ecx
 ffffffff8000095e:	ba 8f 00 00 00       	mov    $0x8f,%edx
-ffffffff80000963:	48 c7 c6 ae 15 00 80 	mov    $0xffffffff800015ae,%rsi
+ffffffff80000963:	48 c7 c6 8e 14 00 80 	mov    $0xffffffff8000148e,%rsi
 ffffffff8000096a:	bf 1c 00 00 00       	mov    $0x1c,%edi
 ffffffff8000096f:	e8 5c fc ff ff       	call   ffffffff800005d0 <idt_set_descriptor>
 ffffffff80000974:	b9 01 00 00 00       	mov    $0x1,%ecx
 ffffffff80000979:	ba 8f 00 00 00       	mov    $0x8f,%edx
-ffffffff8000097e:	48 c7 c6 b7 15 00 80 	mov    $0xffffffff800015b7,%rsi
+ffffffff8000097e:	48 c7 c6 97 14 00 80 	mov    $0xffffffff80001497,%rsi
 ffffffff80000985:	bf 1d 00 00 00       	mov    $0x1d,%edi
 ffffffff8000098a:	e8 41 fc ff ff       	call   ffffffff800005d0 <idt_set_descriptor>
 ffffffff8000098f:	b9 01 00 00 00       	mov    $0x1,%ecx
 ffffffff80000994:	ba 8f 00 00 00       	mov    $0x8f,%edx
-ffffffff80000999:	48 c7 c6 c0 15 00 80 	mov    $0xffffffff800015c0,%rsi
+ffffffff80000999:	48 c7 c6 a0 14 00 80 	mov    $0xffffffff800014a0,%rsi
 ffffffff800009a0:	bf 1e 00 00 00       	mov    $0x1e,%edi
 ffffffff800009a5:	e8 26 fc ff ff       	call   ffffffff800005d0 <idt_set_descriptor>
 ffffffff800009aa:	b9 01 00 00 00       	mov    $0x1,%ecx
 ffffffff800009af:	ba 8f 00 00 00       	mov    $0x8f,%edx
-ffffffff800009b4:	48 c7 c6 c9 15 00 80 	mov    $0xffffffff800015c9,%rsi
+ffffffff800009b4:	48 c7 c6 a9 14 00 80 	mov    $0xffffffff800014a9,%rsi
 ffffffff800009bb:	bf 1f 00 00 00       	mov    $0x1f,%edi
 ffffffff800009c0:	e8 0b fc ff ff       	call   ffffffff800005d0 <idt_set_descriptor>
 ffffffff800009c5:	bf 20 00 00 00       	mov    $0x20,%edi
-ffffffff800009ca:	e8 01 08 00 00       	call   ffffffff800011d0 <pic_remap_offsets>
+ffffffff800009ca:	e8 e1 06 00 00       	call   ffffffff800010b0 <pic_remap_offsets>
 ffffffff800009cf:	b9 01 00 00 00       	mov    $0x1,%ecx
 ffffffff800009d4:	ba 8e 00 00 00       	mov    $0x8e,%edx
-ffffffff800009d9:	48 c7 c6 d2 15 00 80 	mov    $0xffffffff800015d2,%rsi
+ffffffff800009d9:	48 c7 c6 b2 14 00 80 	mov    $0xffffffff800014b2,%rsi
 ffffffff800009e0:	bf 20 00 00 00       	mov    $0x20,%edi
 ffffffff800009e5:	e8 e6 fb ff ff       	call   ffffffff800005d0 <idt_set_descriptor>
 ffffffff800009ea:	b9 01 00 00 00       	mov    $0x1,%ecx
 ffffffff800009ef:	ba 8e 00 00 00       	mov    $0x8e,%edx
-ffffffff800009f4:	48 c7 c6 db 15 00 80 	mov    $0xffffffff800015db,%rsi
+ffffffff800009f4:	48 c7 c6 bb 14 00 80 	mov    $0xffffffff800014bb,%rsi
 ffffffff800009fb:	bf 21 00 00 00       	mov    $0x21,%edi
 ffffffff80000a00:	e8 cb fb ff ff       	call   ffffffff800005d0 <idt_set_descriptor>
 ffffffff80000a05:	b9 01 00 00 00       	mov    $0x1,%ecx
 ffffffff80000a0a:	ba 8e 00 00 00       	mov    $0x8e,%edx
-ffffffff80000a0f:	48 c7 c6 e4 15 00 80 	mov    $0xffffffff800015e4,%rsi
+ffffffff80000a0f:	48 c7 c6 c4 14 00 80 	mov    $0xffffffff800014c4,%rsi
 ffffffff80000a16:	bf 22 00 00 00       	mov    $0x22,%edi
 ffffffff80000a1b:	e8 b0 fb ff ff       	call   ffffffff800005d0 <idt_set_descriptor>
 ffffffff80000a20:	b9 01 00 00 00       	mov    $0x1,%ecx
 ffffffff80000a25:	ba 8e 00 00 00       	mov    $0x8e,%edx
-ffffffff80000a2a:	48 c7 c6 ed 15 00 80 	mov    $0xffffffff800015ed,%rsi
+ffffffff80000a2a:	48 c7 c6 cd 14 00 80 	mov    $0xffffffff800014cd,%rsi
 ffffffff80000a31:	bf 23 00 00 00       	mov    $0x23,%edi
 ffffffff80000a36:	e8 95 fb ff ff       	call   ffffffff800005d0 <idt_set_descriptor>
 ffffffff80000a3b:	b9 01 00 00 00       	mov    $0x1,%ecx
 ffffffff80000a40:	ba 8e 00 00 00       	mov    $0x8e,%edx
-ffffffff80000a45:	48 c7 c6 f6 15 00 80 	mov    $0xffffffff800015f6,%rsi
+ffffffff80000a45:	48 c7 c6 d6 14 00 80 	mov    $0xffffffff800014d6,%rsi
 ffffffff80000a4c:	bf 24 00 00 00       	mov    $0x24,%edi
 ffffffff80000a51:	e8 7a fb ff ff       	call   ffffffff800005d0 <idt_set_descriptor>
 ffffffff80000a56:	b9 01 00 00 00       	mov    $0x1,%ecx
 ffffffff80000a5b:	ba 8e 00 00 00       	mov    $0x8e,%edx
-ffffffff80000a60:	48 c7 c6 ff 15 00 80 	mov    $0xffffffff800015ff,%rsi
+ffffffff80000a60:	48 c7 c6 df 14 00 80 	mov    $0xffffffff800014df,%rsi
 ffffffff80000a67:	bf 25 00 00 00       	mov    $0x25,%edi
 ffffffff80000a6c:	e8 5f fb ff ff       	call   ffffffff800005d0 <idt_set_descriptor>
 ffffffff80000a71:	b9 01 00 00 00       	mov    $0x1,%ecx
 ffffffff80000a76:	ba 8e 00 00 00       	mov    $0x8e,%edx
-ffffffff80000a7b:	48 c7 c6 08 16 00 80 	mov    $0xffffffff80001608,%rsi
+ffffffff80000a7b:	48 c7 c6 e8 14 00 80 	mov    $0xffffffff800014e8,%rsi
 ffffffff80000a82:	bf 26 00 00 00       	mov    $0x26,%edi
 ffffffff80000a87:	e8 44 fb ff ff       	call   ffffffff800005d0 <idt_set_descriptor>
 ffffffff80000a8c:	b9 01 00 00 00       	mov    $0x1,%ecx
 ffffffff80000a91:	ba 8e 00 00 00       	mov    $0x8e,%edx
-ffffffff80000a96:	48 c7 c6 11 16 00 80 	mov    $0xffffffff80001611,%rsi
+ffffffff80000a96:	48 c7 c6 f1 14 00 80 	mov    $0xffffffff800014f1,%rsi
 ffffffff80000a9d:	bf 27 00 00 00       	mov    $0x27,%edi
 ffffffff80000aa2:	e8 29 fb ff ff       	call   ffffffff800005d0 <idt_set_descriptor>
 ffffffff80000aa7:	b9 01 00 00 00       	mov    $0x1,%ecx
 ffffffff80000aac:	ba 8e 00 00 00       	mov    $0x8e,%edx
-ffffffff80000ab1:	48 c7 c6 1a 16 00 80 	mov    $0xffffffff8000161a,%rsi
+ffffffff80000ab1:	48 c7 c6 fa 14 00 80 	mov    $0xffffffff800014fa,%rsi
 ffffffff80000ab8:	bf 28 00 00 00       	mov    $0x28,%edi
 ffffffff80000abd:	e8 0e fb ff ff       	call   ffffffff800005d0 <idt_set_descriptor>
 ffffffff80000ac2:	b9 01 00 00 00       	mov    $0x1,%ecx
 ffffffff80000ac7:	ba 8e 00 00 00       	mov    $0x8e,%edx
-ffffffff80000acc:	48 c7 c6 23 16 00 80 	mov    $0xffffffff80001623,%rsi
+ffffffff80000acc:	48 c7 c6 03 15 00 80 	mov    $0xffffffff80001503,%rsi
 ffffffff80000ad3:	bf 29 00 00 00       	mov    $0x29,%edi
 ffffffff80000ad8:	e8 f3 fa ff ff       	call   ffffffff800005d0 <idt_set_descriptor>
 ffffffff80000add:	b9 01 00 00 00       	mov    $0x1,%ecx
 ffffffff80000ae2:	ba 8e 00 00 00       	mov    $0x8e,%edx
-ffffffff80000ae7:	48 c7 c6 2c 16 00 80 	mov    $0xffffffff8000162c,%rsi
+ffffffff80000ae7:	48 c7 c6 0c 15 00 80 	mov    $0xffffffff8000150c,%rsi
 ffffffff80000aee:	bf 2a 00 00 00       	mov    $0x2a,%edi
 ffffffff80000af3:	e8 d8 fa ff ff       	call   ffffffff800005d0 <idt_set_descriptor>
 ffffffff80000af8:	b9 01 00 00 00       	mov    $0x1,%ecx
 ffffffff80000afd:	ba 8e 00 00 00       	mov    $0x8e,%edx
-ffffffff80000b02:	48 c7 c6 35 16 00 80 	mov    $0xffffffff80001635,%rsi
+ffffffff80000b02:	48 c7 c6 15 15 00 80 	mov    $0xffffffff80001515,%rsi
 ffffffff80000b09:	bf 2b 00 00 00       	mov    $0x2b,%edi
 ffffffff80000b0e:	e8 bd fa ff ff       	call   ffffffff800005d0 <idt_set_descriptor>
 ffffffff80000b13:	b9 01 00 00 00       	mov    $0x1,%ecx
 ffffffff80000b18:	ba 8e 00 00 00       	mov    $0x8e,%edx
-ffffffff80000b1d:	48 c7 c6 3e 16 00 80 	mov    $0xffffffff8000163e,%rsi
+ffffffff80000b1d:	48 c7 c6 1e 15 00 80 	mov    $0xffffffff8000151e,%rsi
 ffffffff80000b24:	bf 2c 00 00 00       	mov    $0x2c,%edi
 ffffffff80000b29:	e8 a2 fa ff ff       	call   ffffffff800005d0 <idt_set_descriptor>
 ffffffff80000b2e:	b9 01 00 00 00       	mov    $0x1,%ecx
 ffffffff80000b33:	ba 8e 00 00 00       	mov    $0x8e,%edx
-ffffffff80000b38:	48 c7 c6 47 16 00 80 	mov    $0xffffffff80001647,%rsi
+ffffffff80000b38:	48 c7 c6 27 15 00 80 	mov    $0xffffffff80001527,%rsi
 ffffffff80000b3f:	bf 2d 00 00 00       	mov    $0x2d,%edi
 ffffffff80000b44:	e8 87 fa ff ff       	call   ffffffff800005d0 <idt_set_descriptor>
 ffffffff80000b49:	b9 01 00 00 00       	mov    $0x1,%ecx
 ffffffff80000b4e:	ba 8e 00 00 00       	mov    $0x8e,%edx
-ffffffff80000b53:	48 c7 c6 50 16 00 80 	mov    $0xffffffff80001650,%rsi
+ffffffff80000b53:	48 c7 c6 30 15 00 80 	mov    $0xffffffff80001530,%rsi
 ffffffff80000b5a:	bf 2e 00 00 00       	mov    $0x2e,%edi
 ffffffff80000b5f:	e8 6c fa ff ff       	call   ffffffff800005d0 <idt_set_descriptor>
 ffffffff80000b64:	b9 01 00 00 00       	mov    $0x1,%ecx
 ffffffff80000b69:	ba 8e 00 00 00       	mov    $0x8e,%edx
-ffffffff80000b6e:	48 c7 c6 59 16 00 80 	mov    $0xffffffff80001659,%rsi
+ffffffff80000b6e:	48 c7 c6 39 15 00 80 	mov    $0xffffffff80001539,%rsi
 ffffffff80000b75:	bf 2f 00 00 00       	mov    $0x2f,%edi
 ffffffff80000b7a:	48 83 c4 08          	add    $0x8,%rsp
 ffffffff80000b7e:	e9 4d fa ff ff       	jmp    ffffffff800005d0 <idt_set_descriptor>
@@ -707,29 +707,29 @@ ffffffff80000b90 <isr_handler>:
 ffffffff80000b90:	f3 0f 1e fa          	endbr64 
 ffffffff80000b94:	53                   	push   %rbx
 ffffffff80000b95:	48 89 fb             	mov    %rdi,%rbx
-ffffffff80000b98:	48 c7 c7 18 27 00 80 	mov    $0xffffffff80002718,%rdi
+ffffffff80000b98:	48 c7 c7 f8 25 00 80 	mov    $0xffffffff800025f8,%rdi
 ffffffff80000b9f:	e8 fc f4 ff ff       	call   ffffffff800000a0 <print>
 ffffffff80000ba4:	48 8b 7b 58          	mov    0x58(%rbx),%rdi
 ffffffff80000ba8:	ba 0a 00 00 00       	mov    $0xa,%edx
 ffffffff80000bad:	be 03 00 00 00       	mov    $0x3,%esi
 ffffffff80000bb2:	e8 e9 f5 ff ff       	call   ffffffff800001a0 <printui>
-ffffffff80000bb7:	48 c7 c7 f8 29 00 80 	mov    $0xffffffff800029f8,%rdi
+ffffffff80000bb7:	48 c7 c7 20 28 00 80 	mov    $0xffffffff80002820,%rdi
 ffffffff80000bbe:	e8 dd f4 ff ff       	call   ffffffff800000a0 <print>
-ffffffff80000bc3:	48 c7 c7 2d 27 00 80 	mov    $0xffffffff8000272d,%rdi
+ffffffff80000bc3:	48 c7 c7 0d 26 00 80 	mov    $0xffffffff8000260d,%rdi
 ffffffff80000bca:	e8 d1 f4 ff ff       	call   ffffffff800000a0 <print>
 ffffffff80000bcf:	48 8b 43 58          	mov    0x58(%rbx),%rax
-ffffffff80000bd3:	48 8b 3c c5 60 3a 00 	mov    -0x7fffc5a0(,%rax,8),%rdi
+ffffffff80000bd3:	48 8b 3c c5 80 38 00 	mov    -0x7fffc780(,%rax,8),%rdi
 ffffffff80000bda:	80 
 ffffffff80000bdb:	e8 c0 f4 ff ff       	call   ffffffff800000a0 <print>
-ffffffff80000be0:	48 c7 c7 2f 27 00 80 	mov    $0xffffffff8000272f,%rdi
+ffffffff80000be0:	48 c7 c7 0f 26 00 80 	mov    $0xffffffff8000260f,%rdi
 ffffffff80000be7:	e8 b4 f4 ff ff       	call   ffffffff800000a0 <print>
-ffffffff80000bec:	48 c7 c7 31 27 00 80 	mov    $0xffffffff80002731,%rdi
+ffffffff80000bec:	48 c7 c7 11 26 00 80 	mov    $0xffffffff80002611,%rdi
 ffffffff80000bf3:	e8 a8 f4 ff ff       	call   ffffffff800000a0 <print>
 ffffffff80000bf8:	48 8b 7b 60          	mov    0x60(%rbx),%rdi
 ffffffff80000bfc:	ba 0a 00 00 00       	mov    $0xa,%edx
 ffffffff80000c01:	be 10 00 00 00       	mov    $0x10,%esi
 ffffffff80000c06:	e8 95 f5 ff ff       	call   ffffffff800001a0 <printui>
-ffffffff80000c0b:	48 c7 c7 44 27 00 80 	mov    $0xffffffff80002744,%rdi
+ffffffff80000c0b:	48 c7 c7 24 26 00 80 	mov    $0xffffffff80002624,%rdi
 ffffffff80000c12:	e8 89 f4 ff ff       	call   ffffffff800000a0 <print>
 ffffffff80000c17:	48 8b 7b 68          	mov    0x68(%rbx),%rdi
 ffffffff80000c1b:	ba 10 00 00 00       	mov    $0x10,%edx
@@ -762,14 +762,14 @@ ffffffff80000c65:	ff e0                	jmp    *%rax
 ffffffff80000c67:	66 0f 1f 84 00 00 00 	nopw   0x0(%rax,%rax,1)
 ffffffff80000c6e:	00 00 
 ffffffff80000c70:	0f b6 fa             	movzbl %dl,%edi
-ffffffff80000c73:	e9 98 05 00 00       	jmp    ffffffff80001210 <pic_send_eoi>
+ffffffff80000c73:	e9 78 04 00 00       	jmp    ffffffff800010f0 <pic_send_eoi>
 ffffffff80000c78:	0f 1f 84 00 00 00 00 	nopl   0x0(%rax,%rax,1)
 ffffffff80000c7f:	00 
 
 ffffffff80000c80 <really_done>:
 ffffffff80000c80:	50                   	push   %rax
 ffffffff80000c81:	58                   	pop    %rax
-ffffffff80000c82:	48 c7 c7 84 28 00 80 	mov    $0xffffffff80002884,%rdi
+ffffffff80000c82:	48 c7 c7 64 27 00 80 	mov    $0xffffffff80002764,%rdi
 ffffffff80000c89:	48 83 ec 08          	sub    $0x8,%rsp
 ffffffff80000c8d:	e8 0e f4 ff ff       	call   ffffffff800000a0 <print>
 ffffffff80000c92:	66 0f 1f 44 00 00    	nopw   0x0(%rax,%rax,1)
@@ -780,974 +780,917 @@ ffffffff80000c9c:	0f 1f 40 00          	nopl   0x0(%rax)
 
 ffffffff80000ca0 <_start>:
 ffffffff80000ca0:	f3 0f 1e fa          	endbr64 
-ffffffff80000ca4:	48 8b 05 1d 2f 00 00 	mov    0x2f1d(%rip),%rax        # ffffffff80003bc8 <stack_request+0x28>
-ffffffff80000cab:	41 54                	push   %r12
-ffffffff80000cad:	55                   	push   %rbp
-ffffffff80000cae:	53                   	push   %rbx
-ffffffff80000caf:	48 85 c0             	test   %rax,%rax
-ffffffff80000cb2:	75 05                	jne    ffffffff80000cb9 <_start+0x19>
-ffffffff80000cb4:	e8 c7 ff ff ff       	call   ffffffff80000c80 <really_done>
-ffffffff80000cb9:	31 c0                	xor    %eax,%eax
-ffffffff80000cbb:	e8 90 f6 ff ff       	call   ffffffff80000350 <init_gdt>
-ffffffff80000cc0:	31 ff                	xor    %edi,%edi
-ffffffff80000cc2:	e8 69 01 00 00       	call   ffffffff80000e30 <init_tss>
-ffffffff80000cc7:	31 c0                	xor    %eax,%eax
-ffffffff80000cc9:	e8 52 f9 ff ff       	call   ffffffff80000620 <init_idt>
-ffffffff80000cce:	31 c0                	xor    %eax,%eax
-ffffffff80000cd0:	e8 9b f3 ff ff       	call   ffffffff80000070 <init_terminal>
-ffffffff80000cd5:	48 85 c0             	test   %rax,%rax
-ffffffff80000cd8:	74 da                	je     ffffffff80000cb4 <_start+0x14>
-ffffffff80000cda:	fb                   	sti    
-ffffffff80000cdb:	31 c0                	xor    %eax,%eax
-ffffffff80000cdd:	e8 ae 01 00 00       	call   ffffffff80000e90 <init_keyboard>
-ffffffff80000ce2:	85 c0                	test   %eax,%eax
-ffffffff80000ce4:	0f 85 1e 01 00 00    	jne    ffffffff80000e08 <_start+0x168>
-ffffffff80000cea:	48 8b 05 97 2e 00 00 	mov    0x2e97(%rip),%rax        # ffffffff80003b88 <mmap_request+0x28>
-ffffffff80000cf1:	4c 8b 60 08          	mov    0x8(%rax),%r12
-ffffffff80000cf5:	48 8b 05 8c 2e 00 00 	mov    0x2e8c(%rip),%rax        # ffffffff80003b88 <mmap_request+0x28>
-ffffffff80000cfc:	48 8b 68 10          	mov    0x10(%rax),%rbp
-ffffffff80000d00:	4d 85 e4             	test   %r12,%r12
-ffffffff80000d03:	0f 84 97 00 00 00    	je     ffffffff80000da0 <_start+0x100>
-ffffffff80000d09:	31 db                	xor    %ebx,%ebx
+ffffffff80000ca4:	50                   	push   %rax
+ffffffff80000ca5:	58                   	pop    %rax
+ffffffff80000ca6:	48 83 ec 08          	sub    $0x8,%rsp
+ffffffff80000caa:	48 8b 05 f7 2c 00 00 	mov    0x2cf7(%rip),%rax        # ffffffff800039a8 <stack_request+0x28>
+ffffffff80000cb1:	48 85 c0             	test   %rax,%rax
+ffffffff80000cb4:	75 05                	jne    ffffffff80000cbb <_start+0x1b>
+ffffffff80000cb6:	e8 c5 ff ff ff       	call   ffffffff80000c80 <really_done>
+ffffffff80000cbb:	31 c0                	xor    %eax,%eax
+ffffffff80000cbd:	e8 8e f6 ff ff       	call   ffffffff80000350 <init_gdt>
+ffffffff80000cc2:	31 ff                	xor    %edi,%edi
+ffffffff80000cc4:	e8 47 00 00 00       	call   ffffffff80000d10 <init_tss>
+ffffffff80000cc9:	31 c0                	xor    %eax,%eax
+ffffffff80000ccb:	e8 50 f9 ff ff       	call   ffffffff80000620 <init_idt>
+ffffffff80000cd0:	31 c0                	xor    %eax,%eax
+ffffffff80000cd2:	e8 99 f3 ff ff       	call   ffffffff80000070 <init_terminal>
+ffffffff80000cd7:	48 85 c0             	test   %rax,%rax
+ffffffff80000cda:	74 da                	je     ffffffff80000cb6 <_start+0x16>
+ffffffff80000cdc:	fb                   	sti    
+ffffffff80000cdd:	31 c0                	xor    %eax,%eax
+ffffffff80000cdf:	e8 8c 00 00 00       	call   ffffffff80000d70 <init_keyboard>
+ffffffff80000ce4:	85 c0                	test   %eax,%eax
+ffffffff80000ce6:	75 0b                	jne    ffffffff80000cf3 <_start+0x53>
+ffffffff80000ce8:	0f 1f 84 00 00 00 00 	nopl   0x0(%rax,%rax,1)
+ffffffff80000cef:	00 
+ffffffff80000cf0:	f4                   	hlt    
+ffffffff80000cf1:	eb fd                	jmp    ffffffff80000cf0 <_start+0x50>
+ffffffff80000cf3:	48 c7 c7 70 27 00 80 	mov    $0xffffffff80002770,%rdi
+ffffffff80000cfa:	e8 a1 f3 ff ff       	call   ffffffff800000a0 <print>
+ffffffff80000cff:	eb b5                	jmp    ffffffff80000cb6 <_start+0x16>
+ffffffff80000d01:	66 2e 0f 1f 84 00 00 	cs nopw 0x0(%rax,%rax,1)
+ffffffff80000d08:	00 00 00 
 ffffffff80000d0b:	0f 1f 44 00 00       	nopl   0x0(%rax,%rax,1)
-ffffffff80000d10:	48 8b 44 dd 00       	mov    0x0(%rbp,%rbx,8),%rax
-ffffffff80000d15:	ba 10 00 00 00       	mov    $0x10,%edx
-ffffffff80000d1a:	be 10 00 00 00       	mov    $0x10,%esi
-ffffffff80000d1f:	48 8b 38             	mov    (%rax),%rdi
-ffffffff80000d22:	e8 79 f4 ff ff       	call   ffffffff800001a0 <printui>
-ffffffff80000d27:	48 c7 c7 8d 28 00 80 	mov    $0xffffffff8000288d,%rdi
-ffffffff80000d2e:	e8 6d f3 ff ff       	call   ffffffff800000a0 <print>
-ffffffff80000d33:	48 8b 44 dd 00       	mov    0x0(%rbp,%rbx,8),%rax
-ffffffff80000d38:	ba 10 00 00 00       	mov    $0x10,%edx
-ffffffff80000d3d:	be 10 00 00 00       	mov    $0x10,%esi
-ffffffff80000d42:	48 8b 78 08          	mov    0x8(%rax),%rdi
-ffffffff80000d46:	e8 55 f4 ff ff       	call   ffffffff800001a0 <printui>
-ffffffff80000d4b:	48 c7 c7 8d 28 00 80 	mov    $0xffffffff8000288d,%rdi
-ffffffff80000d52:	e8 49 f3 ff ff       	call   ffffffff800000a0 <print>
-ffffffff80000d57:	48 8b 44 dd 00       	mov    0x0(%rbp,%rbx,8),%rax
-ffffffff80000d5c:	48 83 78 10 07       	cmpq   $0x7,0x10(%rax)
-ffffffff80000d61:	0f 87 b2 00 00 00    	ja     ffffffff80000e19 <_start+0x179>
-ffffffff80000d67:	48 8b 40 10          	mov    0x10(%rax),%rax
-ffffffff80000d6b:	3e ff 24 c5 38 29 00 	notrack jmp *-0x7fffd6c8(,%rax,8)
-ffffffff80000d72:	80 
-ffffffff80000d73:	48 c7 c7 e0 28 00 80 	mov    $0xffffffff800028e0,%rdi
-ffffffff80000d7a:	e8 21 f3 ff ff       	call   ffffffff800000a0 <print>
-ffffffff80000d7f:	90                   	nop
-ffffffff80000d80:	48 c7 c7 f8 29 00 80 	mov    $0xffffffff800029f8,%rdi
-ffffffff80000d87:	48 83 c3 01          	add    $0x1,%rbx
-ffffffff80000d8b:	e8 10 f3 ff ff       	call   ffffffff800000a0 <print>
-ffffffff80000d90:	4c 39 e3             	cmp    %r12,%rbx
-ffffffff80000d93:	0f 85 77 ff ff ff    	jne    ffffffff80000d10 <_start+0x70>
-ffffffff80000d99:	0f 1f 80 00 00 00 00 	nopl   0x0(%rax)
-ffffffff80000da0:	f4                   	hlt    
-ffffffff80000da1:	eb fd                	jmp    ffffffff80000da0 <_start+0x100>
-ffffffff80000da3:	48 c7 c7 c9 28 00 80 	mov    $0xffffffff800028c9,%rdi
-ffffffff80000daa:	e8 f1 f2 ff ff       	call   ffffffff800000a0 <print>
-ffffffff80000daf:	eb cf                	jmp    ffffffff80000d80 <_start+0xe0>
-ffffffff80000db1:	48 c7 c7 be 28 00 80 	mov    $0xffffffff800028be,%rdi
-ffffffff80000db8:	e8 e3 f2 ff ff       	call   ffffffff800000a0 <print>
-ffffffff80000dbd:	eb c1                	jmp    ffffffff80000d80 <_start+0xe0>
-ffffffff80000dbf:	48 c7 c7 b5 28 00 80 	mov    $0xffffffff800028b5,%rdi
-ffffffff80000dc6:	e8 d5 f2 ff ff       	call   ffffffff800000a0 <print>
-ffffffff80000dcb:	eb b3                	jmp    ffffffff80000d80 <_start+0xe0>
-ffffffff80000dcd:	48 c7 c7 a4 28 00 80 	mov    $0xffffffff800028a4,%rdi
-ffffffff80000dd4:	e8 c7 f2 ff ff       	call   ffffffff800000a0 <print>
-ffffffff80000dd9:	eb a5                	jmp    ffffffff80000d80 <_start+0xe0>
-ffffffff80000ddb:	48 c7 c7 9b 28 00 80 	mov    $0xffffffff8000289b,%rdi
-ffffffff80000de2:	e8 b9 f2 ff ff       	call   ffffffff800000a0 <print>
-ffffffff80000de7:	eb 97                	jmp    ffffffff80000d80 <_start+0xe0>
-ffffffff80000de9:	48 c7 c7 93 28 00 80 	mov    $0xffffffff80002893,%rdi
-ffffffff80000df0:	e8 ab f2 ff ff       	call   ffffffff800000a0 <print>
-ffffffff80000df5:	eb 89                	jmp    ffffffff80000d80 <_start+0xe0>
-ffffffff80000df7:	48 c7 c7 f3 28 00 80 	mov    $0xffffffff800028f3,%rdi
-ffffffff80000dfe:	e8 9d f2 ff ff       	call   ffffffff800000a0 <print>
-ffffffff80000e03:	e9 78 ff ff ff       	jmp    ffffffff80000d80 <_start+0xe0>
-ffffffff80000e08:	48 c7 c7 08 29 00 80 	mov    $0xffffffff80002908,%rdi
-ffffffff80000e0f:	e8 8c f2 ff ff       	call   ffffffff800000a0 <print>
-ffffffff80000e14:	e9 9b fe ff ff       	jmp    ffffffff80000cb4 <_start+0x14>
-ffffffff80000e19:	48 c7 c7 ff 28 00 80 	mov    $0xffffffff800028ff,%rdi
-ffffffff80000e20:	e8 7b f2 ff ff       	call   ffffffff800000a0 <print>
-ffffffff80000e25:	e9 56 ff ff ff       	jmp    ffffffff80000d80 <_start+0xe0>
-ffffffff80000e2a:	66 0f 1f 44 00 00    	nopw   0x0(%rax,%rax,1)
 
-ffffffff80000e30 <init_tss>:
-ffffffff80000e30:	f3 0f 1e fa          	endbr64 
-ffffffff80000e34:	48 63 ff             	movslq %edi,%rdi
-ffffffff80000e37:	55                   	push   %rbp
-ffffffff80000e38:	ba 68 00 00 00       	mov    $0x68,%edx
-ffffffff80000e3d:	31 f6                	xor    %esi,%esi
-ffffffff80000e3f:	48 8d 04 7f          	lea    (%rdi,%rdi,2),%rax
-ffffffff80000e43:	48 8d 04 87          	lea    (%rdi,%rax,4),%rax
-ffffffff80000e47:	48 8d 2c c5 00 98 01 	lea    -0x7ffe6800(,%rax,8),%rbp
-ffffffff80000e4e:	80 
-ffffffff80000e4f:	48 89 ef             	mov    %rbp,%rdi
-ffffffff80000e52:	e8 39 08 00 00       	call   ffffffff80001690 <memset>
-ffffffff80000e57:	48 89 ef             	mov    %rbp,%rdi
-ffffffff80000e5a:	b8 68 00 00 00       	mov    $0x68,%eax
-ffffffff80000e5f:	48 c7 45 24 00 98 01 	movq   $0xffffffff80019800,0x24(%rbp)
-ffffffff80000e66:	80 
-ffffffff80000e67:	48 c7 45 04 00 98 01 	movq   $0xffffffff80019800,0x4(%rbp)
-ffffffff80000e6e:	80 
-ffffffff80000e6f:	66 89 45 66          	mov    %ax,0x66(%rbp)
-ffffffff80000e73:	e8 e8 f6 ff ff       	call   ffffffff80000560 <gdt_install_tss>
-ffffffff80000e78:	5d                   	pop    %rbp
-ffffffff80000e79:	0f b7 f8             	movzwl %ax,%edi
-ffffffff80000e7c:	e9 ff 07 00 00       	jmp    ffffffff80001680 <tss_reload>
-ffffffff80000e81:	66 2e 0f 1f 84 00 00 	cs nopw 0x0(%rax,%rax,1)
-ffffffff80000e88:	00 00 00 
-ffffffff80000e8b:	0f 1f 44 00 00       	nopl   0x0(%rax,%rax,1)
+ffffffff80000d10 <init_tss>:
+ffffffff80000d10:	f3 0f 1e fa          	endbr64 
+ffffffff80000d14:	48 63 ff             	movslq %edi,%rdi
+ffffffff80000d17:	55                   	push   %rbp
+ffffffff80000d18:	ba 68 00 00 00       	mov    $0x68,%edx
+ffffffff80000d1d:	31 f6                	xor    %esi,%esi
+ffffffff80000d1f:	48 8d 04 7f          	lea    (%rdi,%rdi,2),%rax
+ffffffff80000d23:	48 8d 04 87          	lea    (%rdi,%rax,4),%rax
+ffffffff80000d27:	48 8d 2c c5 00 98 01 	lea    -0x7ffe6800(,%rax,8),%rbp
+ffffffff80000d2e:	80 
+ffffffff80000d2f:	48 89 ef             	mov    %rbp,%rdi
+ffffffff80000d32:	e8 39 08 00 00       	call   ffffffff80001570 <memset>
+ffffffff80000d37:	48 89 ef             	mov    %rbp,%rdi
+ffffffff80000d3a:	b8 68 00 00 00       	mov    $0x68,%eax
+ffffffff80000d3f:	48 c7 45 24 00 98 01 	movq   $0xffffffff80019800,0x24(%rbp)
+ffffffff80000d46:	80 
+ffffffff80000d47:	48 c7 45 04 00 98 01 	movq   $0xffffffff80019800,0x4(%rbp)
+ffffffff80000d4e:	80 
+ffffffff80000d4f:	66 89 45 66          	mov    %ax,0x66(%rbp)
+ffffffff80000d53:	e8 08 f8 ff ff       	call   ffffffff80000560 <gdt_install_tss>
+ffffffff80000d58:	5d                   	pop    %rbp
+ffffffff80000d59:	0f b7 f8             	movzwl %ax,%edi
+ffffffff80000d5c:	e9 ff 07 00 00       	jmp    ffffffff80001560 <tss_reload>
+ffffffff80000d61:	66 2e 0f 1f 84 00 00 	cs nopw 0x0(%rax,%rax,1)
+ffffffff80000d68:	00 00 00 
+ffffffff80000d6b:	0f 1f 44 00 00       	nopl   0x0(%rax,%rax,1)
 
-ffffffff80000e90 <init_keyboard>:
-ffffffff80000e90:	f3 0f 1e fa          	endbr64 
-ffffffff80000e94:	48 83 ec 08          	sub    $0x8,%rsp
-ffffffff80000e98:	48 c7 c6 70 0f 00 80 	mov    $0xffffffff80000f70,%rsi
-ffffffff80000e9f:	bf 21 00 00 00       	mov    $0x21,%edi
-ffffffff80000ea4:	e8 87 fd ff ff       	call   ffffffff80000c30 <register_interrupt_handler>
-ffffffff80000ea9:	bf 01 00 00 00       	mov    $0x1,%edi
-ffffffff80000eae:	e8 fd 02 00 00       	call   ffffffff800011b0 <pic_unmask_irq>
-ffffffff80000eb3:	31 c0                	xor    %eax,%eax
-ffffffff80000eb5:	48 83 c4 08          	add    $0x8,%rsp
-ffffffff80000eb9:	c3                   	ret    
-ffffffff80000eba:	66 0f 1f 44 00 00    	nopw   0x0(%rax,%rax,1)
+ffffffff80000d70 <init_keyboard>:
+ffffffff80000d70:	f3 0f 1e fa          	endbr64 
+ffffffff80000d74:	48 83 ec 08          	sub    $0x8,%rsp
+ffffffff80000d78:	48 c7 c6 50 0e 00 80 	mov    $0xffffffff80000e50,%rsi
+ffffffff80000d7f:	bf 21 00 00 00       	mov    $0x21,%edi
+ffffffff80000d84:	e8 a7 fe ff ff       	call   ffffffff80000c30 <register_interrupt_handler>
+ffffffff80000d89:	bf 01 00 00 00       	mov    $0x1,%edi
+ffffffff80000d8e:	e8 fd 02 00 00       	call   ffffffff80001090 <pic_unmask_irq>
+ffffffff80000d93:	31 c0                	xor    %eax,%eax
+ffffffff80000d95:	48 83 c4 08          	add    $0x8,%rsp
+ffffffff80000d99:	c3                   	ret    
+ffffffff80000d9a:	66 0f 1f 44 00 00    	nopw   0x0(%rax,%rax,1)
 
-ffffffff80000ec0 <get_keyboard_status>:
-ffffffff80000ec0:	f3 0f 1e fa          	endbr64 
-ffffffff80000ec4:	e4 64                	in     $0x64,%al
-ffffffff80000ec6:	c3                   	ret    
-ffffffff80000ec7:	66 0f 1f 84 00 00 00 	nopw   0x0(%rax,%rax,1)
-ffffffff80000ece:	00 00 
+ffffffff80000da0 <get_keyboard_status>:
+ffffffff80000da0:	f3 0f 1e fa          	endbr64 
+ffffffff80000da4:	e4 64                	in     $0x64,%al
+ffffffff80000da6:	c3                   	ret    
+ffffffff80000da7:	66 0f 1f 84 00 00 00 	nopw   0x0(%rax,%rax,1)
+ffffffff80000dae:	00 00 
 
-ffffffff80000ed0 <get_keyboard_byte>:
-ffffffff80000ed0:	f3 0f 1e fa          	endbr64 
-ffffffff80000ed4:	0f 1f 40 00          	nopl   0x0(%rax)
-ffffffff80000ed8:	e4 64                	in     $0x64,%al
-ffffffff80000eda:	a8 01                	test   $0x1,%al
-ffffffff80000edc:	74 fa                	je     ffffffff80000ed8 <get_keyboard_byte+0x8>
-ffffffff80000ede:	e4 60                	in     $0x60,%al
-ffffffff80000ee0:	c3                   	ret    
-ffffffff80000ee1:	66 66 2e 0f 1f 84 00 	data16 cs nopw 0x0(%rax,%rax,1)
-ffffffff80000ee8:	00 00 00 00 
-ffffffff80000eec:	0f 1f 40 00          	nopl   0x0(%rax)
+ffffffff80000db0 <get_keyboard_byte>:
+ffffffff80000db0:	f3 0f 1e fa          	endbr64 
+ffffffff80000db4:	0f 1f 40 00          	nopl   0x0(%rax)
+ffffffff80000db8:	e4 64                	in     $0x64,%al
+ffffffff80000dba:	a8 01                	test   $0x1,%al
+ffffffff80000dbc:	74 fa                	je     ffffffff80000db8 <get_keyboard_byte+0x8>
+ffffffff80000dbe:	e4 60                	in     $0x60,%al
+ffffffff80000dc0:	c3                   	ret    
+ffffffff80000dc1:	66 66 2e 0f 1f 84 00 	data16 cs nopw 0x0(%rax,%rax,1)
+ffffffff80000dc8:	00 00 00 00 
+ffffffff80000dcc:	0f 1f 40 00          	nopl   0x0(%rax)
 
-ffffffff80000ef0 <send_keyboard_byte>:
-ffffffff80000ef0:	f3 0f 1e fa          	endbr64 
-ffffffff80000ef4:	0f 1f 40 00          	nopl   0x0(%rax)
-ffffffff80000ef8:	e4 64                	in     $0x64,%al
-ffffffff80000efa:	a8 02                	test   $0x2,%al
-ffffffff80000efc:	75 fa                	jne    ffffffff80000ef8 <send_keyboard_byte+0x8>
-ffffffff80000efe:	89 f8                	mov    %edi,%eax
-ffffffff80000f00:	e6 60                	out    %al,$0x60
-ffffffff80000f02:	31 c0                	xor    %eax,%eax
-ffffffff80000f04:	c3                   	ret    
-ffffffff80000f05:	66 66 2e 0f 1f 84 00 	data16 cs nopw 0x0(%rax,%rax,1)
-ffffffff80000f0c:	00 00 00 00 
+ffffffff80000dd0 <send_keyboard_byte>:
+ffffffff80000dd0:	f3 0f 1e fa          	endbr64 
+ffffffff80000dd4:	0f 1f 40 00          	nopl   0x0(%rax)
+ffffffff80000dd8:	e4 64                	in     $0x64,%al
+ffffffff80000dda:	a8 02                	test   $0x2,%al
+ffffffff80000ddc:	75 fa                	jne    ffffffff80000dd8 <send_keyboard_byte+0x8>
+ffffffff80000dde:	89 f8                	mov    %edi,%eax
+ffffffff80000de0:	e6 60                	out    %al,$0x60
+ffffffff80000de2:	31 c0                	xor    %eax,%eax
+ffffffff80000de4:	c3                   	ret    
+ffffffff80000de5:	66 66 2e 0f 1f 84 00 	data16 cs nopw 0x0(%rax,%rax,1)
+ffffffff80000dec:	00 00 00 00 
 
-ffffffff80000f10 <send_keyboard_command>:
-ffffffff80000f10:	f3 0f 1e fa          	endbr64 
-ffffffff80000f14:	e4 64                	in     $0x64,%al
-ffffffff80000f16:	a8 02                	test   $0x2,%al
-ffffffff80000f18:	75 49                	jne    ffffffff80000f63 <send_keyboard_command+0x53>
-ffffffff80000f1a:	89 f8                	mov    %edi,%eax
-ffffffff80000f1c:	e6 64                	out    %al,$0x64
-ffffffff80000f1e:	40 84 f6             	test   %sil,%sil
-ffffffff80000f21:	74 3d                	je     ffffffff80000f60 <send_keyboard_command+0x50>
-ffffffff80000f23:	0f 1f 44 00 00       	nopl   0x0(%rax,%rax,1)
-ffffffff80000f28:	e4 64                	in     $0x64,%al
-ffffffff80000f2a:	a8 01                	test   $0x1,%al
-ffffffff80000f2c:	74 fa                	je     ffffffff80000f28 <send_keyboard_command+0x18>
-ffffffff80000f2e:	66 90                	xchg   %ax,%ax
-ffffffff80000f30:	e4 64                	in     $0x64,%al
-ffffffff80000f32:	a8 01                	test   $0x1,%al
-ffffffff80000f34:	74 fa                	je     ffffffff80000f30 <send_keyboard_command+0x20>
-ffffffff80000f36:	e4 60                	in     $0x60,%al
-ffffffff80000f38:	3c fa                	cmp    $0xfa,%al
-ffffffff80000f3a:	74 24                	je     ffffffff80000f60 <send_keyboard_command+0x50>
-ffffffff80000f3c:	0f 1f 40 00          	nopl   0x0(%rax)
-ffffffff80000f40:	e4 64                	in     $0x64,%al
-ffffffff80000f42:	a8 01                	test   $0x1,%al
-ffffffff80000f44:	74 fa                	je     ffffffff80000f40 <send_keyboard_command+0x30>
-ffffffff80000f46:	e4 60                	in     $0x60,%al
-ffffffff80000f48:	3c fe                	cmp    $0xfe,%al
-ffffffff80000f4a:	75 17                	jne    ffffffff80000f63 <send_keyboard_command+0x53>
-ffffffff80000f4c:	40 0f b6 ff          	movzbl %dil,%edi
-ffffffff80000f50:	be 01 00 00 00       	mov    $0x1,%esi
-ffffffff80000f55:	eb b9                	jmp    ffffffff80000f10 <send_keyboard_command>
-ffffffff80000f57:	66 0f 1f 84 00 00 00 	nopw   0x0(%rax,%rax,1)
-ffffffff80000f5e:	00 00 
-ffffffff80000f60:	31 c0                	xor    %eax,%eax
-ffffffff80000f62:	c3                   	ret    
-ffffffff80000f63:	b8 ff ff ff ff       	mov    $0xffffffff,%eax
-ffffffff80000f68:	c3                   	ret    
-ffffffff80000f69:	0f 1f 80 00 00 00 00 	nopl   0x0(%rax)
+ffffffff80000df0 <send_keyboard_command>:
+ffffffff80000df0:	f3 0f 1e fa          	endbr64 
+ffffffff80000df4:	e4 64                	in     $0x64,%al
+ffffffff80000df6:	a8 02                	test   $0x2,%al
+ffffffff80000df8:	75 49                	jne    ffffffff80000e43 <send_keyboard_command+0x53>
+ffffffff80000dfa:	89 f8                	mov    %edi,%eax
+ffffffff80000dfc:	e6 64                	out    %al,$0x64
+ffffffff80000dfe:	40 84 f6             	test   %sil,%sil
+ffffffff80000e01:	74 3d                	je     ffffffff80000e40 <send_keyboard_command+0x50>
+ffffffff80000e03:	0f 1f 44 00 00       	nopl   0x0(%rax,%rax,1)
+ffffffff80000e08:	e4 64                	in     $0x64,%al
+ffffffff80000e0a:	a8 01                	test   $0x1,%al
+ffffffff80000e0c:	74 fa                	je     ffffffff80000e08 <send_keyboard_command+0x18>
+ffffffff80000e0e:	66 90                	xchg   %ax,%ax
+ffffffff80000e10:	e4 64                	in     $0x64,%al
+ffffffff80000e12:	a8 01                	test   $0x1,%al
+ffffffff80000e14:	74 fa                	je     ffffffff80000e10 <send_keyboard_command+0x20>
+ffffffff80000e16:	e4 60                	in     $0x60,%al
+ffffffff80000e18:	3c fa                	cmp    $0xfa,%al
+ffffffff80000e1a:	74 24                	je     ffffffff80000e40 <send_keyboard_command+0x50>
+ffffffff80000e1c:	0f 1f 40 00          	nopl   0x0(%rax)
+ffffffff80000e20:	e4 64                	in     $0x64,%al
+ffffffff80000e22:	a8 01                	test   $0x1,%al
+ffffffff80000e24:	74 fa                	je     ffffffff80000e20 <send_keyboard_command+0x30>
+ffffffff80000e26:	e4 60                	in     $0x60,%al
+ffffffff80000e28:	3c fe                	cmp    $0xfe,%al
+ffffffff80000e2a:	75 17                	jne    ffffffff80000e43 <send_keyboard_command+0x53>
+ffffffff80000e2c:	40 0f b6 ff          	movzbl %dil,%edi
+ffffffff80000e30:	be 01 00 00 00       	mov    $0x1,%esi
+ffffffff80000e35:	eb b9                	jmp    ffffffff80000df0 <send_keyboard_command>
+ffffffff80000e37:	66 0f 1f 84 00 00 00 	nopw   0x0(%rax,%rax,1)
+ffffffff80000e3e:	00 00 
+ffffffff80000e40:	31 c0                	xor    %eax,%eax
+ffffffff80000e42:	c3                   	ret    
+ffffffff80000e43:	b8 ff ff ff ff       	mov    $0xffffffff,%eax
+ffffffff80000e48:	c3                   	ret    
+ffffffff80000e49:	0f 1f 80 00 00 00 00 	nopl   0x0(%rax)
 
-ffffffff80000f70 <irq_keyboard_handler>:
-ffffffff80000f70:	f3 0f 1e fa          	endbr64 
-ffffffff80000f74:	48 83 ec 28          	sub    $0x28,%rsp
-ffffffff80000f78:	0f 1f 84 00 00 00 00 	nopl   0x0(%rax,%rax,1)
-ffffffff80000f7f:	00 
-ffffffff80000f80:	e4 64                	in     $0x64,%al
-ffffffff80000f82:	a8 01                	test   $0x1,%al
-ffffffff80000f84:	74 fa                	je     ffffffff80000f80 <irq_keyboard_handler+0x10>
-ffffffff80000f86:	e4 60                	in     $0x60,%al
-ffffffff80000f88:	89 c2                	mov    %eax,%edx
-ffffffff80000f8a:	0f b6 f0             	movzbl %al,%esi
-ffffffff80000f8d:	83 e2 7f             	and    $0x7f,%edx
-ffffffff80000f90:	0f b6 d2             	movzbl %dl,%edx
-ffffffff80000f93:	a8 80                	test   $0x80,%al
-ffffffff80000f95:	0f 85 85 00 00 00    	jne    ffffffff80001020 <irq_keyboard_handler+0xb0>
-ffffffff80000f9b:	0f b6 8a 78 29 00 80 	movzbl -0x7fffd688(%rdx),%ecx
-ffffffff80000fa2:	80 f9 84             	cmp    $0x84,%cl
-ffffffff80000fa5:	0f 84 a5 00 00 00    	je     ffffffff80001050 <irq_keyboard_handler+0xe0>
-ffffffff80000fab:	80 f9 83             	cmp    $0x83,%cl
-ffffffff80000fae:	0f 84 d4 00 00 00    	je     ffffffff80001088 <irq_keyboard_handler+0x118>
-ffffffff80000fb4:	80 f9 85             	cmp    $0x85,%cl
-ffffffff80000fb7:	74 42                	je     ffffffff80000ffb <irq_keyboard_handler+0x8b>
-ffffffff80000fb9:	80 f9 80             	cmp    $0x80,%cl
-ffffffff80000fbc:	0f 84 11 01 00 00    	je     ffffffff800010d3 <irq_keyboard_handler+0x163>
-ffffffff80000fc2:	80 f9 82             	cmp    $0x82,%cl
-ffffffff80000fc5:	0f 84 22 01 00 00    	je     ffffffff800010ed <irq_keyboard_handler+0x17d>
-ffffffff80000fcb:	80 3d 96 88 01 00 e0 	cmpb   $0xe0,0x18896(%rip)        # ffffffff80019868 <prev_scan>
-ffffffff80000fd2:	0f 84 c5 00 00 00    	je     ffffffff8000109d <irq_keyboard_handler+0x12d>
-ffffffff80000fd8:	80 3d 8a 88 01 00 00 	cmpb   $0x0,0x1888a(%rip)        # ffffffff80019869 <ctrl_pressed>
-ffffffff80000fdf:	74 78                	je     ffffffff80001059 <irq_keyboard_handler+0xe9>
-ffffffff80000fe1:	80 f9 63             	cmp    $0x63,%cl
-ffffffff80000fe4:	75 73                	jne    ffffffff80001059 <irq_keyboard_handler+0xe9>
-ffffffff80000fe6:	48 c7 c7 fa 29 00 80 	mov    $0xffffffff800029fa,%rdi
-ffffffff80000fed:	88 44 24 0f          	mov    %al,0xf(%rsp)
-ffffffff80000ff1:	e8 aa f0 ff ff       	call   ffffffff800000a0 <print>
-ffffffff80000ff6:	0f b6 44 24 0f       	movzbl 0xf(%rsp),%eax
-ffffffff80000ffb:	bf 80 00 00 00       	mov    $0x80,%edi
-ffffffff80001000:	31 f6                	xor    %esi,%esi
-ffffffff80001002:	88 05 60 88 01 00    	mov    %al,0x18860(%rip)        # ffffffff80019868 <prev_scan>
-ffffffff80001008:	e8 03 ff ff ff       	call   ffffffff80000f10 <send_keyboard_command>
-ffffffff8000100d:	bf 01 00 00 00       	mov    $0x1,%edi
-ffffffff80001012:	48 83 c4 28          	add    $0x28,%rsp
-ffffffff80001016:	e9 f5 01 00 00       	jmp    ffffffff80001210 <pic_send_eoi>
-ffffffff8000101b:	0f 1f 44 00 00       	nopl   0x0(%rax,%rax,1)
-ffffffff80001020:	0f b6 92 78 29 00 80 	movzbl -0x7fffd688(%rdx),%edx
-ffffffff80001027:	80 fa 84             	cmp    $0x84,%dl
-ffffffff8000102a:	74 14                	je     ffffffff80001040 <irq_keyboard_handler+0xd0>
-ffffffff8000102c:	80 fa 83             	cmp    $0x83,%dl
-ffffffff8000102f:	75 ca                	jne    ffffffff80000ffb <irq_keyboard_handler+0x8b>
-ffffffff80001031:	c6 05 31 88 01 00 00 	movb   $0x0,0x18831(%rip)        # ffffffff80019869 <ctrl_pressed>
-ffffffff80001038:	eb c1                	jmp    ffffffff80000ffb <irq_keyboard_handler+0x8b>
-ffffffff8000103a:	66 0f 1f 44 00 00    	nopw   0x0(%rax,%rax,1)
-ffffffff80001040:	c6 05 23 88 01 00 00 	movb   $0x0,0x18823(%rip)        # ffffffff8001986a <shift_pressed>
-ffffffff80001047:	eb b2                	jmp    ffffffff80000ffb <irq_keyboard_handler+0x8b>
-ffffffff80001049:	0f 1f 80 00 00 00 00 	nopl   0x0(%rax)
-ffffffff80001050:	c6 05 13 88 01 00 01 	movb   $0x1,0x18813(%rip)        # ffffffff8001986a <shift_pressed>
-ffffffff80001057:	eb a2                	jmp    ffffffff80000ffb <irq_keyboard_handler+0x8b>
-ffffffff80001059:	80 3d 0a 88 01 00 00 	cmpb   $0x0,0x1880a(%rip)        # ffffffff8001986a <shift_pressed>
-ffffffff80001060:	75 32                	jne    ffffffff80001094 <irq_keyboard_handler+0x124>
-ffffffff80001062:	48 8d 7c 24 1e       	lea    0x1e(%rsp),%rdi
-ffffffff80001067:	88 44 24 0f          	mov    %al,0xf(%rsp)
-ffffffff8000106b:	88 4c 24 1e          	mov    %cl,0x1e(%rsp)
-ffffffff8000106f:	c6 44 24 1f 00       	movb   $0x0,0x1f(%rsp)
-ffffffff80001074:	e8 27 f0 ff ff       	call   ffffffff800000a0 <print>
-ffffffff80001079:	0f b6 44 24 0f       	movzbl 0xf(%rsp),%eax
-ffffffff8000107e:	e9 78 ff ff ff       	jmp    ffffffff80000ffb <irq_keyboard_handler+0x8b>
-ffffffff80001083:	0f 1f 44 00 00       	nopl   0x0(%rax,%rax,1)
-ffffffff80001088:	c6 05 da 87 01 00 01 	movb   $0x1,0x187da(%rip)        # ffffffff80019869 <ctrl_pressed>
-ffffffff8000108f:	e9 67 ff ff ff       	jmp    ffffffff80000ffb <irq_keyboard_handler+0x8b>
-ffffffff80001094:	0f b6 8a b8 29 00 80 	movzbl -0x7fffd648(%rdx),%ecx
-ffffffff8000109b:	eb c5                	jmp    ffffffff80001062 <irq_keyboard_handler+0xf2>
-ffffffff8000109d:	83 fe 48             	cmp    $0x48,%esi
-ffffffff800010a0:	74 65                	je     ffffffff80001107 <irq_keyboard_handler+0x197>
-ffffffff800010a2:	83 fe 4b             	cmp    $0x4b,%esi
-ffffffff800010a5:	74 7a                	je     ffffffff80001121 <irq_keyboard_handler+0x1b1>
-ffffffff800010a7:	83 fe 4d             	cmp    $0x4d,%esi
-ffffffff800010aa:	0f 84 8b 00 00 00    	je     ffffffff8000113b <irq_keyboard_handler+0x1cb>
-ffffffff800010b0:	83 fe 50             	cmp    $0x50,%esi
-ffffffff800010b3:	0f 85 42 ff ff ff    	jne    ffffffff80000ffb <irq_keyboard_handler+0x8b>
-ffffffff800010b9:	48 c7 c7 11 2a 00 80 	mov    $0xffffffff80002a11,%rdi
-ffffffff800010c0:	88 44 24 0f          	mov    %al,0xf(%rsp)
-ffffffff800010c4:	e8 d7 ef ff ff       	call   ffffffff800000a0 <print>
-ffffffff800010c9:	0f b6 44 24 0f       	movzbl 0xf(%rsp),%eax
-ffffffff800010ce:	e9 28 ff ff ff       	jmp    ffffffff80000ffb <irq_keyboard_handler+0x8b>
-ffffffff800010d3:	48 c7 c7 f3 29 00 80 	mov    $0xffffffff800029f3,%rdi
-ffffffff800010da:	88 44 24 0f          	mov    %al,0xf(%rsp)
-ffffffff800010de:	e8 bd ef ff ff       	call   ffffffff800000a0 <print>
-ffffffff800010e3:	0f b6 44 24 0f       	movzbl 0xf(%rsp),%eax
-ffffffff800010e8:	e9 0e ff ff ff       	jmp    ffffffff80000ffb <irq_keyboard_handler+0x8b>
-ffffffff800010ed:	48 c7 c7 f7 29 00 80 	mov    $0xffffffff800029f7,%rdi
-ffffffff800010f4:	88 44 24 0f          	mov    %al,0xf(%rsp)
-ffffffff800010f8:	e8 a3 ef ff ff       	call   ffffffff800000a0 <print>
-ffffffff800010fd:	0f b6 44 24 0f       	movzbl 0xf(%rsp),%eax
-ffffffff80001102:	e9 f4 fe ff ff       	jmp    ffffffff80000ffb <irq_keyboard_handler+0x8b>
-ffffffff80001107:	48 c7 c7 02 2a 00 80 	mov    $0xffffffff80002a02,%rdi
-ffffffff8000110e:	88 44 24 0f          	mov    %al,0xf(%rsp)
-ffffffff80001112:	e8 89 ef ff ff       	call   ffffffff800000a0 <print>
-ffffffff80001117:	0f b6 44 24 0f       	movzbl 0xf(%rsp),%eax
-ffffffff8000111c:	e9 da fe ff ff       	jmp    ffffffff80000ffb <irq_keyboard_handler+0x8b>
-ffffffff80001121:	48 c7 c7 07 2a 00 80 	mov    $0xffffffff80002a07,%rdi
-ffffffff80001128:	88 44 24 0f          	mov    %al,0xf(%rsp)
-ffffffff8000112c:	e8 6f ef ff ff       	call   ffffffff800000a0 <print>
-ffffffff80001131:	0f b6 44 24 0f       	movzbl 0xf(%rsp),%eax
-ffffffff80001136:	e9 c0 fe ff ff       	jmp    ffffffff80000ffb <irq_keyboard_handler+0x8b>
-ffffffff8000113b:	48 c7 c7 0c 2a 00 80 	mov    $0xffffffff80002a0c,%rdi
-ffffffff80001142:	88 44 24 0f          	mov    %al,0xf(%rsp)
-ffffffff80001146:	e8 55 ef ff ff       	call   ffffffff800000a0 <print>
-ffffffff8000114b:	0f b6 44 24 0f       	movzbl 0xf(%rsp),%eax
-ffffffff80001150:	e9 a6 fe ff ff       	jmp    ffffffff80000ffb <irq_keyboard_handler+0x8b>
-ffffffff80001155:	66 66 2e 0f 1f 84 00 	data16 cs nopw 0x0(%rax,%rax,1)
-ffffffff8000115c:	00 00 00 00 
+ffffffff80000e50 <irq_keyboard_handler>:
+ffffffff80000e50:	f3 0f 1e fa          	endbr64 
+ffffffff80000e54:	48 83 ec 28          	sub    $0x28,%rsp
+ffffffff80000e58:	0f 1f 84 00 00 00 00 	nopl   0x0(%rax,%rax,1)
+ffffffff80000e5f:	00 
+ffffffff80000e60:	e4 64                	in     $0x64,%al
+ffffffff80000e62:	a8 01                	test   $0x1,%al
+ffffffff80000e64:	74 fa                	je     ffffffff80000e60 <irq_keyboard_handler+0x10>
+ffffffff80000e66:	e4 60                	in     $0x60,%al
+ffffffff80000e68:	89 c2                	mov    %eax,%edx
+ffffffff80000e6a:	0f b6 f0             	movzbl %al,%esi
+ffffffff80000e6d:	83 e2 7f             	and    $0x7f,%edx
+ffffffff80000e70:	0f b6 d2             	movzbl %dl,%edx
+ffffffff80000e73:	a8 80                	test   $0x80,%al
+ffffffff80000e75:	0f 85 85 00 00 00    	jne    ffffffff80000f00 <irq_keyboard_handler+0xb0>
+ffffffff80000e7b:	0f b6 8a a0 27 00 80 	movzbl -0x7fffd860(%rdx),%ecx
+ffffffff80000e82:	80 f9 84             	cmp    $0x84,%cl
+ffffffff80000e85:	0f 84 a5 00 00 00    	je     ffffffff80000f30 <irq_keyboard_handler+0xe0>
+ffffffff80000e8b:	80 f9 83             	cmp    $0x83,%cl
+ffffffff80000e8e:	0f 84 d4 00 00 00    	je     ffffffff80000f68 <irq_keyboard_handler+0x118>
+ffffffff80000e94:	80 f9 85             	cmp    $0x85,%cl
+ffffffff80000e97:	74 42                	je     ffffffff80000edb <irq_keyboard_handler+0x8b>
+ffffffff80000e99:	80 f9 80             	cmp    $0x80,%cl
+ffffffff80000e9c:	0f 84 11 01 00 00    	je     ffffffff80000fb3 <irq_keyboard_handler+0x163>
+ffffffff80000ea2:	80 f9 82             	cmp    $0x82,%cl
+ffffffff80000ea5:	0f 84 22 01 00 00    	je     ffffffff80000fcd <irq_keyboard_handler+0x17d>
+ffffffff80000eab:	80 3d b6 89 01 00 e0 	cmpb   $0xe0,0x189b6(%rip)        # ffffffff80019868 <prev_scan>
+ffffffff80000eb2:	0f 84 c5 00 00 00    	je     ffffffff80000f7d <irq_keyboard_handler+0x12d>
+ffffffff80000eb8:	80 3d aa 89 01 00 00 	cmpb   $0x0,0x189aa(%rip)        # ffffffff80019869 <ctrl_pressed>
+ffffffff80000ebf:	74 78                	je     ffffffff80000f39 <irq_keyboard_handler+0xe9>
+ffffffff80000ec1:	80 f9 63             	cmp    $0x63,%cl
+ffffffff80000ec4:	75 73                	jne    ffffffff80000f39 <irq_keyboard_handler+0xe9>
+ffffffff80000ec6:	48 c7 c7 22 28 00 80 	mov    $0xffffffff80002822,%rdi
+ffffffff80000ecd:	88 44 24 0f          	mov    %al,0xf(%rsp)
+ffffffff80000ed1:	e8 ca f1 ff ff       	call   ffffffff800000a0 <print>
+ffffffff80000ed6:	0f b6 44 24 0f       	movzbl 0xf(%rsp),%eax
+ffffffff80000edb:	bf 80 00 00 00       	mov    $0x80,%edi
+ffffffff80000ee0:	31 f6                	xor    %esi,%esi
+ffffffff80000ee2:	88 05 80 89 01 00    	mov    %al,0x18980(%rip)        # ffffffff80019868 <prev_scan>
+ffffffff80000ee8:	e8 03 ff ff ff       	call   ffffffff80000df0 <send_keyboard_command>
+ffffffff80000eed:	bf 01 00 00 00       	mov    $0x1,%edi
+ffffffff80000ef2:	48 83 c4 28          	add    $0x28,%rsp
+ffffffff80000ef6:	e9 f5 01 00 00       	jmp    ffffffff800010f0 <pic_send_eoi>
+ffffffff80000efb:	0f 1f 44 00 00       	nopl   0x0(%rax,%rax,1)
+ffffffff80000f00:	0f b6 92 a0 27 00 80 	movzbl -0x7fffd860(%rdx),%edx
+ffffffff80000f07:	80 fa 84             	cmp    $0x84,%dl
+ffffffff80000f0a:	74 14                	je     ffffffff80000f20 <irq_keyboard_handler+0xd0>
+ffffffff80000f0c:	80 fa 83             	cmp    $0x83,%dl
+ffffffff80000f0f:	75 ca                	jne    ffffffff80000edb <irq_keyboard_handler+0x8b>
+ffffffff80000f11:	c6 05 51 89 01 00 00 	movb   $0x0,0x18951(%rip)        # ffffffff80019869 <ctrl_pressed>
+ffffffff80000f18:	eb c1                	jmp    ffffffff80000edb <irq_keyboard_handler+0x8b>
+ffffffff80000f1a:	66 0f 1f 44 00 00    	nopw   0x0(%rax,%rax,1)
+ffffffff80000f20:	c6 05 43 89 01 00 00 	movb   $0x0,0x18943(%rip)        # ffffffff8001986a <shift_pressed>
+ffffffff80000f27:	eb b2                	jmp    ffffffff80000edb <irq_keyboard_handler+0x8b>
+ffffffff80000f29:	0f 1f 80 00 00 00 00 	nopl   0x0(%rax)
+ffffffff80000f30:	c6 05 33 89 01 00 01 	movb   $0x1,0x18933(%rip)        # ffffffff8001986a <shift_pressed>
+ffffffff80000f37:	eb a2                	jmp    ffffffff80000edb <irq_keyboard_handler+0x8b>
+ffffffff80000f39:	80 3d 2a 89 01 00 00 	cmpb   $0x0,0x1892a(%rip)        # ffffffff8001986a <shift_pressed>
+ffffffff80000f40:	75 32                	jne    ffffffff80000f74 <irq_keyboard_handler+0x124>
+ffffffff80000f42:	48 8d 7c 24 1e       	lea    0x1e(%rsp),%rdi
+ffffffff80000f47:	88 44 24 0f          	mov    %al,0xf(%rsp)
+ffffffff80000f4b:	88 4c 24 1e          	mov    %cl,0x1e(%rsp)
+ffffffff80000f4f:	c6 44 24 1f 00       	movb   $0x0,0x1f(%rsp)
+ffffffff80000f54:	e8 47 f1 ff ff       	call   ffffffff800000a0 <print>
+ffffffff80000f59:	0f b6 44 24 0f       	movzbl 0xf(%rsp),%eax
+ffffffff80000f5e:	e9 78 ff ff ff       	jmp    ffffffff80000edb <irq_keyboard_handler+0x8b>
+ffffffff80000f63:	0f 1f 44 00 00       	nopl   0x0(%rax,%rax,1)
+ffffffff80000f68:	c6 05 fa 88 01 00 01 	movb   $0x1,0x188fa(%rip)        # ffffffff80019869 <ctrl_pressed>
+ffffffff80000f6f:	e9 67 ff ff ff       	jmp    ffffffff80000edb <irq_keyboard_handler+0x8b>
+ffffffff80000f74:	0f b6 8a e0 27 00 80 	movzbl -0x7fffd820(%rdx),%ecx
+ffffffff80000f7b:	eb c5                	jmp    ffffffff80000f42 <irq_keyboard_handler+0xf2>
+ffffffff80000f7d:	83 fe 48             	cmp    $0x48,%esi
+ffffffff80000f80:	74 65                	je     ffffffff80000fe7 <irq_keyboard_handler+0x197>
+ffffffff80000f82:	83 fe 4b             	cmp    $0x4b,%esi
+ffffffff80000f85:	74 7a                	je     ffffffff80001001 <irq_keyboard_handler+0x1b1>
+ffffffff80000f87:	83 fe 4d             	cmp    $0x4d,%esi
+ffffffff80000f8a:	0f 84 8b 00 00 00    	je     ffffffff8000101b <irq_keyboard_handler+0x1cb>
+ffffffff80000f90:	83 fe 50             	cmp    $0x50,%esi
+ffffffff80000f93:	0f 85 42 ff ff ff    	jne    ffffffff80000edb <irq_keyboard_handler+0x8b>
+ffffffff80000f99:	48 c7 c7 39 28 00 80 	mov    $0xffffffff80002839,%rdi
+ffffffff80000fa0:	88 44 24 0f          	mov    %al,0xf(%rsp)
+ffffffff80000fa4:	e8 f7 f0 ff ff       	call   ffffffff800000a0 <print>
+ffffffff80000fa9:	0f b6 44 24 0f       	movzbl 0xf(%rsp),%eax
+ffffffff80000fae:	e9 28 ff ff ff       	jmp    ffffffff80000edb <irq_keyboard_handler+0x8b>
+ffffffff80000fb3:	48 c7 c7 1b 28 00 80 	mov    $0xffffffff8000281b,%rdi
+ffffffff80000fba:	88 44 24 0f          	mov    %al,0xf(%rsp)
+ffffffff80000fbe:	e8 dd f0 ff ff       	call   ffffffff800000a0 <print>
+ffffffff80000fc3:	0f b6 44 24 0f       	movzbl 0xf(%rsp),%eax
+ffffffff80000fc8:	e9 0e ff ff ff       	jmp    ffffffff80000edb <irq_keyboard_handler+0x8b>
+ffffffff80000fcd:	48 c7 c7 1f 28 00 80 	mov    $0xffffffff8000281f,%rdi
+ffffffff80000fd4:	88 44 24 0f          	mov    %al,0xf(%rsp)
+ffffffff80000fd8:	e8 c3 f0 ff ff       	call   ffffffff800000a0 <print>
+ffffffff80000fdd:	0f b6 44 24 0f       	movzbl 0xf(%rsp),%eax
+ffffffff80000fe2:	e9 f4 fe ff ff       	jmp    ffffffff80000edb <irq_keyboard_handler+0x8b>
+ffffffff80000fe7:	48 c7 c7 2a 28 00 80 	mov    $0xffffffff8000282a,%rdi
+ffffffff80000fee:	88 44 24 0f          	mov    %al,0xf(%rsp)
+ffffffff80000ff2:	e8 a9 f0 ff ff       	call   ffffffff800000a0 <print>
+ffffffff80000ff7:	0f b6 44 24 0f       	movzbl 0xf(%rsp),%eax
+ffffffff80000ffc:	e9 da fe ff ff       	jmp    ffffffff80000edb <irq_keyboard_handler+0x8b>
+ffffffff80001001:	48 c7 c7 2f 28 00 80 	mov    $0xffffffff8000282f,%rdi
+ffffffff80001008:	88 44 24 0f          	mov    %al,0xf(%rsp)
+ffffffff8000100c:	e8 8f f0 ff ff       	call   ffffffff800000a0 <print>
+ffffffff80001011:	0f b6 44 24 0f       	movzbl 0xf(%rsp),%eax
+ffffffff80001016:	e9 c0 fe ff ff       	jmp    ffffffff80000edb <irq_keyboard_handler+0x8b>
+ffffffff8000101b:	48 c7 c7 34 28 00 80 	mov    $0xffffffff80002834,%rdi
+ffffffff80001022:	88 44 24 0f          	mov    %al,0xf(%rsp)
+ffffffff80001026:	e8 75 f0 ff ff       	call   ffffffff800000a0 <print>
+ffffffff8000102b:	0f b6 44 24 0f       	movzbl 0xf(%rsp),%eax
+ffffffff80001030:	e9 a6 fe ff ff       	jmp    ffffffff80000edb <irq_keyboard_handler+0x8b>
+ffffffff80001035:	66 66 2e 0f 1f 84 00 	data16 cs nopw 0x0(%rax,%rax,1)
+ffffffff8000103c:	00 00 00 00 
 
-ffffffff80001160 <send_end_of_transmission>:
-ffffffff80001160:	f3 0f 1e fa          	endbr64 
-ffffffff80001164:	31 f6                	xor    %esi,%esi
-ffffffff80001166:	bf 80 00 00 00       	mov    $0x80,%edi
-ffffffff8000116b:	e9 a0 fd ff ff       	jmp    ffffffff80000f10 <send_keyboard_command>
+ffffffff80001040 <send_end_of_transmission>:
+ffffffff80001040:	f3 0f 1e fa          	endbr64 
+ffffffff80001044:	31 f6                	xor    %esi,%esi
+ffffffff80001046:	bf 80 00 00 00       	mov    $0x80,%edi
+ffffffff8000104b:	e9 a0 fd ff ff       	jmp    ffffffff80000df0 <send_keyboard_command>
 
-ffffffff80001170 <is_letter>:
-ffffffff80001170:	f3 0f 1e fa          	endbr64 
-ffffffff80001174:	83 ef 61             	sub    $0x61,%edi
-ffffffff80001177:	40 80 ff 19          	cmp    $0x19,%dil
-ffffffff8000117b:	0f 96 c0             	setbe  %al
-ffffffff8000117e:	c3                   	ret    
-ffffffff8000117f:	90                   	nop
+ffffffff80001050 <is_letter>:
+ffffffff80001050:	f3 0f 1e fa          	endbr64 
+ffffffff80001054:	83 ef 61             	sub    $0x61,%edi
+ffffffff80001057:	40 80 ff 19          	cmp    $0x19,%dil
+ffffffff8000105b:	0f 96 c0             	setbe  %al
+ffffffff8000105e:	c3                   	ret    
+ffffffff8000105f:	90                   	nop
 
-ffffffff80001180 <pic_mask_irq>:
-ffffffff80001180:	f3 0f 1e fa          	endbr64 
-ffffffff80001184:	89 f9                	mov    %edi,%ecx
-ffffffff80001186:	ba 21 00 00 00       	mov    $0x21,%edx
-ffffffff8000118b:	40 80 ff 07          	cmp    $0x7,%dil
-ffffffff8000118f:	76 08                	jbe    ffffffff80001199 <pic_mask_irq+0x19>
-ffffffff80001191:	8d 4f f8             	lea    -0x8(%rdi),%ecx
-ffffffff80001194:	ba a1 00 00 00       	mov    $0xa1,%edx
-ffffffff80001199:	ec                   	in     (%dx),%al
-ffffffff8000119a:	be 01 00 00 00       	mov    $0x1,%esi
-ffffffff8000119f:	d3 e6                	shl    %cl,%esi
-ffffffff800011a1:	09 f0                	or     %esi,%eax
-ffffffff800011a3:	ee                   	out    %al,(%dx)
-ffffffff800011a4:	c3                   	ret    
-ffffffff800011a5:	66 66 2e 0f 1f 84 00 	data16 cs nopw 0x0(%rax,%rax,1)
-ffffffff800011ac:	00 00 00 00 
+ffffffff80001060 <pic_mask_irq>:
+ffffffff80001060:	f3 0f 1e fa          	endbr64 
+ffffffff80001064:	89 f9                	mov    %edi,%ecx
+ffffffff80001066:	ba 21 00 00 00       	mov    $0x21,%edx
+ffffffff8000106b:	40 80 ff 07          	cmp    $0x7,%dil
+ffffffff8000106f:	76 08                	jbe    ffffffff80001079 <pic_mask_irq+0x19>
+ffffffff80001071:	8d 4f f8             	lea    -0x8(%rdi),%ecx
+ffffffff80001074:	ba a1 00 00 00       	mov    $0xa1,%edx
+ffffffff80001079:	ec                   	in     (%dx),%al
+ffffffff8000107a:	be 01 00 00 00       	mov    $0x1,%esi
+ffffffff8000107f:	d3 e6                	shl    %cl,%esi
+ffffffff80001081:	09 f0                	or     %esi,%eax
+ffffffff80001083:	ee                   	out    %al,(%dx)
+ffffffff80001084:	c3                   	ret    
+ffffffff80001085:	66 66 2e 0f 1f 84 00 	data16 cs nopw 0x0(%rax,%rax,1)
+ffffffff8000108c:	00 00 00 00 
 
-ffffffff800011b0 <pic_unmask_irq>:
-ffffffff800011b0:	f3 0f 1e fa          	endbr64 
-ffffffff800011b4:	89 f9                	mov    %edi,%ecx
-ffffffff800011b6:	ba 21 00 00 00       	mov    $0x21,%edx
-ffffffff800011bb:	40 80 ff 07          	cmp    $0x7,%dil
-ffffffff800011bf:	76 08                	jbe    ffffffff800011c9 <pic_unmask_irq+0x19>
-ffffffff800011c1:	8d 4f f8             	lea    -0x8(%rdi),%ecx
-ffffffff800011c4:	ba a1 00 00 00       	mov    $0xa1,%edx
-ffffffff800011c9:	ec                   	in     (%dx),%al
-ffffffff800011ca:	0f b3 c8             	btr    %ecx,%eax
-ffffffff800011cd:	ee                   	out    %al,(%dx)
-ffffffff800011ce:	c3                   	ret    
-ffffffff800011cf:	90                   	nop
+ffffffff80001090 <pic_unmask_irq>:
+ffffffff80001090:	f3 0f 1e fa          	endbr64 
+ffffffff80001094:	89 f9                	mov    %edi,%ecx
+ffffffff80001096:	ba 21 00 00 00       	mov    $0x21,%edx
+ffffffff8000109b:	40 80 ff 07          	cmp    $0x7,%dil
+ffffffff8000109f:	76 08                	jbe    ffffffff800010a9 <pic_unmask_irq+0x19>
+ffffffff800010a1:	8d 4f f8             	lea    -0x8(%rdi),%ecx
+ffffffff800010a4:	ba a1 00 00 00       	mov    $0xa1,%edx
+ffffffff800010a9:	ec                   	in     (%dx),%al
+ffffffff800010aa:	0f b3 c8             	btr    %ecx,%eax
+ffffffff800010ad:	ee                   	out    %al,(%dx)
+ffffffff800010ae:	c3                   	ret    
+ffffffff800010af:	90                   	nop
 
-ffffffff800011d0 <pic_remap_offsets>:
-ffffffff800011d0:	f3 0f 1e fa          	endbr64 
-ffffffff800011d4:	e4 21                	in     $0x21,%al
-ffffffff800011d6:	89 c1                	mov    %eax,%ecx
-ffffffff800011d8:	e4 a1                	in     $0xa1,%al
-ffffffff800011da:	89 c2                	mov    %eax,%edx
-ffffffff800011dc:	b8 11 00 00 00       	mov    $0x11,%eax
-ffffffff800011e1:	e6 20                	out    %al,$0x20
-ffffffff800011e3:	e6 a0                	out    %al,$0xa0
-ffffffff800011e5:	89 f8                	mov    %edi,%eax
-ffffffff800011e7:	e6 21                	out    %al,$0x21
-ffffffff800011e9:	8d 47 08             	lea    0x8(%rdi),%eax
-ffffffff800011ec:	e6 a1                	out    %al,$0xa1
-ffffffff800011ee:	b8 04 00 00 00       	mov    $0x4,%eax
-ffffffff800011f3:	e6 21                	out    %al,$0x21
-ffffffff800011f5:	b8 02 00 00 00       	mov    $0x2,%eax
-ffffffff800011fa:	e6 a1                	out    %al,$0xa1
-ffffffff800011fc:	b8 01 00 00 00       	mov    $0x1,%eax
-ffffffff80001201:	e6 21                	out    %al,$0x21
-ffffffff80001203:	e6 a1                	out    %al,$0xa1
-ffffffff80001205:	89 c8                	mov    %ecx,%eax
-ffffffff80001207:	e6 21                	out    %al,$0x21
-ffffffff80001209:	89 d0                	mov    %edx,%eax
-ffffffff8000120b:	e6 a1                	out    %al,$0xa1
-ffffffff8000120d:	c3                   	ret    
-ffffffff8000120e:	66 90                	xchg   %ax,%ax
+ffffffff800010b0 <pic_remap_offsets>:
+ffffffff800010b0:	f3 0f 1e fa          	endbr64 
+ffffffff800010b4:	e4 21                	in     $0x21,%al
+ffffffff800010b6:	89 c1                	mov    %eax,%ecx
+ffffffff800010b8:	e4 a1                	in     $0xa1,%al
+ffffffff800010ba:	89 c2                	mov    %eax,%edx
+ffffffff800010bc:	b8 11 00 00 00       	mov    $0x11,%eax
+ffffffff800010c1:	e6 20                	out    %al,$0x20
+ffffffff800010c3:	e6 a0                	out    %al,$0xa0
+ffffffff800010c5:	89 f8                	mov    %edi,%eax
+ffffffff800010c7:	e6 21                	out    %al,$0x21
+ffffffff800010c9:	8d 47 08             	lea    0x8(%rdi),%eax
+ffffffff800010cc:	e6 a1                	out    %al,$0xa1
+ffffffff800010ce:	b8 04 00 00 00       	mov    $0x4,%eax
+ffffffff800010d3:	e6 21                	out    %al,$0x21
+ffffffff800010d5:	b8 02 00 00 00       	mov    $0x2,%eax
+ffffffff800010da:	e6 a1                	out    %al,$0xa1
+ffffffff800010dc:	b8 01 00 00 00       	mov    $0x1,%eax
+ffffffff800010e1:	e6 21                	out    %al,$0x21
+ffffffff800010e3:	e6 a1                	out    %al,$0xa1
+ffffffff800010e5:	89 c8                	mov    %ecx,%eax
+ffffffff800010e7:	e6 21                	out    %al,$0x21
+ffffffff800010e9:	89 d0                	mov    %edx,%eax
+ffffffff800010eb:	e6 a1                	out    %al,$0xa1
+ffffffff800010ed:	c3                   	ret    
+ffffffff800010ee:	66 90                	xchg   %ax,%ax
 
-ffffffff80001210 <pic_send_eoi>:
-ffffffff80001210:	f3 0f 1e fa          	endbr64 
-ffffffff80001214:	40 80 ff 07          	cmp    $0x7,%dil
-ffffffff80001218:	76 07                	jbe    ffffffff80001221 <pic_send_eoi+0x11>
-ffffffff8000121a:	b8 20 00 00 00       	mov    $0x20,%eax
-ffffffff8000121f:	e6 a0                	out    %al,$0xa0
-ffffffff80001221:	b8 20 00 00 00       	mov    $0x20,%eax
-ffffffff80001226:	e6 20                	out    %al,$0x20
-ffffffff80001228:	c3                   	ret    
-ffffffff80001229:	0f 1f 80 00 00 00 00 	nopl   0x0(%rax)
+ffffffff800010f0 <pic_send_eoi>:
+ffffffff800010f0:	f3 0f 1e fa          	endbr64 
+ffffffff800010f4:	40 80 ff 07          	cmp    $0x7,%dil
+ffffffff800010f8:	76 07                	jbe    ffffffff80001101 <pic_send_eoi+0x11>
+ffffffff800010fa:	b8 20 00 00 00       	mov    $0x20,%eax
+ffffffff800010ff:	e6 a0                	out    %al,$0xa0
+ffffffff80001101:	b8 20 00 00 00       	mov    $0x20,%eax
+ffffffff80001106:	e6 20                	out    %al,$0x20
+ffffffff80001108:	c3                   	ret    
+ffffffff80001109:	0f 1f 80 00 00 00 00 	nopl   0x0(%rax)
 
-ffffffff80001230 <pic_disable>:
+ffffffff80001110 <pic_disable>:
+ffffffff80001110:	f3 0f 1e fa          	endbr64 
+ffffffff80001114:	e4 21                	in     $0x21,%al
+ffffffff80001116:	89 c1                	mov    %eax,%ecx
+ffffffff80001118:	e4 a1                	in     $0xa1,%al
+ffffffff8000111a:	89 c2                	mov    %eax,%edx
+ffffffff8000111c:	b8 11 00 00 00       	mov    $0x11,%eax
+ffffffff80001121:	e6 20                	out    %al,$0x20
+ffffffff80001123:	e6 a0                	out    %al,$0xa0
+ffffffff80001125:	b8 20 00 00 00       	mov    $0x20,%eax
+ffffffff8000112a:	e6 21                	out    %al,$0x21
+ffffffff8000112c:	b8 28 00 00 00       	mov    $0x28,%eax
+ffffffff80001131:	e6 a1                	out    %al,$0xa1
+ffffffff80001133:	b8 04 00 00 00       	mov    $0x4,%eax
+ffffffff80001138:	e6 21                	out    %al,$0x21
+ffffffff8000113a:	b8 02 00 00 00       	mov    $0x2,%eax
+ffffffff8000113f:	e6 a1                	out    %al,$0xa1
+ffffffff80001141:	b8 01 00 00 00       	mov    $0x1,%eax
+ffffffff80001146:	e6 21                	out    %al,$0x21
+ffffffff80001148:	e6 a1                	out    %al,$0xa1
+ffffffff8000114a:	89 c8                	mov    %ecx,%eax
+ffffffff8000114c:	e6 21                	out    %al,$0x21
+ffffffff8000114e:	89 d0                	mov    %edx,%eax
+ffffffff80001150:	e6 a1                	out    %al,$0xa1
+ffffffff80001152:	31 f6                	xor    %esi,%esi
+ffffffff80001154:	ba 21 00 00 00       	mov    $0x21,%edx
+ffffffff80001159:	31 c9                	xor    %ecx,%ecx
+ffffffff8000115b:	bf 01 00 00 00       	mov    $0x1,%edi
+ffffffff80001160:	ec                   	in     (%dx),%al
+ffffffff80001161:	41 89 f8             	mov    %edi,%r8d
+ffffffff80001164:	41 d3 e0             	shl    %cl,%r8d
+ffffffff80001167:	44 09 c0             	or     %r8d,%eax
+ffffffff8000116a:	ee                   	out    %al,(%dx)
+ffffffff8000116b:	8d 46 01             	lea    0x1(%rsi),%eax
+ffffffff8000116e:	40 80 fe 0f          	cmp    $0xf,%sil
+ffffffff80001172:	74 24                	je     ffffffff80001198 <pic_disable+0x88>
+ffffffff80001174:	3c 07                	cmp    $0x7,%al
+ffffffff80001176:	76 10                	jbe    ffffffff80001188 <pic_disable+0x78>
+ffffffff80001178:	8d 4e f9             	lea    -0x7(%rsi),%ecx
+ffffffff8000117b:	ba a1 00 00 00       	mov    $0xa1,%edx
+ffffffff80001180:	89 c6                	mov    %eax,%esi
+ffffffff80001182:	eb dc                	jmp    ffffffff80001160 <pic_disable+0x50>
+ffffffff80001184:	0f 1f 40 00          	nopl   0x0(%rax)
+ffffffff80001188:	89 c1                	mov    %eax,%ecx
+ffffffff8000118a:	ba 21 00 00 00       	mov    $0x21,%edx
+ffffffff8000118f:	89 c6                	mov    %eax,%esi
+ffffffff80001191:	eb cd                	jmp    ffffffff80001160 <pic_disable+0x50>
+ffffffff80001193:	0f 1f 44 00 00       	nopl   0x0(%rax,%rax,1)
+ffffffff80001198:	c3                   	ret    
+ffffffff80001199:	0f 1f 80 00 00 00 00 	nopl   0x0(%rax)
+
+ffffffff800011a0 <strcmp>:
+ffffffff800011a0:	f3 0f 1e fa          	endbr64 
+ffffffff800011a4:	0f b6 17             	movzbl (%rdi),%edx
+ffffffff800011a7:	84 d2                	test   %dl,%dl
+ffffffff800011a9:	74 25                	je     ffffffff800011d0 <strcmp+0x30>
+ffffffff800011ab:	31 c0                	xor    %eax,%eax
+ffffffff800011ad:	eb 0d                	jmp    ffffffff800011bc <strcmp+0x1c>
+ffffffff800011af:	90                   	nop
+ffffffff800011b0:	48 83 c0 01          	add    $0x1,%rax
+ffffffff800011b4:	0f b6 14 07          	movzbl (%rdi,%rax,1),%edx
+ffffffff800011b8:	84 d2                	test   %dl,%dl
+ffffffff800011ba:	74 14                	je     ffffffff800011d0 <strcmp+0x30>
+ffffffff800011bc:	0f be 0c 06          	movsbl (%rsi,%rax,1),%ecx
+ffffffff800011c0:	38 d1                	cmp    %dl,%cl
+ffffffff800011c2:	74 ec                	je     ffffffff800011b0 <strcmp+0x10>
+ffffffff800011c4:	0f be c2             	movsbl %dl,%eax
+ffffffff800011c7:	29 c8                	sub    %ecx,%eax
+ffffffff800011c9:	c3                   	ret    
+ffffffff800011ca:	66 0f 1f 44 00 00    	nopw   0x0(%rax,%rax,1)
+ffffffff800011d0:	31 c0                	xor    %eax,%eax
+ffffffff800011d2:	c3                   	ret    
+ffffffff800011d3:	66 2e 0f 1f 84 00 00 	cs nopw 0x0(%rax,%rax,1)
+ffffffff800011da:	00 00 00 
+ffffffff800011dd:	0f 1f 00             	nopl   (%rax)
+
+ffffffff800011e0 <strncmp>:
+ffffffff800011e0:	f3 0f 1e fa          	endbr64 
+ffffffff800011e4:	0f b6 0f             	movzbl (%rdi),%ecx
+ffffffff800011e7:	48 85 d2             	test   %rdx,%rdx
+ffffffff800011ea:	74 34                	je     ffffffff80001220 <strncmp+0x40>
+ffffffff800011ec:	84 c9                	test   %cl,%cl
+ffffffff800011ee:	74 30                	je     ffffffff80001220 <strncmp+0x40>
+ffffffff800011f0:	31 c0                	xor    %eax,%eax
+ffffffff800011f2:	eb 15                	jmp    ffffffff80001209 <strncmp+0x29>
+ffffffff800011f4:	0f 1f 40 00          	nopl   0x0(%rax)
+ffffffff800011f8:	48 83 c0 01          	add    $0x1,%rax
+ffffffff800011fc:	0f b6 0c 07          	movzbl (%rdi,%rax,1),%ecx
+ffffffff80001200:	48 39 c2             	cmp    %rax,%rdx
+ffffffff80001203:	76 1b                	jbe    ffffffff80001220 <strncmp+0x40>
+ffffffff80001205:	84 c9                	test   %cl,%cl
+ffffffff80001207:	74 17                	je     ffffffff80001220 <strncmp+0x40>
+ffffffff80001209:	44 0f be 04 06       	movsbl (%rsi,%rax,1),%r8d
+ffffffff8000120e:	41 38 c8             	cmp    %cl,%r8b
+ffffffff80001211:	74 e5                	je     ffffffff800011f8 <strncmp+0x18>
+ffffffff80001213:	0f be c1             	movsbl %cl,%eax
+ffffffff80001216:	44 29 c0             	sub    %r8d,%eax
+ffffffff80001219:	c3                   	ret    
+ffffffff8000121a:	66 0f 1f 44 00 00    	nopw   0x0(%rax,%rax,1)
+ffffffff80001220:	31 c0                	xor    %eax,%eax
+ffffffff80001222:	c3                   	ret    
+ffffffff80001223:	66 2e 0f 1f 84 00 00 	cs nopw 0x0(%rax,%rax,1)
+ffffffff8000122a:	00 00 00 
+ffffffff8000122d:	0f 1f 00             	nopl   (%rax)
+
+ffffffff80001230 <memcmp>:
 ffffffff80001230:	f3 0f 1e fa          	endbr64 
-ffffffff80001234:	e4 21                	in     $0x21,%al
-ffffffff80001236:	89 c1                	mov    %eax,%ecx
-ffffffff80001238:	e4 a1                	in     $0xa1,%al
-ffffffff8000123a:	89 c2                	mov    %eax,%edx
-ffffffff8000123c:	b8 11 00 00 00       	mov    $0x11,%eax
-ffffffff80001241:	e6 20                	out    %al,$0x20
-ffffffff80001243:	e6 a0                	out    %al,$0xa0
-ffffffff80001245:	b8 20 00 00 00       	mov    $0x20,%eax
-ffffffff8000124a:	e6 21                	out    %al,$0x21
-ffffffff8000124c:	b8 28 00 00 00       	mov    $0x28,%eax
-ffffffff80001251:	e6 a1                	out    %al,$0xa1
-ffffffff80001253:	b8 04 00 00 00       	mov    $0x4,%eax
-ffffffff80001258:	e6 21                	out    %al,$0x21
-ffffffff8000125a:	b8 02 00 00 00       	mov    $0x2,%eax
-ffffffff8000125f:	e6 a1                	out    %al,$0xa1
-ffffffff80001261:	b8 01 00 00 00       	mov    $0x1,%eax
-ffffffff80001266:	e6 21                	out    %al,$0x21
-ffffffff80001268:	e6 a1                	out    %al,$0xa1
-ffffffff8000126a:	89 c8                	mov    %ecx,%eax
-ffffffff8000126c:	e6 21                	out    %al,$0x21
-ffffffff8000126e:	89 d0                	mov    %edx,%eax
-ffffffff80001270:	e6 a1                	out    %al,$0xa1
-ffffffff80001272:	31 f6                	xor    %esi,%esi
-ffffffff80001274:	ba 21 00 00 00       	mov    $0x21,%edx
-ffffffff80001279:	31 c9                	xor    %ecx,%ecx
-ffffffff8000127b:	bf 01 00 00 00       	mov    $0x1,%edi
-ffffffff80001280:	ec                   	in     (%dx),%al
-ffffffff80001281:	41 89 f8             	mov    %edi,%r8d
-ffffffff80001284:	41 d3 e0             	shl    %cl,%r8d
-ffffffff80001287:	44 09 c0             	or     %r8d,%eax
-ffffffff8000128a:	ee                   	out    %al,(%dx)
-ffffffff8000128b:	8d 46 01             	lea    0x1(%rsi),%eax
-ffffffff8000128e:	40 80 fe 0f          	cmp    $0xf,%sil
-ffffffff80001292:	74 24                	je     ffffffff800012b8 <pic_disable+0x88>
-ffffffff80001294:	3c 07                	cmp    $0x7,%al
-ffffffff80001296:	76 10                	jbe    ffffffff800012a8 <pic_disable+0x78>
-ffffffff80001298:	8d 4e f9             	lea    -0x7(%rsi),%ecx
-ffffffff8000129b:	ba a1 00 00 00       	mov    $0xa1,%edx
-ffffffff800012a0:	89 c6                	mov    %eax,%esi
-ffffffff800012a2:	eb dc                	jmp    ffffffff80001280 <pic_disable+0x50>
-ffffffff800012a4:	0f 1f 40 00          	nopl   0x0(%rax)
-ffffffff800012a8:	89 c1                	mov    %eax,%ecx
-ffffffff800012aa:	ba 21 00 00 00       	mov    $0x21,%edx
-ffffffff800012af:	89 c6                	mov    %eax,%esi
-ffffffff800012b1:	eb cd                	jmp    ffffffff80001280 <pic_disable+0x50>
-ffffffff800012b3:	0f 1f 44 00 00       	nopl   0x0(%rax,%rax,1)
-ffffffff800012b8:	c3                   	ret    
-ffffffff800012b9:	0f 1f 80 00 00 00 00 	nopl   0x0(%rax)
+ffffffff80001234:	48 85 d2             	test   %rdx,%rdx
+ffffffff80001237:	74 27                	je     ffffffff80001260 <memcmp+0x30>
+ffffffff80001239:	31 c0                	xor    %eax,%eax
+ffffffff8000123b:	eb 0c                	jmp    ffffffff80001249 <memcmp+0x19>
+ffffffff8000123d:	0f 1f 00             	nopl   (%rax)
+ffffffff80001240:	48 83 c0 01          	add    $0x1,%rax
+ffffffff80001244:	48 39 c2             	cmp    %rax,%rdx
+ffffffff80001247:	74 17                	je     ffffffff80001260 <memcmp+0x30>
+ffffffff80001249:	0f b6 0c 07          	movzbl (%rdi,%rax,1),%ecx
+ffffffff8000124d:	44 0f be 04 06       	movsbl (%rsi,%rax,1),%r8d
+ffffffff80001252:	44 38 c1             	cmp    %r8b,%cl
+ffffffff80001255:	74 e9                	je     ffffffff80001240 <memcmp+0x10>
+ffffffff80001257:	0f be c1             	movsbl %cl,%eax
+ffffffff8000125a:	44 29 c0             	sub    %r8d,%eax
+ffffffff8000125d:	c3                   	ret    
+ffffffff8000125e:	66 90                	xchg   %ax,%ax
+ffffffff80001260:	31 c0                	xor    %eax,%eax
+ffffffff80001262:	c3                   	ret    
+ffffffff80001263:	66 2e 0f 1f 84 00 00 	cs nopw 0x0(%rax,%rax,1)
+ffffffff8000126a:	00 00 00 
+ffffffff8000126d:	0f 1f 00             	nopl   (%rax)
 
-ffffffff800012c0 <strcmp>:
-ffffffff800012c0:	f3 0f 1e fa          	endbr64 
-ffffffff800012c4:	0f b6 17             	movzbl (%rdi),%edx
-ffffffff800012c7:	84 d2                	test   %dl,%dl
-ffffffff800012c9:	74 25                	je     ffffffff800012f0 <strcmp+0x30>
-ffffffff800012cb:	31 c0                	xor    %eax,%eax
-ffffffff800012cd:	eb 0d                	jmp    ffffffff800012dc <strcmp+0x1c>
-ffffffff800012cf:	90                   	nop
-ffffffff800012d0:	48 83 c0 01          	add    $0x1,%rax
-ffffffff800012d4:	0f b6 14 07          	movzbl (%rdi,%rax,1),%edx
-ffffffff800012d8:	84 d2                	test   %dl,%dl
-ffffffff800012da:	74 14                	je     ffffffff800012f0 <strcmp+0x30>
-ffffffff800012dc:	0f be 0c 06          	movsbl (%rsi,%rax,1),%ecx
-ffffffff800012e0:	38 d1                	cmp    %dl,%cl
-ffffffff800012e2:	74 ec                	je     ffffffff800012d0 <strcmp+0x10>
-ffffffff800012e4:	0f be c2             	movsbl %dl,%eax
-ffffffff800012e7:	29 c8                	sub    %ecx,%eax
-ffffffff800012e9:	c3                   	ret    
-ffffffff800012ea:	66 0f 1f 44 00 00    	nopw   0x0(%rax,%rax,1)
-ffffffff800012f0:	31 c0                	xor    %eax,%eax
-ffffffff800012f2:	c3                   	ret    
-ffffffff800012f3:	66 2e 0f 1f 84 00 00 	cs nopw 0x0(%rax,%rax,1)
-ffffffff800012fa:	00 00 00 
-ffffffff800012fd:	0f 1f 00             	nopl   (%rax)
+ffffffff80001270 <strlen>:
+ffffffff80001270:	f3 0f 1e fa          	endbr64 
+ffffffff80001274:	31 c0                	xor    %eax,%eax
+ffffffff80001276:	80 3f 00             	cmpb   $0x0,(%rdi)
+ffffffff80001279:	74 15                	je     ffffffff80001290 <strlen+0x20>
+ffffffff8000127b:	0f 1f 44 00 00       	nopl   0x0(%rax,%rax,1)
+ffffffff80001280:	48 83 c0 01          	add    $0x1,%rax
+ffffffff80001284:	80 3c 07 00          	cmpb   $0x0,(%rdi,%rax,1)
+ffffffff80001288:	75 f6                	jne    ffffffff80001280 <strlen+0x10>
+ffffffff8000128a:	c3                   	ret    
+ffffffff8000128b:	0f 1f 44 00 00       	nopl   0x0(%rax,%rax,1)
+ffffffff80001290:	c3                   	ret    
+ffffffff80001291:	66 2e 0f 1f 84 00 00 	cs nopw 0x0(%rax,%rax,1)
+ffffffff80001298:	00 00 00 
+ffffffff8000129b:	0f 1f 44 00 00       	nopl   0x0(%rax,%rax,1)
 
-ffffffff80001300 <strncmp>:
-ffffffff80001300:	f3 0f 1e fa          	endbr64 
-ffffffff80001304:	0f b6 0f             	movzbl (%rdi),%ecx
-ffffffff80001307:	48 85 d2             	test   %rdx,%rdx
-ffffffff8000130a:	74 34                	je     ffffffff80001340 <strncmp+0x40>
-ffffffff8000130c:	84 c9                	test   %cl,%cl
-ffffffff8000130e:	74 30                	je     ffffffff80001340 <strncmp+0x40>
-ffffffff80001310:	31 c0                	xor    %eax,%eax
-ffffffff80001312:	eb 15                	jmp    ffffffff80001329 <strncmp+0x29>
-ffffffff80001314:	0f 1f 40 00          	nopl   0x0(%rax)
-ffffffff80001318:	48 83 c0 01          	add    $0x1,%rax
-ffffffff8000131c:	0f b6 0c 07          	movzbl (%rdi,%rax,1),%ecx
-ffffffff80001320:	48 39 c2             	cmp    %rax,%rdx
-ffffffff80001323:	76 1b                	jbe    ffffffff80001340 <strncmp+0x40>
-ffffffff80001325:	84 c9                	test   %cl,%cl
-ffffffff80001327:	74 17                	je     ffffffff80001340 <strncmp+0x40>
-ffffffff80001329:	44 0f be 04 06       	movsbl (%rsi,%rax,1),%r8d
-ffffffff8000132e:	41 38 c8             	cmp    %cl,%r8b
-ffffffff80001331:	74 e5                	je     ffffffff80001318 <strncmp+0x18>
-ffffffff80001333:	0f be c1             	movsbl %cl,%eax
-ffffffff80001336:	44 29 c0             	sub    %r8d,%eax
-ffffffff80001339:	c3                   	ret    
-ffffffff8000133a:	66 0f 1f 44 00 00    	nopw   0x0(%rax,%rax,1)
-ffffffff80001340:	31 c0                	xor    %eax,%eax
-ffffffff80001342:	c3                   	ret    
-ffffffff80001343:	66 2e 0f 1f 84 00 00 	cs nopw 0x0(%rax,%rax,1)
-ffffffff8000134a:	00 00 00 
-ffffffff8000134d:	0f 1f 00             	nopl   (%rax)
+ffffffff800012a0 <setGDT>:
+ffffffff800012a0:	fa                   	cli    
+ffffffff800012a1:	48 89 f8             	mov    %rdi,%rax
+ffffffff800012a4:	0f 01 10             	lgdt   (%rax)
+ffffffff800012a7:	c3                   	ret    
 
-ffffffff80001350 <memcmp>:
-ffffffff80001350:	f3 0f 1e fa          	endbr64 
-ffffffff80001354:	48 85 d2             	test   %rdx,%rdx
-ffffffff80001357:	74 27                	je     ffffffff80001380 <memcmp+0x30>
-ffffffff80001359:	31 c0                	xor    %eax,%eax
-ffffffff8000135b:	eb 0c                	jmp    ffffffff80001369 <memcmp+0x19>
-ffffffff8000135d:	0f 1f 00             	nopl   (%rax)
-ffffffff80001360:	48 83 c0 01          	add    $0x1,%rax
-ffffffff80001364:	48 39 c2             	cmp    %rax,%rdx
-ffffffff80001367:	74 17                	je     ffffffff80001380 <memcmp+0x30>
-ffffffff80001369:	0f b6 0c 07          	movzbl (%rdi,%rax,1),%ecx
-ffffffff8000136d:	44 0f be 04 06       	movsbl (%rsi,%rax,1),%r8d
-ffffffff80001372:	44 38 c1             	cmp    %r8b,%cl
-ffffffff80001375:	74 e9                	je     ffffffff80001360 <memcmp+0x10>
-ffffffff80001377:	0f be c1             	movsbl %cl,%eax
-ffffffff8000137a:	44 29 c0             	sub    %r8d,%eax
-ffffffff8000137d:	c3                   	ret    
-ffffffff8000137e:	66 90                	xchg   %ax,%ax
-ffffffff80001380:	31 c0                	xor    %eax,%eax
-ffffffff80001382:	c3                   	ret    
-ffffffff80001383:	66 2e 0f 1f 84 00 00 	cs nopw 0x0(%rax,%rax,1)
-ffffffff8000138a:	00 00 00 
-ffffffff8000138d:	0f 1f 00             	nopl   (%rax)
+ffffffff800012a8 <reloadSegments>:
+ffffffff800012a8:	6a 28                	push   $0x28
+ffffffff800012aa:	48 8d 05 03 00 00 00 	lea    0x3(%rip),%rax        # ffffffff800012b4 <reloadSegments.reload_CS>
+ffffffff800012b1:	50                   	push   %rax
+ffffffff800012b2:	48 cb                	lretq  
 
-ffffffff80001390 <strlen>:
-ffffffff80001390:	f3 0f 1e fa          	endbr64 
-ffffffff80001394:	31 c0                	xor    %eax,%eax
-ffffffff80001396:	80 3f 00             	cmpb   $0x0,(%rdi)
-ffffffff80001399:	74 15                	je     ffffffff800013b0 <strlen+0x20>
-ffffffff8000139b:	0f 1f 44 00 00       	nopl   0x0(%rax,%rax,1)
-ffffffff800013a0:	48 83 c0 01          	add    $0x1,%rax
-ffffffff800013a4:	80 3c 07 00          	cmpb   $0x0,(%rdi,%rax,1)
-ffffffff800013a8:	75 f6                	jne    ffffffff800013a0 <strlen+0x10>
-ffffffff800013aa:	c3                   	ret    
-ffffffff800013ab:	0f 1f 44 00 00       	nopl   0x0(%rax,%rax,1)
-ffffffff800013b0:	c3                   	ret    
-ffffffff800013b1:	66 2e 0f 1f 84 00 00 	cs nopw 0x0(%rax,%rax,1)
-ffffffff800013b8:	00 00 00 
-ffffffff800013bb:	0f 1f 44 00 00       	nopl   0x0(%rax,%rax,1)
+ffffffff800012b4 <reloadSegments.reload_CS>:
+ffffffff800012b4:	66 b8 30 00          	mov    $0x30,%ax
+ffffffff800012b8:	8e d8                	mov    %eax,%ds
+ffffffff800012ba:	8e c0                	mov    %eax,%es
+ffffffff800012bc:	8e e0                	mov    %eax,%fs
+ffffffff800012be:	8e e8                	mov    %eax,%gs
+ffffffff800012c0:	8e d0                	mov    %eax,%ss
+ffffffff800012c2:	fb                   	sti    
+ffffffff800012c3:	c3                   	ret    
+ffffffff800012c4:	66 2e 0f 1f 84 00 00 	cs nopw 0x0(%rax,%rax,1)
+ffffffff800012cb:	00 00 00 
+ffffffff800012ce:	66 90                	xchg   %ax,%ax
 
-ffffffff800013c0 <setGDT>:
-ffffffff800013c0:	fa                   	cli    
-ffffffff800013c1:	48 89 f8             	mov    %rdi,%rax
-ffffffff800013c4:	0f 01 10             	lgdt   (%rax)
-ffffffff800013c7:	c3                   	ret    
+ffffffff800012d0 <gdt_reload>:
+ffffffff800012d0:	0f 01 17             	lgdt   (%rdi)
+ffffffff800012d3:	6a 28                	push   $0x28
+ffffffff800012d5:	48 8d 05 03 00 00 00 	lea    0x3(%rip),%rax        # ffffffff800012df <gdt_reload.reload_CS>
+ffffffff800012dc:	50                   	push   %rax
+ffffffff800012dd:	48 cb                	lretq  
 
-ffffffff800013c8 <reloadSegments>:
-ffffffff800013c8:	6a 28                	push   $0x28
-ffffffff800013ca:	48 8d 05 03 00 00 00 	lea    0x3(%rip),%rax        # ffffffff800013d4 <reloadSegments.reload_CS>
-ffffffff800013d1:	50                   	push   %rax
-ffffffff800013d2:	48 cb                	lretq  
+ffffffff800012df <gdt_reload.reload_CS>:
+ffffffff800012df:	66 b8 30 00          	mov    $0x30,%ax
+ffffffff800012e3:	8e d8                	mov    %eax,%ds
+ffffffff800012e5:	8e c0                	mov    %eax,%es
+ffffffff800012e7:	8e e0                	mov    %eax,%fs
+ffffffff800012e9:	8e e8                	mov    %eax,%gs
+ffffffff800012eb:	8e d0                	mov    %eax,%ss
+ffffffff800012ed:	c3                   	ret    
+ffffffff800012ee:	66 90                	xchg   %ax,%ax
 
-ffffffff800013d4 <reloadSegments.reload_CS>:
-ffffffff800013d4:	66 b8 30 00          	mov    $0x30,%ax
-ffffffff800013d8:	8e d8                	mov    %eax,%ds
-ffffffff800013da:	8e c0                	mov    %eax,%es
-ffffffff800013dc:	8e e0                	mov    %eax,%fs
-ffffffff800013de:	8e e8                	mov    %eax,%gs
-ffffffff800013e0:	8e d0                	mov    %eax,%ss
-ffffffff800013e2:	fb                   	sti    
-ffffffff800013e3:	c3                   	ret    
-ffffffff800013e4:	66 2e 0f 1f 84 00 00 	cs nopw 0x0(%rax,%rax,1)
-ffffffff800013eb:	00 00 00 
-ffffffff800013ee:	66 90                	xchg   %ax,%ax
+ffffffff800012f0 <isr_common_stub>:
+ffffffff800012f0:	55                   	push   %rbp
+ffffffff800012f1:	48 89 e5             	mov    %rsp,%rbp
+ffffffff800012f4:	50                   	push   %rax
+ffffffff800012f5:	53                   	push   %rbx
+ffffffff800012f6:	51                   	push   %rcx
+ffffffff800012f7:	52                   	push   %rdx
+ffffffff800012f8:	56                   	push   %rsi
+ffffffff800012f9:	57                   	push   %rdi
+ffffffff800012fa:	0f 20 c0             	mov    %cr0,%rax
+ffffffff800012fd:	50                   	push   %rax
+ffffffff800012fe:	0f 20 d0             	mov    %cr2,%rax
+ffffffff80001301:	50                   	push   %rax
+ffffffff80001302:	0f 20 d8             	mov    %cr3,%rax
+ffffffff80001305:	50                   	push   %rax
+ffffffff80001306:	0f 20 e0             	mov    %cr4,%rax
+ffffffff80001309:	50                   	push   %rax
+ffffffff8000130a:	66 8c d8             	mov    %ds,%ax
+ffffffff8000130d:	50                   	push   %rax
+ffffffff8000130e:	6a 00                	push   $0x0
+ffffffff80001310:	66 b8 30 00          	mov    $0x30,%ax
+ffffffff80001314:	8e d8                	mov    %eax,%ds
+ffffffff80001316:	8e c0                	mov    %eax,%es
+ffffffff80001318:	8e d0                	mov    %eax,%ss
+ffffffff8000131a:	48 8d 7c 24 10       	lea    0x10(%rsp),%rdi
+ffffffff8000131f:	e8 6c f8 ff ff       	call   ffffffff80000b90 <isr_handler>
+ffffffff80001324:	58                   	pop    %rax
+ffffffff80001325:	58                   	pop    %rax
+ffffffff80001326:	8e d8                	mov    %eax,%ds
+ffffffff80001328:	8e c0                	mov    %eax,%es
+ffffffff8000132a:	58                   	pop    %rax
+ffffffff8000132b:	0f 22 e0             	mov    %rax,%cr4
+ffffffff8000132e:	58                   	pop    %rax
+ffffffff8000132f:	0f 22 d8             	mov    %rax,%cr3
+ffffffff80001332:	58                   	pop    %rax
+ffffffff80001333:	0f 22 d0             	mov    %rax,%cr2
+ffffffff80001336:	58                   	pop    %rax
+ffffffff80001337:	0f 22 c0             	mov    %rax,%cr0
+ffffffff8000133a:	5f                   	pop    %rdi
+ffffffff8000133b:	5e                   	pop    %rsi
+ffffffff8000133c:	5a                   	pop    %rdx
+ffffffff8000133d:	59                   	pop    %rcx
+ffffffff8000133e:	5b                   	pop    %rbx
+ffffffff8000133f:	58                   	pop    %rax
+ffffffff80001340:	5d                   	pop    %rbp
+ffffffff80001341:	48 83 c4 10          	add    $0x10,%rsp
+ffffffff80001345:	48 cf                	iretq  
 
-ffffffff800013f0 <gdt_reload>:
-ffffffff800013f0:	0f 01 17             	lgdt   (%rdi)
-ffffffff800013f3:	6a 28                	push   $0x28
-ffffffff800013f5:	48 8d 05 03 00 00 00 	lea    0x3(%rip),%rax        # ffffffff800013ff <gdt_reload.reload_CS>
-ffffffff800013fc:	50                   	push   %rax
-ffffffff800013fd:	48 cb                	lretq  
+ffffffff80001347 <irq_common_stub>:
+ffffffff80001347:	55                   	push   %rbp
+ffffffff80001348:	48 89 e5             	mov    %rsp,%rbp
+ffffffff8000134b:	50                   	push   %rax
+ffffffff8000134c:	53                   	push   %rbx
+ffffffff8000134d:	51                   	push   %rcx
+ffffffff8000134e:	52                   	push   %rdx
+ffffffff8000134f:	56                   	push   %rsi
+ffffffff80001350:	57                   	push   %rdi
+ffffffff80001351:	0f 20 c0             	mov    %cr0,%rax
+ffffffff80001354:	50                   	push   %rax
+ffffffff80001355:	0f 20 d0             	mov    %cr2,%rax
+ffffffff80001358:	50                   	push   %rax
+ffffffff80001359:	0f 20 d8             	mov    %cr3,%rax
+ffffffff8000135c:	50                   	push   %rax
+ffffffff8000135d:	0f 20 e0             	mov    %cr4,%rax
+ffffffff80001360:	50                   	push   %rax
+ffffffff80001361:	66 8c d8             	mov    %ds,%ax
+ffffffff80001364:	50                   	push   %rax
+ffffffff80001365:	6a 00                	push   $0x0
+ffffffff80001367:	66 b8 30 00          	mov    $0x30,%ax
+ffffffff8000136b:	8e d8                	mov    %eax,%ds
+ffffffff8000136d:	8e c0                	mov    %eax,%es
+ffffffff8000136f:	8e d0                	mov    %eax,%ss
+ffffffff80001371:	48 8d 7c 24 10       	lea    0x10(%rsp),%rdi
+ffffffff80001376:	e8 d5 f8 ff ff       	call   ffffffff80000c50 <irq_handler>
+ffffffff8000137b:	58                   	pop    %rax
+ffffffff8000137c:	58                   	pop    %rax
+ffffffff8000137d:	8e d8                	mov    %eax,%ds
+ffffffff8000137f:	8e c0                	mov    %eax,%es
+ffffffff80001381:	58                   	pop    %rax
+ffffffff80001382:	0f 22 e0             	mov    %rax,%cr4
+ffffffff80001385:	58                   	pop    %rax
+ffffffff80001386:	0f 22 d8             	mov    %rax,%cr3
+ffffffff80001389:	58                   	pop    %rax
+ffffffff8000138a:	0f 22 d0             	mov    %rax,%cr2
+ffffffff8000138d:	58                   	pop    %rax
+ffffffff8000138e:	0f 22 c0             	mov    %rax,%cr0
+ffffffff80001391:	5f                   	pop    %rdi
+ffffffff80001392:	5e                   	pop    %rsi
+ffffffff80001393:	5a                   	pop    %rdx
+ffffffff80001394:	59                   	pop    %rcx
+ffffffff80001395:	5b                   	pop    %rbx
+ffffffff80001396:	58                   	pop    %rax
+ffffffff80001397:	5d                   	pop    %rbp
+ffffffff80001398:	48 83 c4 10          	add    $0x10,%rsp
+ffffffff8000139c:	48 cf                	iretq  
 
-ffffffff800013ff <gdt_reload.reload_CS>:
-ffffffff800013ff:	66 b8 30 00          	mov    $0x30,%ax
-ffffffff80001403:	8e d8                	mov    %eax,%ds
-ffffffff80001405:	8e c0                	mov    %eax,%es
-ffffffff80001407:	8e e0                	mov    %eax,%fs
-ffffffff80001409:	8e e8                	mov    %eax,%gs
-ffffffff8000140b:	8e d0                	mov    %eax,%ss
-ffffffff8000140d:	c3                   	ret    
-ffffffff8000140e:	66 90                	xchg   %ax,%ax
+ffffffff8000139e <isr0>:
+ffffffff8000139e:	6a 00                	push   $0x0
+ffffffff800013a0:	6a 00                	push   $0x0
+ffffffff800013a2:	e9 49 ff ff ff       	jmp    ffffffff800012f0 <isr_common_stub>
 
-ffffffff80001410 <isr_common_stub>:
-ffffffff80001410:	55                   	push   %rbp
-ffffffff80001411:	48 89 e5             	mov    %rsp,%rbp
-ffffffff80001414:	50                   	push   %rax
-ffffffff80001415:	53                   	push   %rbx
-ffffffff80001416:	51                   	push   %rcx
-ffffffff80001417:	52                   	push   %rdx
-ffffffff80001418:	56                   	push   %rsi
-ffffffff80001419:	57                   	push   %rdi
-ffffffff8000141a:	0f 20 c0             	mov    %cr0,%rax
-ffffffff8000141d:	50                   	push   %rax
-ffffffff8000141e:	0f 20 d0             	mov    %cr2,%rax
-ffffffff80001421:	50                   	push   %rax
-ffffffff80001422:	0f 20 d8             	mov    %cr3,%rax
-ffffffff80001425:	50                   	push   %rax
-ffffffff80001426:	0f 20 e0             	mov    %cr4,%rax
-ffffffff80001429:	50                   	push   %rax
-ffffffff8000142a:	66 8c d8             	mov    %ds,%ax
-ffffffff8000142d:	50                   	push   %rax
-ffffffff8000142e:	6a 00                	push   $0x0
-ffffffff80001430:	66 b8 30 00          	mov    $0x30,%ax
-ffffffff80001434:	8e d8                	mov    %eax,%ds
-ffffffff80001436:	8e c0                	mov    %eax,%es
-ffffffff80001438:	8e d0                	mov    %eax,%ss
-ffffffff8000143a:	48 8d 7c 24 10       	lea    0x10(%rsp),%rdi
-ffffffff8000143f:	e8 4c f7 ff ff       	call   ffffffff80000b90 <isr_handler>
-ffffffff80001444:	58                   	pop    %rax
-ffffffff80001445:	58                   	pop    %rax
-ffffffff80001446:	8e d8                	mov    %eax,%ds
-ffffffff80001448:	8e c0                	mov    %eax,%es
-ffffffff8000144a:	58                   	pop    %rax
-ffffffff8000144b:	0f 22 e0             	mov    %rax,%cr4
-ffffffff8000144e:	58                   	pop    %rax
-ffffffff8000144f:	0f 22 d8             	mov    %rax,%cr3
-ffffffff80001452:	58                   	pop    %rax
-ffffffff80001453:	0f 22 d0             	mov    %rax,%cr2
-ffffffff80001456:	58                   	pop    %rax
-ffffffff80001457:	0f 22 c0             	mov    %rax,%cr0
-ffffffff8000145a:	5f                   	pop    %rdi
-ffffffff8000145b:	5e                   	pop    %rsi
-ffffffff8000145c:	5a                   	pop    %rdx
-ffffffff8000145d:	59                   	pop    %rcx
-ffffffff8000145e:	5b                   	pop    %rbx
-ffffffff8000145f:	58                   	pop    %rax
-ffffffff80001460:	5d                   	pop    %rbp
-ffffffff80001461:	48 83 c4 10          	add    $0x10,%rsp
-ffffffff80001465:	48 cf                	iretq  
+ffffffff800013a7 <isr1>:
+ffffffff800013a7:	6a 00                	push   $0x0
+ffffffff800013a9:	6a 01                	push   $0x1
+ffffffff800013ab:	e9 40 ff ff ff       	jmp    ffffffff800012f0 <isr_common_stub>
 
-ffffffff80001467 <irq_common_stub>:
-ffffffff80001467:	55                   	push   %rbp
-ffffffff80001468:	48 89 e5             	mov    %rsp,%rbp
-ffffffff8000146b:	50                   	push   %rax
-ffffffff8000146c:	53                   	push   %rbx
-ffffffff8000146d:	51                   	push   %rcx
-ffffffff8000146e:	52                   	push   %rdx
-ffffffff8000146f:	56                   	push   %rsi
-ffffffff80001470:	57                   	push   %rdi
-ffffffff80001471:	0f 20 c0             	mov    %cr0,%rax
-ffffffff80001474:	50                   	push   %rax
-ffffffff80001475:	0f 20 d0             	mov    %cr2,%rax
-ffffffff80001478:	50                   	push   %rax
-ffffffff80001479:	0f 20 d8             	mov    %cr3,%rax
-ffffffff8000147c:	50                   	push   %rax
-ffffffff8000147d:	0f 20 e0             	mov    %cr4,%rax
-ffffffff80001480:	50                   	push   %rax
-ffffffff80001481:	66 8c d8             	mov    %ds,%ax
-ffffffff80001484:	50                   	push   %rax
+ffffffff800013b0 <isr2>:
+ffffffff800013b0:	6a 00                	push   $0x0
+ffffffff800013b2:	6a 02                	push   $0x2
+ffffffff800013b4:	e9 37 ff ff ff       	jmp    ffffffff800012f0 <isr_common_stub>
+
+ffffffff800013b9 <isr3>:
+ffffffff800013b9:	6a 00                	push   $0x0
+ffffffff800013bb:	6a 03                	push   $0x3
+ffffffff800013bd:	e9 2e ff ff ff       	jmp    ffffffff800012f0 <isr_common_stub>
+
+ffffffff800013c2 <isr4>:
+ffffffff800013c2:	6a 00                	push   $0x0
+ffffffff800013c4:	6a 04                	push   $0x4
+ffffffff800013c6:	e9 25 ff ff ff       	jmp    ffffffff800012f0 <isr_common_stub>
+
+ffffffff800013cb <isr5>:
+ffffffff800013cb:	6a 00                	push   $0x0
+ffffffff800013cd:	6a 05                	push   $0x5
+ffffffff800013cf:	e9 1c ff ff ff       	jmp    ffffffff800012f0 <isr_common_stub>
+
+ffffffff800013d4 <isr6>:
+ffffffff800013d4:	6a 00                	push   $0x0
+ffffffff800013d6:	6a 06                	push   $0x6
+ffffffff800013d8:	e9 13 ff ff ff       	jmp    ffffffff800012f0 <isr_common_stub>
+
+ffffffff800013dd <isr7>:
+ffffffff800013dd:	6a 00                	push   $0x0
+ffffffff800013df:	6a 07                	push   $0x7
+ffffffff800013e1:	e9 0a ff ff ff       	jmp    ffffffff800012f0 <isr_common_stub>
+
+ffffffff800013e6 <isr8>:
+ffffffff800013e6:	6a 08                	push   $0x8
+ffffffff800013e8:	e9 03 ff ff ff       	jmp    ffffffff800012f0 <isr_common_stub>
+
+ffffffff800013ed <isr9>:
+ffffffff800013ed:	6a 00                	push   $0x0
+ffffffff800013ef:	6a 09                	push   $0x9
+ffffffff800013f1:	e9 fa fe ff ff       	jmp    ffffffff800012f0 <isr_common_stub>
+
+ffffffff800013f6 <isr10>:
+ffffffff800013f6:	6a 0a                	push   $0xa
+ffffffff800013f8:	e9 f3 fe ff ff       	jmp    ffffffff800012f0 <isr_common_stub>
+
+ffffffff800013fd <isr11>:
+ffffffff800013fd:	6a 0b                	push   $0xb
+ffffffff800013ff:	e9 ec fe ff ff       	jmp    ffffffff800012f0 <isr_common_stub>
+
+ffffffff80001404 <isr12>:
+ffffffff80001404:	6a 0c                	push   $0xc
+ffffffff80001406:	e9 e5 fe ff ff       	jmp    ffffffff800012f0 <isr_common_stub>
+
+ffffffff8000140b <isr13>:
+ffffffff8000140b:	6a 0d                	push   $0xd
+ffffffff8000140d:	e9 de fe ff ff       	jmp    ffffffff800012f0 <isr_common_stub>
+
+ffffffff80001412 <isr14>:
+ffffffff80001412:	6a 0e                	push   $0xe
+ffffffff80001414:	e9 d7 fe ff ff       	jmp    ffffffff800012f0 <isr_common_stub>
+
+ffffffff80001419 <isr15>:
+ffffffff80001419:	6a 00                	push   $0x0
+ffffffff8000141b:	6a 0f                	push   $0xf
+ffffffff8000141d:	e9 ce fe ff ff       	jmp    ffffffff800012f0 <isr_common_stub>
+
+ffffffff80001422 <isr16>:
+ffffffff80001422:	6a 00                	push   $0x0
+ffffffff80001424:	6a 10                	push   $0x10
+ffffffff80001426:	e9 c5 fe ff ff       	jmp    ffffffff800012f0 <isr_common_stub>
+
+ffffffff8000142b <isr17>:
+ffffffff8000142b:	6a 00                	push   $0x0
+ffffffff8000142d:	6a 11                	push   $0x11
+ffffffff8000142f:	e9 bc fe ff ff       	jmp    ffffffff800012f0 <isr_common_stub>
+
+ffffffff80001434 <isr18>:
+ffffffff80001434:	6a 00                	push   $0x0
+ffffffff80001436:	6a 12                	push   $0x12
+ffffffff80001438:	e9 b3 fe ff ff       	jmp    ffffffff800012f0 <isr_common_stub>
+
+ffffffff8000143d <isr19>:
+ffffffff8000143d:	6a 00                	push   $0x0
+ffffffff8000143f:	6a 13                	push   $0x13
+ffffffff80001441:	e9 aa fe ff ff       	jmp    ffffffff800012f0 <isr_common_stub>
+
+ffffffff80001446 <isr20>:
+ffffffff80001446:	6a 00                	push   $0x0
+ffffffff80001448:	6a 14                	push   $0x14
+ffffffff8000144a:	e9 a1 fe ff ff       	jmp    ffffffff800012f0 <isr_common_stub>
+
+ffffffff8000144f <isr21>:
+ffffffff8000144f:	6a 00                	push   $0x0
+ffffffff80001451:	6a 15                	push   $0x15
+ffffffff80001453:	e9 98 fe ff ff       	jmp    ffffffff800012f0 <isr_common_stub>
+
+ffffffff80001458 <isr22>:
+ffffffff80001458:	6a 00                	push   $0x0
+ffffffff8000145a:	6a 16                	push   $0x16
+ffffffff8000145c:	e9 8f fe ff ff       	jmp    ffffffff800012f0 <isr_common_stub>
+
+ffffffff80001461 <isr23>:
+ffffffff80001461:	6a 00                	push   $0x0
+ffffffff80001463:	6a 17                	push   $0x17
+ffffffff80001465:	e9 86 fe ff ff       	jmp    ffffffff800012f0 <isr_common_stub>
+
+ffffffff8000146a <isr24>:
+ffffffff8000146a:	6a 00                	push   $0x0
+ffffffff8000146c:	6a 18                	push   $0x18
+ffffffff8000146e:	e9 7d fe ff ff       	jmp    ffffffff800012f0 <isr_common_stub>
+
+ffffffff80001473 <isr25>:
+ffffffff80001473:	6a 00                	push   $0x0
+ffffffff80001475:	6a 19                	push   $0x19
+ffffffff80001477:	e9 74 fe ff ff       	jmp    ffffffff800012f0 <isr_common_stub>
+
+ffffffff8000147c <isr26>:
+ffffffff8000147c:	6a 00                	push   $0x0
+ffffffff8000147e:	6a 1a                	push   $0x1a
+ffffffff80001480:	e9 6b fe ff ff       	jmp    ffffffff800012f0 <isr_common_stub>
+
+ffffffff80001485 <isr27>:
 ffffffff80001485:	6a 00                	push   $0x0
-ffffffff80001487:	66 b8 30 00          	mov    $0x30,%ax
-ffffffff8000148b:	8e d8                	mov    %eax,%ds
-ffffffff8000148d:	8e c0                	mov    %eax,%es
-ffffffff8000148f:	8e d0                	mov    %eax,%ss
-ffffffff80001491:	48 8d 7c 24 10       	lea    0x10(%rsp),%rdi
-ffffffff80001496:	e8 b5 f7 ff ff       	call   ffffffff80000c50 <irq_handler>
-ffffffff8000149b:	58                   	pop    %rax
-ffffffff8000149c:	58                   	pop    %rax
-ffffffff8000149d:	8e d8                	mov    %eax,%ds
-ffffffff8000149f:	8e c0                	mov    %eax,%es
-ffffffff800014a1:	58                   	pop    %rax
-ffffffff800014a2:	0f 22 e0             	mov    %rax,%cr4
-ffffffff800014a5:	58                   	pop    %rax
-ffffffff800014a6:	0f 22 d8             	mov    %rax,%cr3
-ffffffff800014a9:	58                   	pop    %rax
-ffffffff800014aa:	0f 22 d0             	mov    %rax,%cr2
-ffffffff800014ad:	58                   	pop    %rax
-ffffffff800014ae:	0f 22 c0             	mov    %rax,%cr0
-ffffffff800014b1:	5f                   	pop    %rdi
-ffffffff800014b2:	5e                   	pop    %rsi
-ffffffff800014b3:	5a                   	pop    %rdx
-ffffffff800014b4:	59                   	pop    %rcx
-ffffffff800014b5:	5b                   	pop    %rbx
-ffffffff800014b6:	58                   	pop    %rax
-ffffffff800014b7:	5d                   	pop    %rbp
-ffffffff800014b8:	48 83 c4 10          	add    $0x10,%rsp
-ffffffff800014bc:	48 cf                	iretq  
+ffffffff80001487:	6a 1b                	push   $0x1b
+ffffffff80001489:	e9 62 fe ff ff       	jmp    ffffffff800012f0 <isr_common_stub>
 
-ffffffff800014be <isr0>:
-ffffffff800014be:	6a 00                	push   $0x0
-ffffffff800014c0:	6a 00                	push   $0x0
-ffffffff800014c2:	e9 49 ff ff ff       	jmp    ffffffff80001410 <isr_common_stub>
+ffffffff8000148e <isr28>:
+ffffffff8000148e:	6a 00                	push   $0x0
+ffffffff80001490:	6a 1c                	push   $0x1c
+ffffffff80001492:	e9 59 fe ff ff       	jmp    ffffffff800012f0 <isr_common_stub>
 
-ffffffff800014c7 <isr1>:
-ffffffff800014c7:	6a 00                	push   $0x0
-ffffffff800014c9:	6a 01                	push   $0x1
-ffffffff800014cb:	e9 40 ff ff ff       	jmp    ffffffff80001410 <isr_common_stub>
+ffffffff80001497 <isr29>:
+ffffffff80001497:	6a 00                	push   $0x0
+ffffffff80001499:	6a 1d                	push   $0x1d
+ffffffff8000149b:	e9 50 fe ff ff       	jmp    ffffffff800012f0 <isr_common_stub>
 
-ffffffff800014d0 <isr2>:
-ffffffff800014d0:	6a 00                	push   $0x0
-ffffffff800014d2:	6a 02                	push   $0x2
-ffffffff800014d4:	e9 37 ff ff ff       	jmp    ffffffff80001410 <isr_common_stub>
+ffffffff800014a0 <isr30>:
+ffffffff800014a0:	6a 00                	push   $0x0
+ffffffff800014a2:	6a 1e                	push   $0x1e
+ffffffff800014a4:	e9 47 fe ff ff       	jmp    ffffffff800012f0 <isr_common_stub>
 
-ffffffff800014d9 <isr3>:
-ffffffff800014d9:	6a 00                	push   $0x0
-ffffffff800014db:	6a 03                	push   $0x3
-ffffffff800014dd:	e9 2e ff ff ff       	jmp    ffffffff80001410 <isr_common_stub>
+ffffffff800014a9 <isr31>:
+ffffffff800014a9:	6a 00                	push   $0x0
+ffffffff800014ab:	6a 1f                	push   $0x1f
+ffffffff800014ad:	e9 3e fe ff ff       	jmp    ffffffff800012f0 <isr_common_stub>
 
-ffffffff800014e2 <isr4>:
-ffffffff800014e2:	6a 00                	push   $0x0
-ffffffff800014e4:	6a 04                	push   $0x4
-ffffffff800014e6:	e9 25 ff ff ff       	jmp    ffffffff80001410 <isr_common_stub>
+ffffffff800014b2 <irq0>:
+ffffffff800014b2:	6a 00                	push   $0x0
+ffffffff800014b4:	6a 20                	push   $0x20
+ffffffff800014b6:	e9 8c fe ff ff       	jmp    ffffffff80001347 <irq_common_stub>
 
-ffffffff800014eb <isr5>:
-ffffffff800014eb:	6a 00                	push   $0x0
-ffffffff800014ed:	6a 05                	push   $0x5
-ffffffff800014ef:	e9 1c ff ff ff       	jmp    ffffffff80001410 <isr_common_stub>
+ffffffff800014bb <irq1>:
+ffffffff800014bb:	6a 01                	push   $0x1
+ffffffff800014bd:	6a 21                	push   $0x21
+ffffffff800014bf:	e9 83 fe ff ff       	jmp    ffffffff80001347 <irq_common_stub>
 
-ffffffff800014f4 <isr6>:
-ffffffff800014f4:	6a 00                	push   $0x0
-ffffffff800014f6:	6a 06                	push   $0x6
-ffffffff800014f8:	e9 13 ff ff ff       	jmp    ffffffff80001410 <isr_common_stub>
+ffffffff800014c4 <irq2>:
+ffffffff800014c4:	6a 02                	push   $0x2
+ffffffff800014c6:	6a 22                	push   $0x22
+ffffffff800014c8:	e9 7a fe ff ff       	jmp    ffffffff80001347 <irq_common_stub>
 
-ffffffff800014fd <isr7>:
-ffffffff800014fd:	6a 00                	push   $0x0
-ffffffff800014ff:	6a 07                	push   $0x7
-ffffffff80001501:	e9 0a ff ff ff       	jmp    ffffffff80001410 <isr_common_stub>
+ffffffff800014cd <irq3>:
+ffffffff800014cd:	6a 03                	push   $0x3
+ffffffff800014cf:	6a 23                	push   $0x23
+ffffffff800014d1:	e9 71 fe ff ff       	jmp    ffffffff80001347 <irq_common_stub>
 
-ffffffff80001506 <isr8>:
-ffffffff80001506:	6a 08                	push   $0x8
-ffffffff80001508:	e9 03 ff ff ff       	jmp    ffffffff80001410 <isr_common_stub>
+ffffffff800014d6 <irq4>:
+ffffffff800014d6:	6a 04                	push   $0x4
+ffffffff800014d8:	6a 24                	push   $0x24
+ffffffff800014da:	e9 68 fe ff ff       	jmp    ffffffff80001347 <irq_common_stub>
 
-ffffffff8000150d <isr9>:
-ffffffff8000150d:	6a 00                	push   $0x0
-ffffffff8000150f:	6a 09                	push   $0x9
-ffffffff80001511:	e9 fa fe ff ff       	jmp    ffffffff80001410 <isr_common_stub>
+ffffffff800014df <irq5>:
+ffffffff800014df:	6a 05                	push   $0x5
+ffffffff800014e1:	6a 25                	push   $0x25
+ffffffff800014e3:	e9 5f fe ff ff       	jmp    ffffffff80001347 <irq_common_stub>
 
-ffffffff80001516 <isr10>:
-ffffffff80001516:	6a 0a                	push   $0xa
-ffffffff80001518:	e9 f3 fe ff ff       	jmp    ffffffff80001410 <isr_common_stub>
+ffffffff800014e8 <irq6>:
+ffffffff800014e8:	6a 06                	push   $0x6
+ffffffff800014ea:	6a 26                	push   $0x26
+ffffffff800014ec:	e9 56 fe ff ff       	jmp    ffffffff80001347 <irq_common_stub>
 
-ffffffff8000151d <isr11>:
-ffffffff8000151d:	6a 0b                	push   $0xb
-ffffffff8000151f:	e9 ec fe ff ff       	jmp    ffffffff80001410 <isr_common_stub>
+ffffffff800014f1 <irq7>:
+ffffffff800014f1:	6a 07                	push   $0x7
+ffffffff800014f3:	6a 27                	push   $0x27
+ffffffff800014f5:	e9 4d fe ff ff       	jmp    ffffffff80001347 <irq_common_stub>
 
-ffffffff80001524 <isr12>:
-ffffffff80001524:	6a 0c                	push   $0xc
-ffffffff80001526:	e9 e5 fe ff ff       	jmp    ffffffff80001410 <isr_common_stub>
+ffffffff800014fa <irq8>:
+ffffffff800014fa:	6a 08                	push   $0x8
+ffffffff800014fc:	6a 28                	push   $0x28
+ffffffff800014fe:	e9 44 fe ff ff       	jmp    ffffffff80001347 <irq_common_stub>
 
-ffffffff8000152b <isr13>:
-ffffffff8000152b:	6a 0d                	push   $0xd
-ffffffff8000152d:	e9 de fe ff ff       	jmp    ffffffff80001410 <isr_common_stub>
+ffffffff80001503 <irq9>:
+ffffffff80001503:	6a 09                	push   $0x9
+ffffffff80001505:	6a 29                	push   $0x29
+ffffffff80001507:	e9 3b fe ff ff       	jmp    ffffffff80001347 <irq_common_stub>
 
-ffffffff80001532 <isr14>:
-ffffffff80001532:	6a 0e                	push   $0xe
-ffffffff80001534:	e9 d7 fe ff ff       	jmp    ffffffff80001410 <isr_common_stub>
+ffffffff8000150c <irq10>:
+ffffffff8000150c:	6a 0a                	push   $0xa
+ffffffff8000150e:	6a 2a                	push   $0x2a
+ffffffff80001510:	e9 32 fe ff ff       	jmp    ffffffff80001347 <irq_common_stub>
 
-ffffffff80001539 <isr15>:
-ffffffff80001539:	6a 00                	push   $0x0
-ffffffff8000153b:	6a 0f                	push   $0xf
-ffffffff8000153d:	e9 ce fe ff ff       	jmp    ffffffff80001410 <isr_common_stub>
+ffffffff80001515 <irq11>:
+ffffffff80001515:	6a 0b                	push   $0xb
+ffffffff80001517:	6a 2b                	push   $0x2b
+ffffffff80001519:	e9 29 fe ff ff       	jmp    ffffffff80001347 <irq_common_stub>
 
-ffffffff80001542 <isr16>:
-ffffffff80001542:	6a 00                	push   $0x0
-ffffffff80001544:	6a 10                	push   $0x10
-ffffffff80001546:	e9 c5 fe ff ff       	jmp    ffffffff80001410 <isr_common_stub>
+ffffffff8000151e <irq12>:
+ffffffff8000151e:	6a 0c                	push   $0xc
+ffffffff80001520:	6a 2c                	push   $0x2c
+ffffffff80001522:	e9 20 fe ff ff       	jmp    ffffffff80001347 <irq_common_stub>
 
-ffffffff8000154b <isr17>:
-ffffffff8000154b:	6a 00                	push   $0x0
-ffffffff8000154d:	6a 11                	push   $0x11
-ffffffff8000154f:	e9 bc fe ff ff       	jmp    ffffffff80001410 <isr_common_stub>
+ffffffff80001527 <irq13>:
+ffffffff80001527:	6a 0d                	push   $0xd
+ffffffff80001529:	6a 2d                	push   $0x2d
+ffffffff8000152b:	e9 17 fe ff ff       	jmp    ffffffff80001347 <irq_common_stub>
 
-ffffffff80001554 <isr18>:
-ffffffff80001554:	6a 00                	push   $0x0
-ffffffff80001556:	6a 12                	push   $0x12
-ffffffff80001558:	e9 b3 fe ff ff       	jmp    ffffffff80001410 <isr_common_stub>
+ffffffff80001530 <irq14>:
+ffffffff80001530:	6a 0e                	push   $0xe
+ffffffff80001532:	6a 2e                	push   $0x2e
+ffffffff80001534:	e9 0e fe ff ff       	jmp    ffffffff80001347 <irq_common_stub>
 
-ffffffff8000155d <isr19>:
-ffffffff8000155d:	6a 00                	push   $0x0
-ffffffff8000155f:	6a 13                	push   $0x13
-ffffffff80001561:	e9 aa fe ff ff       	jmp    ffffffff80001410 <isr_common_stub>
+ffffffff80001539 <irq15>:
+ffffffff80001539:	6a 0f                	push   $0xf
+ffffffff8000153b:	6a 2f                	push   $0x2f
+ffffffff8000153d:	e9 05 fe ff ff       	jmp    ffffffff80001347 <irq_common_stub>
+ffffffff80001542:	66 2e 0f 1f 84 00 00 	cs nopw 0x0(%rax,%rax,1)
+ffffffff80001549:	00 00 00 
+ffffffff8000154c:	0f 1f 40 00          	nopl   0x0(%rax)
 
-ffffffff80001566 <isr20>:
-ffffffff80001566:	6a 00                	push   $0x0
-ffffffff80001568:	6a 14                	push   $0x14
-ffffffff8000156a:	e9 a1 fe ff ff       	jmp    ffffffff80001410 <isr_common_stub>
+ffffffff80001550 <idt_reload>:
+ffffffff80001550:	55                   	push   %rbp
+ffffffff80001551:	48 89 e5             	mov    %rsp,%rbp
+ffffffff80001554:	9c                   	pushf  
+ffffffff80001555:	fa                   	cli    
+ffffffff80001556:	0f 01 1f             	lidt   (%rdi)
+ffffffff80001559:	9d                   	popf   
+ffffffff8000155a:	5d                   	pop    %rbp
+ffffffff8000155b:	c3                   	ret    
+ffffffff8000155c:	0f 1f 40 00          	nopl   0x0(%rax)
 
-ffffffff8000156f <isr21>:
-ffffffff8000156f:	6a 00                	push   $0x0
-ffffffff80001571:	6a 15                	push   $0x15
-ffffffff80001573:	e9 98 fe ff ff       	jmp    ffffffff80001410 <isr_common_stub>
+ffffffff80001560 <tss_reload>:
+ffffffff80001560:	55                   	push   %rbp
+ffffffff80001561:	48 89 e5             	mov    %rsp,%rbp
+ffffffff80001564:	9c                   	pushf  
+ffffffff80001565:	fa                   	cli    
+ffffffff80001566:	0f 00 df             	ltr    %di
+ffffffff80001569:	9d                   	popf   
+ffffffff8000156a:	5d                   	pop    %rbp
+ffffffff8000156b:	c3                   	ret    
+ffffffff8000156c:	0f 1f 40 00          	nopl   0x0(%rax)
 
-ffffffff80001578 <isr22>:
-ffffffff80001578:	6a 00                	push   $0x0
-ffffffff8000157a:	6a 16                	push   $0x16
-ffffffff8000157c:	e9 8f fe ff ff       	jmp    ffffffff80001410 <isr_common_stub>
+ffffffff80001570 <memset>:
+ffffffff80001570:	55                   	push   %rbp
+ffffffff80001571:	48 89 e5             	mov    %rsp,%rbp
+ffffffff80001574:	9c                   	pushf  
+ffffffff80001575:	48 89 ff             	mov    %rdi,%rdi
+ffffffff80001578:	48 89 f0             	mov    %rsi,%rax
+ffffffff8000157b:	51                   	push   %rcx
+ffffffff8000157c:	57                   	push   %rdi
+ffffffff8000157d:	48 89 d1             	mov    %rdx,%rcx
+ffffffff80001580:	fc                   	cld    
+ffffffff80001581:	f3 aa                	rep stos %al,%es:(%rdi)
+ffffffff80001583:	58                   	pop    %rax
+ffffffff80001584:	59                   	pop    %rcx
+ffffffff80001585:	9d                   	popf   
+ffffffff80001586:	5d                   	pop    %rbp
+ffffffff80001587:	c3                   	ret    
+ffffffff80001588:	0f 1f 84 00 00 00 00 	nopl   0x0(%rax,%rax,1)
+ffffffff8000158f:	00 
 
-ffffffff80001581 <isr23>:
-ffffffff80001581:	6a 00                	push   $0x0
-ffffffff80001583:	6a 17                	push   $0x17
-ffffffff80001585:	e9 86 fe ff ff       	jmp    ffffffff80001410 <isr_common_stub>
-
-ffffffff8000158a <isr24>:
-ffffffff8000158a:	6a 00                	push   $0x0
-ffffffff8000158c:	6a 18                	push   $0x18
-ffffffff8000158e:	e9 7d fe ff ff       	jmp    ffffffff80001410 <isr_common_stub>
-
-ffffffff80001593 <isr25>:
-ffffffff80001593:	6a 00                	push   $0x0
-ffffffff80001595:	6a 19                	push   $0x19
-ffffffff80001597:	e9 74 fe ff ff       	jmp    ffffffff80001410 <isr_common_stub>
-
-ffffffff8000159c <isr26>:
-ffffffff8000159c:	6a 00                	push   $0x0
-ffffffff8000159e:	6a 1a                	push   $0x1a
-ffffffff800015a0:	e9 6b fe ff ff       	jmp    ffffffff80001410 <isr_common_stub>
-
-ffffffff800015a5 <isr27>:
-ffffffff800015a5:	6a 00                	push   $0x0
-ffffffff800015a7:	6a 1b                	push   $0x1b
-ffffffff800015a9:	e9 62 fe ff ff       	jmp    ffffffff80001410 <isr_common_stub>
-
-ffffffff800015ae <isr28>:
-ffffffff800015ae:	6a 00                	push   $0x0
-ffffffff800015b0:	6a 1c                	push   $0x1c
-ffffffff800015b2:	e9 59 fe ff ff       	jmp    ffffffff80001410 <isr_common_stub>
-
-ffffffff800015b7 <isr29>:
-ffffffff800015b7:	6a 00                	push   $0x0
-ffffffff800015b9:	6a 1d                	push   $0x1d
-ffffffff800015bb:	e9 50 fe ff ff       	jmp    ffffffff80001410 <isr_common_stub>
-
-ffffffff800015c0 <isr30>:
-ffffffff800015c0:	6a 00                	push   $0x0
-ffffffff800015c2:	6a 1e                	push   $0x1e
-ffffffff800015c4:	e9 47 fe ff ff       	jmp    ffffffff80001410 <isr_common_stub>
-
-ffffffff800015c9 <isr31>:
-ffffffff800015c9:	6a 00                	push   $0x0
-ffffffff800015cb:	6a 1f                	push   $0x1f
-ffffffff800015cd:	e9 3e fe ff ff       	jmp    ffffffff80001410 <isr_common_stub>
-
-ffffffff800015d2 <irq0>:
-ffffffff800015d2:	6a 00                	push   $0x0
-ffffffff800015d4:	6a 20                	push   $0x20
-ffffffff800015d6:	e9 8c fe ff ff       	jmp    ffffffff80001467 <irq_common_stub>
-
-ffffffff800015db <irq1>:
-ffffffff800015db:	6a 01                	push   $0x1
-ffffffff800015dd:	6a 21                	push   $0x21
-ffffffff800015df:	e9 83 fe ff ff       	jmp    ffffffff80001467 <irq_common_stub>
-
-ffffffff800015e4 <irq2>:
-ffffffff800015e4:	6a 02                	push   $0x2
-ffffffff800015e6:	6a 22                	push   $0x22
-ffffffff800015e8:	e9 7a fe ff ff       	jmp    ffffffff80001467 <irq_common_stub>
-
-ffffffff800015ed <irq3>:
-ffffffff800015ed:	6a 03                	push   $0x3
-ffffffff800015ef:	6a 23                	push   $0x23
-ffffffff800015f1:	e9 71 fe ff ff       	jmp    ffffffff80001467 <irq_common_stub>
-
-ffffffff800015f6 <irq4>:
-ffffffff800015f6:	6a 04                	push   $0x4
-ffffffff800015f8:	6a 24                	push   $0x24
-ffffffff800015fa:	e9 68 fe ff ff       	jmp    ffffffff80001467 <irq_common_stub>
-
-ffffffff800015ff <irq5>:
-ffffffff800015ff:	6a 05                	push   $0x5
-ffffffff80001601:	6a 25                	push   $0x25
-ffffffff80001603:	e9 5f fe ff ff       	jmp    ffffffff80001467 <irq_common_stub>
-
-ffffffff80001608 <irq6>:
-ffffffff80001608:	6a 06                	push   $0x6
-ffffffff8000160a:	6a 26                	push   $0x26
-ffffffff8000160c:	e9 56 fe ff ff       	jmp    ffffffff80001467 <irq_common_stub>
-
-ffffffff80001611 <irq7>:
-ffffffff80001611:	6a 07                	push   $0x7
-ffffffff80001613:	6a 27                	push   $0x27
-ffffffff80001615:	e9 4d fe ff ff       	jmp    ffffffff80001467 <irq_common_stub>
-
-ffffffff8000161a <irq8>:
-ffffffff8000161a:	6a 08                	push   $0x8
-ffffffff8000161c:	6a 28                	push   $0x28
-ffffffff8000161e:	e9 44 fe ff ff       	jmp    ffffffff80001467 <irq_common_stub>
-
-ffffffff80001623 <irq9>:
-ffffffff80001623:	6a 09                	push   $0x9
-ffffffff80001625:	6a 29                	push   $0x29
-ffffffff80001627:	e9 3b fe ff ff       	jmp    ffffffff80001467 <irq_common_stub>
-
-ffffffff8000162c <irq10>:
-ffffffff8000162c:	6a 0a                	push   $0xa
-ffffffff8000162e:	6a 2a                	push   $0x2a
-ffffffff80001630:	e9 32 fe ff ff       	jmp    ffffffff80001467 <irq_common_stub>
-
-ffffffff80001635 <irq11>:
-ffffffff80001635:	6a 0b                	push   $0xb
-ffffffff80001637:	6a 2b                	push   $0x2b
-ffffffff80001639:	e9 29 fe ff ff       	jmp    ffffffff80001467 <irq_common_stub>
-
-ffffffff8000163e <irq12>:
-ffffffff8000163e:	6a 0c                	push   $0xc
-ffffffff80001640:	6a 2c                	push   $0x2c
-ffffffff80001642:	e9 20 fe ff ff       	jmp    ffffffff80001467 <irq_common_stub>
-
-ffffffff80001647 <irq13>:
-ffffffff80001647:	6a 0d                	push   $0xd
-ffffffff80001649:	6a 2d                	push   $0x2d
-ffffffff8000164b:	e9 17 fe ff ff       	jmp    ffffffff80001467 <irq_common_stub>
-
-ffffffff80001650 <irq14>:
-ffffffff80001650:	6a 0e                	push   $0xe
-ffffffff80001652:	6a 2e                	push   $0x2e
-ffffffff80001654:	e9 0e fe ff ff       	jmp    ffffffff80001467 <irq_common_stub>
-
-ffffffff80001659 <irq15>:
-ffffffff80001659:	6a 0f                	push   $0xf
-ffffffff8000165b:	6a 2f                	push   $0x2f
-ffffffff8000165d:	e9 05 fe ff ff       	jmp    ffffffff80001467 <irq_common_stub>
-ffffffff80001662:	66 2e 0f 1f 84 00 00 	cs nopw 0x0(%rax,%rax,1)
-ffffffff80001669:	00 00 00 
-ffffffff8000166c:	0f 1f 40 00          	nopl   0x0(%rax)
-
-ffffffff80001670 <idt_reload>:
-ffffffff80001670:	55                   	push   %rbp
-ffffffff80001671:	48 89 e5             	mov    %rsp,%rbp
-ffffffff80001674:	9c                   	pushf  
-ffffffff80001675:	fa                   	cli    
-ffffffff80001676:	0f 01 1f             	lidt   (%rdi)
-ffffffff80001679:	9d                   	popf   
-ffffffff8000167a:	5d                   	pop    %rbp
-ffffffff8000167b:	c3                   	ret    
-ffffffff8000167c:	0f 1f 40 00          	nopl   0x0(%rax)
-
-ffffffff80001680 <tss_reload>:
-ffffffff80001680:	55                   	push   %rbp
-ffffffff80001681:	48 89 e5             	mov    %rsp,%rbp
-ffffffff80001684:	9c                   	pushf  
-ffffffff80001685:	fa                   	cli    
-ffffffff80001686:	0f 00 df             	ltr    %di
-ffffffff80001689:	9d                   	popf   
-ffffffff8000168a:	5d                   	pop    %rbp
-ffffffff8000168b:	c3                   	ret    
-ffffffff8000168c:	0f 1f 40 00          	nopl   0x0(%rax)
-
-ffffffff80001690 <memset>:
-ffffffff80001690:	55                   	push   %rbp
-ffffffff80001691:	48 89 e5             	mov    %rsp,%rbp
-ffffffff80001694:	9c                   	pushf  
-ffffffff80001695:	48 89 ff             	mov    %rdi,%rdi
-ffffffff80001698:	48 89 f0             	mov    %rsi,%rax
-ffffffff8000169b:	51                   	push   %rcx
-ffffffff8000169c:	57                   	push   %rdi
-ffffffff8000169d:	48 89 d1             	mov    %rdx,%rcx
-ffffffff800016a0:	fc                   	cld    
-ffffffff800016a1:	f3 aa                	rep stos %al,%es:(%rdi)
-ffffffff800016a3:	58                   	pop    %rax
-ffffffff800016a4:	59                   	pop    %rcx
-ffffffff800016a5:	9d                   	popf   
-ffffffff800016a6:	5d                   	pop    %rbp
-ffffffff800016a7:	c3                   	ret    
-ffffffff800016a8:	0f 1f 84 00 00 00 00 	nopl   0x0(%rax,%rax,1)
-ffffffff800016af:	00 
-
-ffffffff800016b0 <memcpy>:
-ffffffff800016b0:	55                   	push   %rbp
-ffffffff800016b1:	48 89 e5             	mov    %rsp,%rbp
-ffffffff800016b4:	9c                   	pushf  
-ffffffff800016b5:	48 89 ff             	mov    %rdi,%rdi
-ffffffff800016b8:	48 89 f6             	mov    %rsi,%rsi
-ffffffff800016bb:	48 89 f8             	mov    %rdi,%rax
-ffffffff800016be:	51                   	push   %rcx
-ffffffff800016bf:	48 89 d1             	mov    %rdx,%rcx
-ffffffff800016c2:	fc                   	cld    
-ffffffff800016c3:	f3 a4                	rep movsb %ds:(%rsi),%es:(%rdi)
-ffffffff800016c5:	59                   	pop    %rcx
-ffffffff800016c6:	9d                   	popf   
-ffffffff800016c7:	5d                   	pop    %rbp
-ffffffff800016c8:	c3                   	ret    
+ffffffff80001590 <memcpy>:
+ffffffff80001590:	55                   	push   %rbp
+ffffffff80001591:	48 89 e5             	mov    %rsp,%rbp
+ffffffff80001594:	9c                   	pushf  
+ffffffff80001595:	48 89 ff             	mov    %rdi,%rdi
+ffffffff80001598:	48 89 f6             	mov    %rsi,%rsi
+ffffffff8000159b:	48 89 f8             	mov    %rdi,%rax
+ffffffff8000159e:	51                   	push   %rcx
+ffffffff8000159f:	48 89 d1             	mov    %rdx,%rcx
+ffffffff800015a2:	fc                   	cld    
+ffffffff800015a3:	f3 a4                	rep movsb %ds:(%rsi),%es:(%rdi)
+ffffffff800015a5:	59                   	pop    %rcx
+ffffffff800015a6:	9d                   	popf   
+ffffffff800015a7:	5d                   	pop    %rbp
+ffffffff800015a8:	c3                   	ret    

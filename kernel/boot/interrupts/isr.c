@@ -3,7 +3,7 @@
 #include "idt.h"
 #include "../tss/tss.h"
 #include "drivers/io.h"
-#include "drivers/8529/pic.h"
+#include "drivers/8259/pic.h"
 
 isr_t interrupt_handlers[256];
 
