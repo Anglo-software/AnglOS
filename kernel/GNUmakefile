@@ -1,6 +1,6 @@
 # This is the name that our final kernel executable will have.
 # Change as needed.
-override KERNEL := unnamed-os.elf
+override KERNEL := angl-os.elf
  
 # Convenience macro to reliably declare overridable command variables.
 define DEFAULT_VAR =
