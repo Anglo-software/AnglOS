@@ -15,13 +15,17 @@ endef
 # It is highly recommended to use a custom built cross toolchain to build a kernel.
 # We are only using "cc" as a placeholder here. It may work by using
 # the host system's toolchain, but this is not guaranteed.
-$(eval $(call DEFAULT_VAR,CC,cc))
+$(eval $(call DEFAULT_VAR,CC,x86_64-elf-gcc))
+$(eval $(call DEFAULT_VAR,CXX,x86_64-elf-g++))
  
 # Same thing for "ld" (the linker).
-$(eval $(call DEFAULT_VAR,LD,ld))
+$(eval $(call DEFAULT_VAR,LD,x86_64-elf-ld))
  
 # User controllable CFLAGS.
 CFLAGS ?= -g -O2 -pipe -Wall -Wextra
+ 
+# User controllable CXXFLAGS.
+CXXFLAGS ?= -g -O2 -pipe -Wall -Wextra
  
 # User controllable preprocessor flags. We set none by default.
 CPPFLAGS ?=
@@ -35,6 +39,27 @@ LDFLAGS ?=
 # Internal C flags that should not be changed by the user.
 override CFLAGS +=       \
     -std=c11             \
+    -ffreestanding       \
+    -fno-stack-protector \
+    -fno-stack-check     \
+    -fno-lto             \
+    -fno-pie             \
+    -fno-pic             \
+    -m64                 \
+    -march=x86-64        \
+    -mabi=sysv           \
+    -mno-80387           \
+    -mno-mmx             \
+    -mno-sse             \
+    -mno-sse2            \
+    -mno-red-zone        \
+    -mcmodel=kernel      \
+    -MMD                 \
+    -I.
+ 
+# Internal C flags that should not be changed by the user.
+override CXXFLAGS +=     \
+    -std=c++11           \
     -ffreestanding       \
     -fno-stack-protector \
     -fno-stack-check     \
@@ -70,12 +95,13 @@ endif
 override NASMFLAGS += \
     -f elf64
  
-# Use find to glob all *.c, *.S, and *.asm files in the directory and extract the object names.
+# Use find to glob all *.c, *.cpp, *.S, and *.asm files in the directory and extract the object names.
 override CFILES := $(shell find . -type f -name '*.c' | grep -v 'limine/')
+override CXXFILES := $(shell find . -type f -name '*.cpp' | grep -v 'limine/')
 override ASFILES := $(shell find . -type f -name '*.S' | grep -v 'limine/')
 override NASMFILES := $(shell find . -type f -name '*.asm' | grep -v 'limine/')
-override OBJ := $(CFILES:.c=.o) $(ASFILES:.S=.o) $(NASMFILES:.asm=.o)
-override HEADER_DEPS := $(CFILES:.c=.d) $(ASFILES:.S=.d)
+override OBJ := $(CFILES:.c=.o) $(CXXFILES:.cpp=.o) $(ASFILES:.S=.o) $(NASMFILES:.asm=.o)
+override HEADER_DEPS := $(CFILES:.c=.d) $(CXXFILES:.cpp=.d) $(ASFILES:.S=.d)
  
 # Default target.
 .PHONY: all
@@ -91,6 +117,10 @@ $(KERNEL): $(OBJ)
 # Compilation rules for *.c files.
 %.o: %.c
 	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
+ 
+# Compilation rules for *.cpp files.
+%.o: %.cpp
+	$(CXX) $(CXXFLAGS) -c $< -o $@
  
 # Compilation rules for *.S files.
 %.o: %.S

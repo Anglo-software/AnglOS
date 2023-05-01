@@ -1,9 +1,6 @@
 .vscode/c_cpp_properties.json
 .vscode/settings.json
-unnamed-os.iso
-kernel/unnamed-os.elf
 loopback_dev
-unnamed-os.hdd
 limine
 *.o
 *.d
@@ -11,3 +8,7 @@ ovmf-x64/OVMF-X64.zip
 ovmf-x64/OVMF-X64.zip:Zone.Identifier
 ovmf-x64/OVMF.fd
 ovmf-x64/readme.txt
+angl-os.iso
+kernel/angl-os.dump
+.gitignore
+kernel/angl-os.elf
