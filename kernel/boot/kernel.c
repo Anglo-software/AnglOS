@@ -4,12 +4,10 @@
 #include "gdt/gdt.h"
 #include "tss/tss.h"
 #include "interrupts/idt.h"
+#include "mm/pmm/pmm.h"
 #include "terminal/terminal.h"
 #include "drivers/keyboard/keyboard.h"
 #include "drivers/8259/pic.h"
-
-
-
 
 static volatile struct limine_stack_size_request stack_request = {
     .id = LIMINE_STACK_SIZE_REQUEST,
@@ -36,17 +34,25 @@ void _start(void) {
         really_done();
     }
 
-    init_gdt();
-    for (int i = 0; i < TSS_MAX_CPUS; i++) {
-        init_tss(i);
-    }
-    init_idt();
-
     struct limine_terminal* terminal = init_terminal();
  
     if (!terminal) {
         really_done();
     }
+
+    init_gdt();
+    print("Initialized GDT\n");
+
+    for (int i = 0; i < TSS_MAX_CPUS; i++) {
+        init_tss(i);
+    }
+    print("Initialized TSS\n");
+
+    init_idt();
+    print("Initialized IDT\n");
+
+    init_pmm();
+    // print("Initialized PMM\n");
 
     __asm__ volatile ("sti");
 
@@ -54,6 +60,7 @@ void _start(void) {
         print("Keyboard could not be initialized, halting...\n");
         really_done();
     }
+    // print("Initialized keyboard\n");
  
     // We're done, just hang...
     done();
