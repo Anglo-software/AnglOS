@@ -1,4 +1,8 @@
 #include "pmm.h"
+#include "boot/limine.h"
+#include "mm/paging/paging.h"
+#include "boot/terminal/terminal.h"
+#include "libc/string.h"
 
 static volatile struct limine_memmap_request mmap_request = {
     .id = LIMINE_MEMMAP_REQUEST,
@@ -19,45 +23,6 @@ static uint64_t free_mem;    // In bytes
 
 #define NUM_BITMAPS 7
 static bitmap_stat_t bitmaps[NUM_BITMAPS]; // 4K Blocks (1 page) to 256K Blocks (64 page)
-
-/**
- * Buddy allocation:
- * 
- * . -> Free block
- * # -> Used block
- * x -> Sub block of a free block
- * 
- * When a block contains at least one used sub-block, it is also marked as used
- * Sub-blocks that are part of a free block are also marked used
- * 
- * Initial bitmap
- * Bitmap 0 (1  page) -> [x|x|x|x|x|x|x|x|x|x|x|x|x|x|x|x] 0 free
- * Bitmap 1 (2  page) -> [ x | x | x | x | x | x | x | x ] 0 free
- * Bitmap 2 (4  page) -> [   x   |   x   |   x   |   x   ] 0 free
- * Bitmap 3 (8  page) -> [       x       |       x       ] 0 free
- * Bitmap 4 (16 page) -> [               .               ] 1 free
- * 
- * 7 page allocation
- * Bitmap 0 (1  page) -> [#|#|#|#|#|#|#|.|x|x|x|x|x|x|x|x] 1 free
- * Bitmap 1 (2  page) -> [ # | # | # | # | x | x | x | x ] 0 free
- * Bitmap 2 (4  page) -> [   #   |   #   |   x   |   x   ] 0 free
- * Bitmap 3 (8  page) -> [       #       |       .       ] 1 free
- * Bitmap 4 (16 page) -> [               #               ] 0 free
- * 
- * 3 page allocation
- * Bitmap 0 (1  page) -> [#|#|#|#|#|#|#|.|#|#|#|.|x|x|x|x] 2 free
- * Bitmap 1 (2  page) -> [ # | # | # | # | # | # | x | x ] 0 free
- * Bitmap 2 (4  page) -> [   #   |   #   |   #   |   .   ] 1 free
- * Bitmap 3 (8  page) -> [       #       |       #       ] 0 free
- * Bitmap 4 (16 page) -> [               #               ] 0 free
- * 
- * 7 page free
- * Bitmap 0 (1  page) -> [x|x|x|x|x|x|x|x|#|#|#|.|x|x|x|x] 1 free
- * Bitmap 1 (2  page) -> [ x | x | x | x | # | # | x | x ] 0 free
- * Bitmap 2 (4  page) -> [   x   |   x   |   #   |   .   ] 1 free
- * Bitmap 3 (8  page) -> [       .       |       #       ] 1 free
- * Bitmap 4 (16 page) -> [               #               ] 0 free
- */
 
 static void set_bit(uint8_t* base, uint64_t index) {
     // Index is in BITS (The i-th block in this bitmap)
@@ -94,6 +59,10 @@ uint64_t get_free_mem() {
     return free_mem;
 }
 
+void* get_virtual_from_physical(void* pptr) {
+    return hhdm_request.response->offset + pptr;
+}
+
 #define L_CHILD(index) (index * 2)
 #define R_CHILD(index) (index * 2 + 1)
 #define PARENT(index) (index / 2)
@@ -119,7 +88,7 @@ void init_pmm() {
         index++;
     }
 
-    bitmap_base = (uint8_t*)mmap_entries[index]->base + hhdm_request.response->offset;
+    bitmap_base = get_virtual_from_physical((uint8_t*)mmap_entries[index]->base);
 
     mmap_entries[index]->base += bitmap_size;
     mmap_entries[index]->length -= bitmap_size;
@@ -164,14 +133,7 @@ void init_pmm() {
 
     free_mem = 0;
     for (int i = 0; i < NUM_BITMAPS; i++) {
-        free_mem += bitmaps[i].free * (4096 << i);
-    }
-
-    for (uint64_t i = 0; i < bitmaps[1].size * 8; i++) {
-        if (!check_bit(bitmaps[1].base, i)) {
-            printui(i * (4096 << 1), 17, 16);
-            break;
-        }
+        free_mem += bitmaps[i].free * (PAGE_SIZE << i);
     }
 }
 
@@ -219,15 +181,72 @@ void* pmalloc(size_t pages) {
                 bitmaps[i].free--;
                 if (i != (NUM_BITMAPS - 1) && !check_bit(bitmaps[i + 1].base, PARENT(j))) {
                     set_bit(bitmaps[i + 1].base, PARENT(j));
-                    bitmaps[i+1].free--;
+                    bitmaps[i + 1].free--;
                     clear_bit(bitmaps[i].base, j+1);
                     bitmaps[i].free++;
                 }
                 propagate_down(pages, i, j);
-                return (void*)(j * (4096 << i));
+                return (void*)(j * (PAGE_SIZE << i));
             }
         }
     }
 
     return NULL;
+}
+
+static void coalesce(size_t pages, size_t level, uint64_t index) {
+    if (index % 2 == 0) {
+        for (uint64_t i = index; i < index + pages; i += 2) {
+            if (!check_bit(bitmaps[level].base, i) && !check_bit(bitmaps[level].base, i+1)) {
+                clear_bit(bitmaps[level + 1].base, PARENT(i));
+                bitmaps[level + 1].free++;
+                set_bit(bitmaps[level].base, i);
+                set_bit(bitmaps[level].base, i+1);
+                bitmaps[level].free -= 2;
+            }
+        }
+        if (level + 1 != NUM_BITMAPS - 1) {
+            coalesce(pages / 2, level + 1, PARENT(index));
+        }
+        return;
+    }
+    else {
+        for (uint64_t i = index; i < index + pages; i += 2) {
+            if (!check_bit(bitmaps[level].base, i-1) && !check_bit(bitmaps[level].base, i)) {
+                clear_bit(bitmaps[level + 1].base, PARENT(i));
+                bitmaps[level + 1].free++;
+                set_bit(bitmaps[level].base, i-1);
+                set_bit(bitmaps[level].base, i);
+                bitmaps[level].free -= 2;
+            }
+        }
+        if (level + 1 != NUM_BITMAPS - 1) {
+            coalesce(pages / 2, level + 1, PARENT(index));
+        }
+        return;
+    }
+}
+
+void pfree(void* pptr, size_t pages) {
+    if (ptr == NULL || pages == 0) {
+        return;
+    }
+
+    uint64_t index = (uint64_t)ptr / PAGE_SIZE;
+    for (uint64_t i = index; i < index + pages; i++) {
+        clear_bit(bitmaps[0].base, i);
+        bitmaps[0].free++;
+    }
+
+    coalesce(pages, 0, index);
+
+    uint8_t* p = (uint8_t*)ptr;
+
+    for (uint64_t i = 0; i < pages * PAGE_SIZE; i++) {
+        uint64_t j = i % 2;
+        switch(j) {
+            case 0: p[i] = 0x21; break;
+            case 1: p[i] = 0xE6; break;
+        }
+    }
 }
