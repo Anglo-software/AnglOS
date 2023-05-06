@@ -7,19 +7,19 @@ all-hdd: angl-os.hdd
 
 .PHONY: run
 run: angl-os.iso
-	qemu-system-x86_64 -M q35 -m 8192 -cdrom angl-os.iso -boot d
+	qemu-system-x86_64 -M q35 -m 8192 -device VGA -cdrom angl-os.iso -boot d
 
 .PHONY: run-uefi
 run-uefi: ovmf-x64 angl-os.iso
-	qemu-system-x86_64 -M q35 -m 8192 -bios ovmf-x64/OVMF.fd -cdrom angl-os.iso -boot d
+	qemu-system-x86_64 -M q35 -m 8192 -device VGA -bios ovmf-x64/OVMF.fd -cdrom angl-os.iso -boot d
 
 .PHONY: run-hdd
 run-hdd: angl-os.hdd
-	qemu-system-x86_64 -M q35 -m 8192 -hda angl-os.hdd
+	qemu-system-x86_64 -M q35 -m 8192 -device VGA -hda angl-os.hdd
 
 .PHONY: run-hdd-uefi
 run-hdd-uefi: ovmf-x64 angl-os.hdd
-	qemu-system-x86_64 -M q35 -m 8192 -bios ovmf-x64/OVMF.fd -hda angl-os.hdd
+	qemu-system-x86_64 -M q35 -m 8192 -device VGA -bios ovmf-x64/OVMF.fd -hda angl-os.hdd
 
 ovmf-x64:
 	mkdir -p ovmf-x64

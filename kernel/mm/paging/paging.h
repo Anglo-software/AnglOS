@@ -111,6 +111,17 @@
  * Bit 5  (PK)   protection key violation
  * Bit 6  (SS)   shadow-stack access fault
  * Bit 15 (SGX)  SGX violation
+ * 
+ * 
+ * 
+ * Virtual memory mapping:
+ * 
+ * Kernel:
+ * FFFF 8000 0000 0000 - FFFF 8007 FFFF FFFF -> 32  GB   direct mapping of all physical memory (page_direct_base)
+ * FFFF 9000 0000 0000 - FFFF 9020 FFFF FFFF -> 128 GB   kernel heap (kheap_base) (start at 1GB)
+ * FFFF A000 0000 0000 - FFFF A00F FFFF FFFF -> 64  GB   virtual memory map (vmmap_base) for kernel and user (Allocate as necessary)
+ * FFFF B000 0000 0000 - FFFF B00F FFFF FFFF -> 64  GB   kernel and irq/isr stacks (kstack_base) (start at 512MB)
+ * FFFF FFFF 8000 0000 - FFFF FFFF FFFF FFFF -> 2   GB   kernel text mapping (kernel_base)
  */
 
 #define PAGE_SIZE 4096
@@ -184,6 +195,7 @@ int update_entry(void* table_pptr, uint16_t entry_num, void* entry_pptr, uint64_
 int remove_entry(void* table_pptr, uint16_t entry_num);
 
 void* get_physical_from_virtual(void* vptr);
+void* get_virtual_from_physical(void* pptr);
 
 int update_cr3(void* pptr);
 

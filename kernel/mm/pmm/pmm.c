@@ -9,11 +9,6 @@ static volatile struct limine_memmap_request mmap_request = {
     .revision = 0
 };
 
-static volatile struct limine_hhdm_request hhdm_request = {
-    .id = LIMINE_HHDM_REQUEST,
-    .revision = 0
-};
-
 static uint64_t entry_count;
 static struct limine_memmap_entry** mmap_entries;
 static uint64_t mem_size;    // In bytes
@@ -59,8 +54,11 @@ uint64_t get_free_mem() {
     return free_mem;
 }
 
-void* get_virtual_from_physical(void* pptr) {
-    return hhdm_request.response->offset + pptr;
+void update_bitmap_base(uint64_t offset) {
+    bitmap_base += offset;
+    for (int i = 0; i < NUM_BITMAPS; i++) {
+        bitmaps[i].base += offset;
+    }
 }
 
 #define L_CHILD(index) (index * 2)
@@ -88,7 +86,7 @@ void init_pmm() {
         index++;
     }
 
-    bitmap_base = get_virtual_from_physical((uint8_t*)mmap_entries[index]->base);
+    bitmap_base = (uint8_t*)mmap_entries[index]->base;
 
     mmap_entries[index]->base += bitmap_size;
     mmap_entries[index]->length -= bitmap_size;
@@ -186,6 +184,7 @@ void* pmalloc(size_t pages) {
                     bitmaps[i].free++;
                 }
                 propagate_down(pages, i, j);
+                free_mem -= pages * PAGE_SIZE;
                 return (void*)(j * (PAGE_SIZE << i));
             }
         }
@@ -228,11 +227,11 @@ static void coalesce(size_t pages, size_t level, uint64_t index) {
 }
 
 void pfree(void* pptr, size_t pages) {
-    if (ptr == NULL || pages == 0) {
+    if (pptr == NULL || pages == 0) {
         return;
     }
 
-    uint64_t index = (uint64_t)ptr / PAGE_SIZE;
+    uint64_t index = (uint64_t)pptr / PAGE_SIZE;
     for (uint64_t i = index; i < index + pages; i++) {
         clear_bit(bitmaps[0].base, i);
         bitmaps[0].free++;
@@ -240,7 +239,7 @@ void pfree(void* pptr, size_t pages) {
 
     coalesce(pages, 0, index);
 
-    uint8_t* p = (uint8_t*)ptr;
+    uint8_t* p = (uint8_t*)pptr;
 
     for (uint64_t i = 0; i < pages * PAGE_SIZE; i++) {
         uint64_t j = i % 2;
@@ -249,4 +248,5 @@ void pfree(void* pptr, size_t pages) {
             case 1: p[i] = 0xE6; break;
         }
     }
+    free_mem += pages * PAGE_SIZE;
 }

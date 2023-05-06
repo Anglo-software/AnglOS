@@ -1,5 +1,12 @@
 #include "paging.h"
 #include "mm/pmm/pmm.h"
+#include "boot/limine.h"
+
+void* page_direct_base = 0xFFFF800000000000;
+void* kheap_base       = 0xFFFF900000000000;
+void* vmap_base        = 0xFFFFA00000000000;
+void* kstack_base      = 0xFFFFB00000000000;
+void* kernel_base      = 0xFFFFFFFF80000000;
 
 static uint8_t check_flag(uint64_t* entry_vptr, uint64_t flag) {
     return !(flag ^ (*entry_vptr & flag));
@@ -14,6 +21,10 @@ static void clear_flag(uint64_t* entry_vptr, uint64_t flag) {
 }
 
 
+
+void init_paging() {
+    return;
+}
 
 void* alloc_table();
 

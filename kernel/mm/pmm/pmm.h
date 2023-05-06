@@ -10,7 +10,7 @@ typedef struct {
 void init_pmm();
 
 uint64_t get_free_mem();
-void* get_virtual_from_physical(void* pptr);
+void update_bitmap_base(uint64_t offset);
 
 void* pmalloc(size_t pages);
 void pfree(void* pptr, size_t pages);

@@ -1,11 +1,13 @@
 #include <basic_includes.h>
 #include "limine.h"
 #include "libc/string.h"
+#include "terminal/terminal.h"
+#include "drivers/vga/graphics.h"
 #include "gdt/gdt.h"
 #include "tss/tss.h"
 #include "interrupts/idt.h"
 #include "mm/pmm/pmm.h"
-#include "terminal/terminal.h"
+#include "mm/paging/paging.h"
 #include "drivers/keyboard/keyboard.h"
 #include "drivers/8259/pic.h"
 
@@ -29,38 +31,32 @@ static void really_done(void) {
 }
 
 void _start(void) {
-
     if (stack_request.response == NULL) {
         really_done();
     }
 
-    struct limine_terminal* terminal = init_terminal();
- 
-    if (!terminal) {
-        really_done();
-    }
-
+    init_terminal();
+    
     init_gdt();
-    print("Initialized GDT\n");
-
     for (int i = 0; i < TSS_MAX_CPUS; i++) {
         init_tss(i);
     }
-    print("Initialized TSS\n");
-
     init_idt();
-    print("Initialized IDT\n");
 
     init_pmm();
-    // print("Initialized PMM\n");
+    init_paging();
+
+    if (init_graphics(1024, 768, 32)) {
+        print("VGA could not be initialized, halting...\n");
+        really_done();
+    }
 
     __asm__ volatile ("sti");
 
     if(init_keyboard()) {
         print("Keyboard could not be initialized, halting...\n");
         really_done();
-    }
-    // print("Initialized keyboard\n");
+    } 
  
     // We're done, just hang...
     done();
