@@ -26,4 +26,9 @@
 #define DISP_BPP_32 0x0020
 
 int init_graphics(uint16_t width, uint16_t height, uint16_t depth);
+uint64_t get_res_x();
+uint64_t get_res_y();
+uint64_t get_pitch();
+uint64_t get_bytes_per_pixel();
+uint8_t* get_fb_base();
 void putpixel(uint16_t pos_x, uint16_t pos_y, uint32_t color);

@@ -2,6 +2,7 @@
 #include "boot/limine.h"
 #include "boot/terminal/terminal.h"
 #include "drivers/io.h"
+#include "text.h"
 
 static uint8_t* fb_base = (uint8_t*)0xFFFF8000C0000000;
 static uint64_t fb_w;   // Width
@@ -63,7 +64,29 @@ int init_graphics(uint16_t width, uint16_t height, uint16_t depth) {
     fb_bpp = depth / 8;
     fb_p = width * fb_bpp;
 
+    draw_char_at_cursor(219, false);
+
     return 0;
+}
+
+uint64_t get_res_x() {
+    return fb_w;
+}
+
+uint64_t get_res_y() {
+    return fb_h;
+}
+
+uint64_t get_pitch() {
+    return fb_p;
+}
+
+uint64_t get_bytes_per_pixel() {
+    return fb_bpp;
+}
+
+uint8_t* get_fb_base() {
+    return fb_base;
 }
 
 void putpixel(uint16_t x, uint16_t y, uint32_t color) {
