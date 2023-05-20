@@ -1,6 +1,5 @@
 #include "text.h"
 #include "graphics.h"
-#include "boot/terminal/terminal.h"
 #include "libc/string.h"
 
 static uint16_t cursor_x         = 4; // x position of cursor, upper left corner, in pixels
@@ -35,6 +34,16 @@ void draw_char(uint8_t c, uint16_t x, uint16_t y, bool transparent) {
                 putpixel(x + cx, y + cy, (font_char[cy] & mask[cx]) ? foreground_color : background_color);
             }
         }
+    }
+}
+
+void newline() {
+    if (cursor_y + character_size_y * 2U + spacing_y > get_res_y() - margin_y) {
+        move_screen_up_one_line();
+        move_cursor(margin_x, cursor_y);
+    }
+    else {
+        move_cursor(margin_x, cursor_y + spacing_y + character_size_y);
     }
 }
 

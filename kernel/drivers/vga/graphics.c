@@ -1,6 +1,5 @@
 #include "graphics.h"
 #include "boot/limine.h"
-#include "boot/terminal/terminal.h"
 #include "drivers/io.h"
 #include "text.h"
 

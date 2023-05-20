@@ -3,7 +3,7 @@
 #include "boot/interrupts/idt.h"
 #include "drivers/8259/pic.h"
 #include "drivers/io.h"
-#include "boot/terminal/terminal.h"
+#include "drivers/vga/vga_print.h"
 
 void irq_keyboard_handler(registers_t* registers);
 
@@ -85,14 +85,14 @@ void irq_keyboard_handler(registers_t* registers) {
             alt_pressed = true;
         }
         else if (scan_code_1[scan2] == BACKSPACE) {
-            print("\x08 \x08");
+            vga_print("\x08 \x08");
         }
         else if (scan_code_1[scan2] == ENTER) {
-            print("\r\n");
+            vga_putc('\n');
         }
         else if (prev_scan != 0xE0) {
             if (ctrl_pressed && scan_code_1[scan2] == 'c') {
-                print("\033[2J\033[H");
+                vga_print("\033[2J\033[H");
                 goto end;
             }
             char str[2];
@@ -103,25 +103,25 @@ void irq_keyboard_handler(registers_t* registers) {
                 str[0] = scan_code_1_shift[scan2];
             }
             str[1] = '\0';
-            print(str);
+            vga_print(str);
         }
 
         else {
             if (scan == 0x48) {
                 // Up
-                print("\033[1A");
+                vga_print("\033[1A");
             }
             else if (scan == 0x4B) {
                 // Left
-                print("\033[1D");
+                vga_print("\033[1D");
             }
             else if (scan == 0x4D) {
                 // Right
-                print("\033[1C");
+                vga_print("\033[1C");
             }
             else if (scan == 0x50) {
                 // Down
-                print("\033[1B");
+                vga_print("\033[1B");
             }
         }
     }

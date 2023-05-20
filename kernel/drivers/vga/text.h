@@ -3,6 +3,7 @@
 
 void draw_char_at_cursor(uint8_t c, bool transparent);
 void draw_char(uint8_t c, uint16_t x, uint16_t y, bool transparent);
+void newline();
 void move_cursor(uint16_t x, uint16_t y);
 void advance_cursor();
 void set_background(uint32_t color);

@@ -1,7 +1,6 @@
 #include "pmm.h"
 #include "boot/limine.h"
 #include "mm/paging/paging.h"
-#include "boot/terminal/terminal.h"
 #include "libc/string.h"
 
 static volatile struct limine_memmap_request mmap_request = {
