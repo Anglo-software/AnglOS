@@ -1,7 +1,7 @@
 #include "keyboard.h"
 #include "boot/interrupts/isr.h"
 #include "boot/interrupts/idt.h"
-#include "drivers/8259/pic.h"
+#include "drivers/apic/apic.h"
 #include "drivers/io.h"
 #include "drivers/vga/vga_print.h"
 
@@ -19,7 +19,8 @@ static unsigned char* scan_code_1_shift = "\0""\0""!@#$%^&*()_+""\x80""\x09""QWE
 
 int init_keyboard() {
     register_interrupt_handler(IRQ1, irq_keyboard_handler);
-    pic_unmask_irq(0x01);
+    ioapic_redirection_t redir = {.vector = IRQ1};
+    write_ioapic_redir(0x01, &redir);
     return 0;
 }
 
@@ -142,5 +143,5 @@ void irq_keyboard_handler(registers_t* registers) {
     prev_scan = scan;
 
     send_end_of_transmission();
-    pic_send_eoi(0x01);
+    apic_send_eoi();
 }

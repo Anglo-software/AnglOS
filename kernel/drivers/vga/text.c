@@ -86,7 +86,7 @@ void move_screen_up_one_line() {
     uint8_t* fb_base = get_fb_base();
 
     for (uint64_t i = margin_y + spacing_y + character_size_y; i < get_res_y(); i++) {
-        memcpy((void*)fb_base, (void*)(fb_base + (margin_y + spacing_y + character_size_y) * get_pitch()), get_pitch());
+        memcpy((void*)fb_base, (void*)(fb_base + (spacing_y + character_size_y) * get_pitch()), get_pitch());
         fb_base += get_pitch();
     }
 }

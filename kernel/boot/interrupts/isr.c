@@ -1,8 +1,7 @@
 #include "isr.h"
 #include "idt.h"
 #include "../tss/tss.h"
-#include "drivers/io.h"
-#include "drivers/8259/pic.h"
+#include "drivers/apic/apic.h"
 #include "drivers/vga/vga_print.h"
 
 isr_t interrupt_handlers[256];
@@ -41,10 +40,6 @@ void isr_install() {
     idt_set_descriptor(30, (uint64_t) isr30, IDT_DESCRIPTOR_EXCEPTION, TSS_IST_EXCEPTION);
     idt_set_descriptor(31, (uint64_t) isr31, IDT_DESCRIPTOR_EXCEPTION, TSS_IST_EXCEPTION);
 
-    // Remap the PIC
-    pic_remap_offsets(0x20);
-
-    // Install the IRQs
     idt_set_descriptor(32, (uint64_t) irq0,  IDT_DESCRIPTOR_EXTERNAL, TSS_IST_EXCEPTION);
     idt_set_descriptor(33, (uint64_t) irq1,  IDT_DESCRIPTOR_EXTERNAL, TSS_IST_EXCEPTION);
     idt_set_descriptor(34, (uint64_t) irq2,  IDT_DESCRIPTOR_EXTERNAL, TSS_IST_EXCEPTION);
@@ -119,6 +114,6 @@ void irq_handler(registers_t *r) {
         handler(r);
     }
     else {
-        pic_send_eoi(r->vector);
+        apic_send_eoi();
     }
 }

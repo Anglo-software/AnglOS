@@ -1,15 +1,17 @@
 #include <basic_includes.h>
 #include "limine.h"
-#include "libc/string.h"
+#include "cpu/cpu.h"
 #include "gdt/gdt.h"
 #include "tss/tss.h"
 #include "interrupts/idt.h"
+#include "drivers/acpi/acpi.h"
+#include "drivers/apic/apic.h"
 #include "mm/pmm/pmm.h"
 #include "mm/paging/paging.h"
 #include "drivers/vga/graphics.h"
 #include "drivers/vga/vga_print.h"
 #include "drivers/keyboard/keyboard.h"
-#include "drivers/8259/pic.h"
+#include "drivers/hpet/hpet.h"
 
 static volatile struct limine_stack_size_request stack_request = {
     .id = LIMINE_STACK_SIZE_REQUEST,
@@ -30,24 +32,22 @@ static void really_done(void) {
     }
 }
 
-static uint64_t wait(uint64_t time) {
-    volatile uint64_t sum = 0;
-    for (uint64_t i = 0; i < time; i++) {
-        sum += i;
-    }
-    return sum;
-}
-
 void _start(void) {
     if (stack_request.response == NULL) {
         really_done();
     }
+
+    init_sse();
     
     init_gdt();
     for (int i = 0; i < TSS_MAX_CPUS; i++) {
         init_tss(i);
     }
     init_idt();
+
+    init_acpi();
+    init_apic();
+    init_hpet();
 
     init_pmm();
     init_paging();
@@ -60,7 +60,7 @@ void _start(void) {
 
     if(init_keyboard()) {
         really_done();
-    } 
+    }
  
     // We're done, just hang...
     done();

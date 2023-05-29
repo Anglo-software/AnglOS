@@ -65,24 +65,12 @@ uint32_t inl(uint16_t port) {
 
 inline
 __attribute__((always_inline)) 
-void wrmsr(uint64_t msr, uint64_t value) {
-    uint32_t eax, edx;
-
-    eax = (uint32_t)(value & 0xFFFFFFFF);
-    edx = (uint32_t)(value >> 0x20);
-
-    __asm__ volatile ("wrmsr" : : "a"(eax), "d"(edx), "c"(msr));
+void wrmsr(uint32_t msr, uint32_t lo, uint32_t hi) {
+   __asm__ volatile("wrmsr" : : "a"(lo), "d"(hi), "c"(msr));
 }
 
 inline
 __attribute__((always_inline)) 
-uint64_t rdmsr(uint64_t msr) {
-    uint32_t eax, edx;
-
-    __asm__ volatile ("wrmsr" : "=a"(eax), "=d"(edx) : "c"(msr));
-
-    uint64_t value = (uint64_t)eax;
-    value |= ((uint64_t)edx << 0x20);
-
-    return value;
+void rdmsr(uint32_t msr, uint32_t* lo, uint32_t* hi) {
+   __asm__ volatile("rdmsr" : "=a"(*lo), "=d"(*hi) : "c"(msr));
 }
