@@ -9,26 +9,14 @@ static uint64_t fb_h;   // Height
 static uint64_t fb_p;   // Pitch
 static uint64_t fb_bpp; // Bytes per pixel
 
-static uint64_t wait(uint64_t time) {
-    volatile uint64_t sum = 0;
-    for (uint64_t i = 0; i < time; i++) {
-        sum += i;
-    }
-    return sum;
-}
-
 static void write_reg(uint16_t index, uint16_t data) {
     outw(0x01CE, index);
-    wait(1000);
     outw(0x01CF, data);
-    wait(1000);
 }
 
 static uint16_t read_reg(uint16_t index) {
     outw(0x01CE, index);
-    wait(1000);
     uint16_t in = inw(0x01CF);
-    wait(1000);
     return in;
 }
 
@@ -63,7 +51,7 @@ int init_graphics(uint16_t width, uint16_t height, uint16_t depth) {
     fb_bpp = depth / 8;
     fb_p = width * fb_bpp;
 
-    draw_char_at_cursor(219, false);
+    move_cursor(4, 4);
 
     return 0;
 }

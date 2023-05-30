@@ -9,7 +9,6 @@
 #include "mm/pmm/pmm.h"
 #include "mm/paging/paging.h"
 #include "drivers/vga/graphics.h"
-#include "drivers/vga/vga_print.h"
 #include "drivers/keyboard/keyboard.h"
 #include "drivers/hpet/hpet.h"
 

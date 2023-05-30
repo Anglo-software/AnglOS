@@ -1,5 +1,4 @@
 #include "hpet.h"
-#include "drivers/vga/vga_print.h"
 #include "boot/interrupts/isr.h"
 #include "drivers/apic/apic.h"
 

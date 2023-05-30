@@ -17,6 +17,26 @@ uint8_t font1_8_16[];
 
 static uint8_t* current_font = (uint8_t*)font1_8_16;
 
+uint32_t pixels_at_cursor[8*16];
+
+void draw_cursor() {
+    uint8_t* fb_base = get_fb_base();
+    for (int cy = 0; cy < character_size_y; cy++) {
+        uint32_t where = cursor_x * get_bytes_per_pixel() + (cursor_y + cy) * get_pitch();
+        memcpy(&pixels_at_cursor[cy * character_size_x], &fb_base[where], get_bytes_per_pixel() * character_size_x);
+    }
+    draw_char_at_cursor(219, false);
+}
+
+void clear_cursor() {
+    uint8_t* fb_base = get_fb_base();
+    for (int cy = 0; cy < character_size_y; cy++) {
+        uint32_t where = cursor_x * get_bytes_per_pixel() + (cursor_y + cy) * get_pitch();
+        memcpy(&fb_base[where], &pixels_at_cursor[cy * character_size_x], get_bytes_per_pixel() * character_size_x);
+    }
+    memset(pixels_at_cursor, 0x00, 8*16*4);
+}
+
 void draw_char_at_cursor(uint8_t c, bool transparent) {
     draw_char(c, cursor_x, cursor_y, transparent);
 }
@@ -38,6 +58,7 @@ void draw_char(uint8_t c, uint16_t x, uint16_t y, bool transparent) {
 }
 
 void newline() {
+    clear_cursor();
     if (cursor_y + character_size_y * 2U + spacing_y > get_res_y() - margin_y) {
         move_screen_up_one_line();
         move_cursor(margin_x, cursor_y);
@@ -47,12 +68,45 @@ void newline() {
     }
 }
 
+void cursor_up() {
+    if (cursor_y == margin_y) {
+        return;
+    }
+    clear_cursor();
+    move_cursor(cursor_x, cursor_y - spacing_y - character_size_y);
+}
+
+void cursor_down() {
+    if (cursor_y + character_size_y * 2U + spacing_y > get_res_y() - margin_y) {
+        return;
+    }
+    clear_cursor();
+    move_cursor(cursor_x, cursor_y + spacing_y + character_size_y);
+}
+
+void cursor_left() {
+    if (cursor_x == margin_x) {
+        return;
+    }
+    clear_cursor();
+    move_cursor(cursor_x - spacing_x - character_size_x, cursor_y);
+}
+
+void cursor_right() {
+    if (cursor_x + character_size_x * 2U + spacing_x > get_res_x() - margin_x) {
+        return;
+    }
+    clear_cursor();
+    move_cursor(cursor_x + spacing_x + character_size_x, cursor_y);
+}
+
 void move_cursor(uint16_t x, uint16_t y) {
     cursor_x = x;
     cursor_y = y;
+    draw_cursor();
 }
 
-void advance_cursor() {
+void advance_cursor_right() {
     if (cursor_y + character_size_y * 2U + spacing_y > get_res_y() - margin_y &&
         cursor_x + character_size_x * 2U + spacing_x > get_res_x() - margin_x) {
         move_screen_up_one_line();
@@ -75,11 +129,9 @@ void set_foreground(uint32_t color) {
 }
 
 void clear_char_at_cursor() {
-    for (int cy = 0; cy < character_size_y; cy++) {
-        for (int cx = 0; cx < character_size_x; cx++) {
-            putpixel(cursor_x + cx, cursor_y + cy - 12, background_color);
-        }
-    }
+    clear_cursor();
+    draw_char_at_cursor(' ', false);
+    draw_cursor();
 }
 
 void move_screen_up_one_line() {
@@ -89,6 +141,14 @@ void move_screen_up_one_line() {
         memcpy((void*)fb_base, (void*)(fb_base + (spacing_y + character_size_y) * get_pitch()), get_pitch());
         fb_base += get_pitch();
     }
+
+    fb_base = get_fb_base();
+    memset((void*)(fb_base + cursor_y * get_pitch()), 0x00, (character_size_y + margin_y) * get_pitch());
+}
+
+void clear_screen() {
+    clear_cursor();
+    memset((void*)get_fb_base(), 0x00, get_res_y() * get_pitch());
 }
 
 uint8_t font1_8_16[] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,

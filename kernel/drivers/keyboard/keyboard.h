@@ -12,8 +12,8 @@
 #define LEFT_ALT 0x85
 
 int init_keyboard();
-int send_keyboard_command(uint8_t, bool);
-int send_keyboard_byte(uint8_t);
+void send_keyboard_command(uint8_t);
+void send_keyboard_byte(uint8_t);
 uint8_t get_keyboard_byte();
 uint8_t get_keyboard_status();
 void send_end_of_transmission();

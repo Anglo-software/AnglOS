@@ -4,17 +4,33 @@
 static const char COVERSION_TABLE[] = "0123456789abcdef";
 
 void vga_putc(uint8_t c) {
-    if (c == '\n') {
-        newline();
-        return;
+    switch (c) {
+        case '\n': newline(); break;
+        case '\b': cursor_left(); clear_char_at_cursor(); break;
+        default:   clear_cursor(); draw_char_at_cursor(c, false); advance_cursor_right(); break;
     }
-    draw_char_at_cursor(c, false);
-    advance_cursor();
 }
 
 void vga_print(const char* msg) {
     for (size_t i = 0; msg[i]; i++) {
-        vga_putc(msg[i]);
+        if (msg[i] == '\033' && msg[i + 1] == '[') {
+            i += 2;
+            switch (msg[i]) {
+                case 'H': clear_cursor(); move_cursor(4, 4); break;
+                default:  break;
+            }
+            switch (msg[i + 1]) {
+                case 'A': cursor_up();    i += 1; break;
+                case 'B': cursor_down();  i += 1; break;
+                case 'C': cursor_right(); i += 1; break;
+                case 'D': cursor_left();  i += 1; break;
+                case 'J': clear_screen(); draw_cursor(); i += 1; break;
+                default:  break;
+            }
+        }
+        else {
+            vga_putc(msg[i]);
+        }
     }
 }
 
