@@ -45,6 +45,7 @@ bool is_letter(char c) {
 }
 
 void irq_keyboard_handler(registers_t* registers) {
+    __asm__ volatile ("cli");
     int scan = get_keyboard_byte();
 
     bool released = (scan & 0b10000000) >> 7;
@@ -118,4 +119,5 @@ void irq_keyboard_handler(registers_t* registers) {
     prev_scan = scan;
 
     apic_send_eoi();
+    __asm__ volatile ("sti");
 }

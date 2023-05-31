@@ -1,6 +1,7 @@
 #include "apic.h"
 #include "drivers/io.h"
 #include "drivers/8259/pic.h"
+#include "boot/interrupts/isr.h"
 
 extern uint8_t* page_direct_base;
 
@@ -24,7 +25,10 @@ static uintptr_t cpu_get_apic_base() {
 static void apic_enable() {
     cpu_set_apic_base(cpu_get_apic_base());
     write_lapic_reg(APIC_SPURIOUS, read_lapic_reg(APIC_SPURIOUS) | APIC_SW_ENABLE);
-    write_lapic_reg(APIC_TASKPRIOR, read_lapic_reg(APIC_TASKPRIOR) | 0x01);
+    //write_lapic_reg(APIC_TASKPRIOR, read_lapic_reg(APIC_TASKPRIOR) | 0x01);
+}
+
+static void irq_spurious_handler(registers_t* registers) {
 }
 
 uint32_t read_lapic_reg(uint32_t reg) {
@@ -61,6 +65,7 @@ void init_apic() {
     }
     pic_disable();
     apic_enable();
+    register_interrupt_handler(IRQ7, irq_spurious_handler);
 }
 
 void read_ioapic_redir(uint8_t irq, ioapic_redirection_t* entry) {
@@ -75,5 +80,5 @@ void write_ioapic_redir(uint8_t irq, ioapic_redirection_t* entry) {
 }
 
 void apic_send_eoi() {
-    write_lapic_reg(0xB0, 0);
+    write_lapic_reg(APIC_EOI, 0);
 }

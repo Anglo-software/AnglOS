@@ -94,6 +94,7 @@ typedef struct {
 #define APIC_SW_ENABLE  0x100
 #define APIC_CPUFOXUS   0x200
 #define APIC_NMI        (4 << 8)
+#define APIC_LVT_MASK   (1 << 16)
 #define TMR_PERIODIC    0x20000
 #define TMR_BASEDIV     (1 << 20)
 

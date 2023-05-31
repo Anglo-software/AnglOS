@@ -19,7 +19,7 @@ static void write_hpet_reg(uint64_t reg, uint64_t data) {
     *ptr = data;
 }
 
-uint64_t time_counter = 0;
+static uint64_t time_counter = 0;
 
 static void irq_hpet_handler(registers_t* registers) {
     time_counter++;

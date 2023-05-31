@@ -53,6 +53,7 @@ override CFLAGS +=       \
     -mno-red-zone        \
     -mcmodel=kernel      \
     -MMD                 \
+    -masm=intel          \
     -I.
  
 # Internal C flags that should not be changed by the user.

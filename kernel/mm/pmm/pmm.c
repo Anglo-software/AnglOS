@@ -2,6 +2,7 @@
 #include "boot/limine.h"
 #include "mm/paging/paging.h"
 #include "libc/string.h"
+#include "drivers/vga/vga_print.h"
 
 static volatile struct limine_memmap_request mmap_request = {
     .id = LIMINE_MEMMAP_REQUEST,
@@ -238,14 +239,5 @@ void pfree(void* pptr, size_t pages) {
 
     coalesce(pages, 0, index);
 
-    uint8_t* p = (uint8_t*)pptr;
-
-    for (uint64_t i = 0; i < pages * PAGE_SIZE; i++) {
-        uint64_t j = i % 2;
-        switch(j) {
-            case 0: p[i] = 0x21; break;
-            case 1: p[i] = 0xE6; break;
-        }
-    }
     free_mem += pages * PAGE_SIZE;
 }
