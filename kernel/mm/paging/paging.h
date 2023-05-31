@@ -154,6 +154,12 @@
 #define PAGE_STRUCTURE_P2 0x0040000000000000 // PDE
 #define PAGE_STRUCTURE_P1 0x0080000000000000 // PTE
 
+#define PAGE_OFFSET(vptr) ((vptr >> 0)  & 0xFFF)
+#define PAGE_P1E(vptr)    ((vptr >> 12) & 0x1FF)
+#define PAGE_P2E(vptr)    ((vptr >> 21) & 0x1FF)
+#define PAGE_P3E(vptr)    ((vptr >> 30) & 0x1FF)
+#define PAGE_P4E(vptr)    ((vptr >> 39) & 0x1FF)
+
 
 
 typedef struct {
