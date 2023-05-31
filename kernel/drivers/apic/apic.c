@@ -23,7 +23,8 @@ static uintptr_t cpu_get_apic_base() {
  
 static void apic_enable() {
     cpu_set_apic_base(cpu_get_apic_base());
-    write_lapic_reg(0xF0, read_lapic_reg(0xF0) | 0x100);
+    write_lapic_reg(APIC_SPURIOUS, read_lapic_reg(APIC_SPURIOUS) | APIC_SW_ENABLE);
+    write_lapic_reg(APIC_TASKPRIOR, read_lapic_reg(APIC_TASKPRIOR) | 0x01);
 }
 
 uint32_t read_lapic_reg(uint32_t reg) {
