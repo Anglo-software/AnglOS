@@ -119,7 +119,7 @@
  * Kernel:
  * FFFF 8000 0000 0000 - FFFF 8007 FFFF FFFF -> 32  GB   direct mapping of all physical memory (page_direct_base)
  * FFFF 9000 0000 0000 - FFFF 9020 FFFF FFFF -> 128 GB   kernel heap (kheap_base) (start at 1GB)
- * FFFF A000 0000 0000 - FFFF A00F FFFF FFFF -> 64  GB   virtual memory map (vmmap_base) for kernel and user (Allocate as necessary)
+ * FFFF A000 0000 0000 - FFFF A00F FFFF FFFF -> 64  GB   mem-mapped io base (Allocate as necessary)
  * FFFF B000 0000 0000 - FFFF B00F FFFF FFFF -> 64  GB   kernel and irq/isr stacks (kstack_base) (start at 512MB)
  * FFFF FFFF 8000 0000 - FFFF FFFF FFFF FFFF -> 2   GB   kernel text mapping (kernel_base)
  */

@@ -5,7 +5,7 @@
 
 void* page_direct_base = (void*)0xFFFF800000000000;
 void* kheap_base       = (void*)0xFFFF900000000000;
-void* vmap_base        = (void*)0xFFFFA00000000000;
+void* iomap_base       = (void*)0xFFFFA00000000000;
 void* kstack_base      = (void*)0xFFFFB00000000000;
 void* kernel_base      = (void*)0xFFFFFFFF80000000;
 

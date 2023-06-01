@@ -11,7 +11,7 @@ struct tag {
 /* FENCE is used for heap prologue/epilogue. */
 const struct tag FENCE = {
     .inuse = 1,
-    .size = 0xabcd0000
+    .size = 0
 };
 
 /* 
