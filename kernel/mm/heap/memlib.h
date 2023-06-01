@@ -1,7 +1,10 @@
 #pragma once
 #include <basic_includes.h>
 
-void   mem_init(int use_mmap);
+#define MAX_HEAP (1 << 30)
+#define ALIGNMENT 16
+
+int    mem_init();
 void   mem_deinit();
 void*  mem_sbrk(int incr);
 void   mem_reset_brk(); 

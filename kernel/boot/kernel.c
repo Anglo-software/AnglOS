@@ -1,5 +1,7 @@
 #include <basic_includes.h>
 #include "limine.h"
+#include "drivers/vga/graphics.h"
+#include "drivers/vga/vga_print.h"
 #include "cpu/cpu.h"
 #include "gdt/gdt.h"
 #include "tss/tss.h"
@@ -8,11 +10,11 @@
 #include "drivers/apic/apic.h"
 #include "mm/pmm/pmm.h"
 #include "mm/paging/paging.h"
-#include "drivers/vga/graphics.h"
-#include "drivers/keyboard/keyboard.h"
+#include "mm/heap/memlib.h"
+#include "mm/heap/heap.h"
 #include "drivers/hpet/hpet.h"
 #include "drivers/apic/timer.h"
-#include "drivers/vga/vga_print.h"
+#include "drivers/keyboard/keyboard.h"
 
 static volatile struct limine_stack_size_request stack_request = {
     .id = LIMINE_STACK_SIZE_REQUEST,
@@ -74,6 +76,16 @@ void _start(void) {
 
     vga_printf("Initializing Paging    \n");
     init_paging();
+    vga_print("\033[1A");
+
+    vga_printf("Initializing Heap      \n");
+    if (mem_init()) {
+        really_done();
+    }
+    
+    if (mm_init()) {
+        really_done();
+    }
     vga_print("\033[1A");
 
     vga_printf("Enabling Interrupts    \n");

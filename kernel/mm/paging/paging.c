@@ -9,18 +9,6 @@ void* vmap_base        = (void*)0xFFFFA00000000000;
 void* kstack_base      = (void*)0xFFFFB00000000000;
 void* kernel_base      = (void*)0xFFFFFFFF80000000;
 
-static uint8_t check_flag(uint64_t* entry_vptr, uint64_t flag) {
-    return !(flag ^ (*entry_vptr & flag));
-}
-
-static void set_flag(uint64_t* entry_vptr, uint64_t flag) {
-    *entry_vptr = *entry_vptr | flag;
-}
-
-static void clear_flag(uint64_t* entry_vptr, uint64_t flag) {
-    *entry_vptr = *entry_vptr & (~flag);
-}
-
 void init_paging() {
     update_bitmap_base((uint64_t)page_direct_base);
     //remove_entry(get_cr3(), 4, 0);
@@ -147,8 +135,6 @@ void* vmalloc(void* vptr, size_t pages, uint64_t flags) {
 }
 
 static void vfree_helper(void* vptr, uint64_t* p4tp) {
-    void* pptr;
-
     uint64_t p4e_num = PAGE_P4E((uint64_t)vptr);
     uint64_t p4e = p4tp[p4e_num];
     if (p4e == 0) {

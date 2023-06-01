@@ -1,37 +1,52 @@
 #include "memlib.h"
+#include "mm/paging/paging.h"
+#include "drivers/vga/vga_print.h"
 
-void mem_init(int use_mmap) {
+extern void* kheap_base;
 
+static char* mem_start_brk;
+static char* mem_brk;
+static char* mem_max_addr;
+
+int mem_init() {
+    if ((mem_start_brk = (char*)vmalloc(kheap_base, MAX_HEAP / PAGE_SIZE, PAGE_FLAG_PRESENT | PAGE_FLAG_READWRITE)) == NULL) {
+        return -1;
+    }
+    mem_max_addr = mem_start_brk + MAX_HEAP;
+    mem_brk = mem_start_brk;
+    return 0;
 }
 
 void mem_deinit() {
-    
+    vfree(mem_start_brk, MAX_HEAP / PAGE_SIZE);
 }
 
 void* mem_sbrk(int incr) {
-    return NULL;
+    char* old_brk = mem_brk;
+
+    if ((incr < 0) || ((mem_brk + incr) > mem_max_addr)) {
+        return NULL;
+    }
+    mem_brk += incr;
+    return (void*)old_brk;
 }
 
 void mem_reset_brk() {
-    
+    mem_brk = mem_start_brk;
 }
 
 void* mem_heap_lo() {
-    
-    return NULL;
+    return (void*)mem_start_brk;
 }
 
 void* mem_heap_hi() {
-    return NULL;
-    
+    return (void*)(mem_brk - 1);
 }
 
 size_t mem_heapsize() {
-    
-    return 0;
+    return (size_t)(mem_brk - mem_start_brk);
 }
 
 size_t mem_pagesize() {
-    
-    return 0;
+    return PAGE_SIZE;
 }
