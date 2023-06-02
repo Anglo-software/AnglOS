@@ -21,6 +21,11 @@ static volatile struct limine_stack_size_request stack_request = {
     .revision = 0,
     .stack_size = 1024*1024
 };
+
+static volatile struct limine_module_request module_request = {
+    .id = LIMINE_MODULE_REQUEST,
+    .revision = 0
+};
  
 static void done(void) {
     for (;;) {
@@ -106,6 +111,9 @@ void _start(void) {
     }
 
     vga_print("\033[2J\033[H");
+
+    struct limine_file* file = module_request.response->modules[0];
+    vga_printf("%s\n", (char*)(file->address));
  
     // We're done, just hang...
     done();

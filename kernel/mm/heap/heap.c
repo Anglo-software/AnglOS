@@ -71,7 +71,6 @@ static void place(struct block* bp, size_t asize);
 static struct block* find_fit(size_t asize);
 static struct block* coalesce(struct block* bp);
 static struct list* get_seg_list(size_t words);
-static void checkheap(void);
 
 /* 
  * Given a block, obtain previous's block footer.
@@ -386,10 +385,10 @@ static void place(struct block *bp, size_t asize)
 static struct block* find_fit(size_t asize)
 {
     /* Gets the smallest seg list that can fit block */
-    int idx = get_seg_index(asize);
+    size_t idx = get_seg_index(asize);
     /* Iterates through seg list entries until the first small enough one is found */
     for (size_t i = idx; i < NUM_LISTS; i++) {
-        int j = 0;
+        size_t j = 0;
         struct list* l = &free_lists[i];
         for (struct list_elem* elem = list_begin(l); 
              elem != list_end(l); 

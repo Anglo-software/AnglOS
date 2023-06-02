@@ -11,6 +11,10 @@ void vga_putc(uint8_t c) {
     }
 }
 
+static void vga_putspecial(uint8_t c) {
+    clear_cursor(); draw_char_at_cursor(c, false); advance_cursor_right();
+}
+
 void vga_print(const char* msg) {
     for (size_t i = 0; msg[i]; i++) {
         if (msg[i] == '\033' && msg[i + 1] == '[') {
@@ -87,6 +91,7 @@ void vga_printf(const char* format, ...) {
                 case 'x': vga_printhex(va_arg(args, uint64_t)); break;
                 case 'd': vga_printdec(va_arg(args, uint64_t)); break;
                 case 's': vga_print(va_arg(args, char*)); break;
+                case '`': format++; vga_putspecial(*format); break;
                 default: vga_print("Invalid type specifier\n"); break;
             }
         }
