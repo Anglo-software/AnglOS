@@ -22,10 +22,10 @@ $(eval $(call DEFAULT_VAR,CXX,x86_64-elf-g++))
 $(eval $(call DEFAULT_VAR,LD,x86_64-elf-ld))
  
 # User controllable CFLAGS.
-CFLAGS ?= -g -O2 -pipe -Wall -Wextra
+CFLAGS ?= -g -O3 -pipe -Wall -Wextra
  
 # User controllable CXXFLAGS.
-CXXFLAGS ?= -g -O2 -pipe -Wall -Wextra
+CXXFLAGS ?= -g -O3 -pipe -Wall -Wextra
  
 # User controllable preprocessor flags. We set none by default.
 CPPFLAGS ?=

@@ -11,7 +11,7 @@ void* kernel_base      = (void*)0xFFFFFFFF80000000;
 
 void init_paging() {
     update_bitmap_base((uint64_t)page_direct_base);
-    //remove_entry(get_cr3(), 4, 0);
+    remove_entry(get_cr3(), 4, 0);
     return;
 }
 
@@ -55,17 +55,27 @@ void update_entry(void* table_vptr, uint16_t entry_num, void* entry_pptr, uint64
     *entry_vptr = ((uint64_t)entry_pptr & (~0xFFF)) | flags;
 }
 
+extern uint64_t mem_size;
+
 void remove_entry(void* table_vptr, uint16_t level, uint16_t entry_num) {
     uint64_t* entry = (uint64_t*)((uint64_t)table_vptr + 8 * entry_num);
 
+    if (*entry & 0x1 != 0x1) {
+        return;
+    }
+
+    void* entry_pptr = (void*)(*entry & 0x000FFFFFFFFFF000);
+
+    if ((uint64_t)entry_pptr >= mem_size) {
+        return;
+    }
+
     if (level == 1) {
-        void* entry_pptr = (void*)(*entry & 0x000FFFFFFFFFF000);
         pfree(entry_pptr, 1);
         *entry = 0;
     }
 
     else {
-        void* entry_pptr = (void*)(*entry & 0x000FFFFFFFFFF000);
         for (int i = 0; i < 512; i++) {
             remove_entry(entry_pptr + (uint64_t)page_direct_base, level - 1, i);
         }
@@ -97,7 +107,7 @@ static void* vmalloc_helper(void* vptr, uint64_t* p4tp, uint64_t flags) {
         add_entry((void*)p4tp, p4e_num, pptr, flags);
     }
     p4e = p4tp[p4e_num];
-    uint64_t* p3tp = (uint64_t*)(p4e & 0x000FFFFFFFFFF000);
+    uint64_t* p3tp = (uint64_t*)((p4e & 0x000FFFFFFFFFF000) + (uint64_t)page_direct_base);
     
     uint64_t p3e_num = PAGE_P3E((uint64_t)vptr);
     uint64_t p3e = p3tp[p3e_num];
@@ -106,7 +116,7 @@ static void* vmalloc_helper(void* vptr, uint64_t* p4tp, uint64_t flags) {
         add_entry((void*)p3tp, p3e_num, pptr, flags);
     }
     p3e = p3tp[p3e_num];
-    uint64_t* p2tp = (uint64_t*)(p3e & 0x000FFFFFFFFFF000);
+    uint64_t* p2tp = (uint64_t*)((p3e & 0x000FFFFFFFFFF000) + (uint64_t)page_direct_base);
     
     uint64_t p2e_num = PAGE_P2E((uint64_t)vptr);
     uint64_t p2e = p2tp[p2e_num];
@@ -115,7 +125,7 @@ static void* vmalloc_helper(void* vptr, uint64_t* p4tp, uint64_t flags) {
         add_entry((void*)p2tp, p2e_num, pptr, flags);
     }
     p2e = p2tp[p2e_num];
-    uint64_t* p1tp = (uint64_t*)(p2e & 0x000FFFFFFFFFF000);
+    uint64_t* p1tp = (uint64_t*)((p2e & 0x000FFFFFFFFFF000) + (uint64_t)page_direct_base);
     
     uint64_t p1e_num = PAGE_P1E((uint64_t)vptr);
     pptr = pmalloc_bulk();

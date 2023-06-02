@@ -4,6 +4,7 @@ all: angl-os.iso
 
 .PHONY: all-hdd
 all-hdd: angl-os.hdd
+	 cd kernel && objdump -d angl-os.elf > angl-os.dump && cd ..
 
 .PHONY: run
 run: angl-os.iso
@@ -60,7 +61,7 @@ angl-os.hdd: limine kernel
 	sudo mkdir -p img_mount/EFI/BOOT
 	sudo mkdir -p img_mount/resources
 	sudo cp -v kernel/angl-os.elf limine.cfg limine/limine.sys img_mount/
-	sudo cp -v resources/test.txt img_mount/resources/
+	sudo cp -v resources/test.txt resources/VGA8.F16 img_mount/resources/
 	sudo cp -v limine/BOOTX64.EFI img_mount/EFI/BOOT/
 	sync
 	sudo umount img_mount

@@ -2,7 +2,6 @@
 #include "boot/limine.h"
 #include "mm/paging/paging.h"
 #include "libc/string.h"
-#include "drivers/vga/vga_print.h"
 
 static volatile struct limine_memmap_request mmap_request = {
     .id = LIMINE_MEMMAP_REQUEST,
@@ -11,7 +10,7 @@ static volatile struct limine_memmap_request mmap_request = {
 
 static uint64_t entry_count;
 static struct limine_memmap_entry** mmap_entries;
-static uint64_t mem_size;    // In bytes
+uint64_t mem_size;           // In bytes
 static uint64_t bitmap_size; // In bytes
 static uint8_t* bitmap_base;
 static uint64_t free_mem;    // In bytes
