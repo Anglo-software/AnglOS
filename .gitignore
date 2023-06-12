@@ -4,6 +4,7 @@ loopback_dev
 limine
 *.o
 *.d
+angl-os.hdd
 ovmf-x64/OVMF-X64.zip
 ovmf-x64/OVMF-X64.zip:Zone.Identifier
 ovmf-x64/OVMF.fd

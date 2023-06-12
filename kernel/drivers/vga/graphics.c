@@ -3,7 +3,12 @@
 #include "drivers/io.h"
 #include "text.h"
 
-static uint8_t* fb_base = (uint8_t*)0xFFFF8000C0000000;
+static volatile struct limine_framebuffer_request fb_request = {
+    .id = LIMINE_FRAMEBUFFER_REQUEST,
+    .revision = 0
+};
+
+static uint8_t* fb_base = 0;
 static uint64_t fb_w;   // Width
 static uint64_t fb_h;   // Height
 static uint64_t fb_p;   // Pitch
@@ -38,6 +43,12 @@ static int change_bit_depth(uint16_t depth) {
 }
 
 int init_graphics(uint16_t width, uint16_t height, uint16_t depth) {
+    if (fb_request.response->framebuffer_count == 0) {
+        return 1;
+    }
+
+    fb_base = fb_request.response->framebuffers[0]->address;
+
     if (change_resolution(width, height)) {
         return 1;
     }

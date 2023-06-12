@@ -40,38 +40,19 @@ void _start(void) {
     if (stack_request.response == NULL) {
         really_done();
     }
-
     init_kmodules();
+    init_sse();
+    init_gdt();
+    for (int i = 0; i < TSS_MAX_CPUS; i++) {
+        init_tss(i);
+    }
+    init_idt();
+    init_acpi();
+    init_apic();
 
     if (init_graphics(1024, 768, 32)) {
         really_done();
     }
-
-    vga_printf("Initializing SSE       \n");
-    init_sse();
-    vga_print("\033[1A");
-    
-    vga_printf("Initializing GDT       \n");
-    init_gdt();
-    vga_print("\033[1A");
-
-    vga_printf("Initializing TSS       \n");
-    for (int i = 0; i < TSS_MAX_CPUS; i++) {
-        init_tss(i);
-    }
-    vga_print("\033[1A");
-
-    vga_printf("Initializing IDT       \n");
-    init_idt();
-    vga_print("\033[1A");
-
-    vga_printf("Initializing ACPI      \n");
-    init_acpi();
-    vga_print("\033[1A");
-
-    vga_printf("Initializing APIC      \n");
-    init_apic();
-    vga_print("\033[1A");
 
     vga_printf("Initializing PMM       \n");
     init_pmm();

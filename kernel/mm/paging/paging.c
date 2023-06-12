@@ -11,7 +11,7 @@ void* kernel_base      = (void*)0xFFFFFFFF80000000;
 
 void init_paging() {
     update_bitmap_base((uint64_t)page_direct_base);
-    remove_entry(get_cr3(), 4, 0);
+    // remove_entry(get_cr3(), 4, 0);
     return;
 }
 
