@@ -1,6 +1,5 @@
 #include "memlib.h"
 #include "mm/paging/paging.h"
-#include "drivers/vga/vga_print.h"
 
 extern void* kheap_base;
 

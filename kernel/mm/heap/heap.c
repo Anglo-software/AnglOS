@@ -1,6 +1,6 @@
 #include "heap.h"
 #include "memlib.h"
-#include "list.h"
+#include "libc/kernel/list.h"
 #include "libc/string.h"
 
 struct tag {
@@ -135,7 +135,7 @@ static void mark_block_free(struct block* blk, int size) {
 /* 
  * mm_init - Initialize the memory manager 
  */
-int mm_init (void) {
+int kmeminit (void) {
     /* Create the initial empty heap */
     struct tag* initial = mem_sbrk(4 * sizeof(struct tag));
     if (initial == NULL)
@@ -164,7 +164,7 @@ int mm_init (void) {
 /* 
  * mm_malloc - Allocate a block with at least size bytes of payload 
  */
-void* mm_malloc (size_t size) {
+void* kmalloc (size_t size) {
     struct block *bp;      
 
     /* Ignore spurious requests */
@@ -198,7 +198,7 @@ void* mm_malloc (size_t size) {
 /* 
  * mm_free - Free a block 
  */
-void mm_free (void *bp) {
+void kfree (void *bp) {
     if (bp == 0) 
         return;
 
@@ -213,12 +213,12 @@ void mm_free (void *bp) {
 /*
  * mm_realloc - Naive implementation of realloc where a block is resized to size
  */
-void* mm_realloc(void *ptr, size_t size) {
+void* krealloc(void *ptr, size_t size) {
     if (ptr == NULL) {
-        return mm_malloc(size);
+        return kmalloc(size);
     }
     if (size == 0) {
-        mm_free(ptr);
+        kfree(ptr);
         return (void*)0;
     }
     struct block* blk = (struct block*)(ptr - offsetof(struct block, payload));
@@ -311,7 +311,7 @@ void* mm_realloc(void *ptr, size_t size) {
     }
 
     /* All other cases fall here (naive approach) */
-    void *newptr = mm_malloc(size);
+    void *newptr = kmalloc(size);
 
     /* If realloc() fails the original block is left untouched  */
     if (!newptr) {
@@ -325,7 +325,7 @@ void* mm_realloc(void *ptr, size_t size) {
     memmove(newptr, ptr, oldpayloadsize);
 
     /* Free the old block. */
-    mm_free(ptr);
+    kfree(ptr);
 
     return newptr;
 }

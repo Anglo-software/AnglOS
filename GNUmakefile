@@ -1,10 +1,10 @@
 .PHONY: all
 all: angl-os.iso
-	 cd kernel && objdump -d angl-os.elf > angl-os.dump && cd ..
+	 cd kernel && objdump -d angl-os.elf > angl-os.asmdump && objdump -s angl-os.elf > angl-os.secdump && cd ..
 
 .PHONY: all-hdd
 all-hdd: angl-os.hdd
-	 cd kernel && objdump -d angl-os.elf > angl-os.dump && cd ..
+	 cd kernel && objdump -d angl-os.elf > angl-os.asmdump && objdump -s angl-os.elf > angl-os.secdump && cd ..
 
 .PHONY: run
 run: angl-os.iso

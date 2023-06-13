@@ -1,8 +1,8 @@
 #include "isr.h"
 #include "idt.h"
 #include "../tss/tss.h"
-#include "drivers/apic/apic.h"
-#include "drivers/vga/vga_print.h"
+#include "device/apic/apic.h"
+#include "libc/stdio.h"
 
 isr_t interrupt_handlers[256];
 
@@ -98,8 +98,8 @@ char *exception_messages[] = {
 };
 
 void isr_handler(registers_t *r) {
-    vga_printf("received interrupt: %d\n", r->vector);
-    vga_printf("[%s] with error code: %x @ %x", exception_messages[r->vector], r->error_code, r->rip);
+    printf("received interrupt: %d\n", r->vector);
+    printf("[%s] with error code: %x @ %x", exception_messages[r->vector], r->error_code, r->rip);
     __asm__ volatile ("cli; hlt");
 }
 

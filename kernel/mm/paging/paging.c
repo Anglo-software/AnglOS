@@ -1,7 +1,6 @@
 #include "paging.h"
 #include "mm/pmm/pmm.h"
 #include "boot/limine.h"
-#include "drivers/vga/vga_print.h"
 
 void* page_direct_base = (void*)0xFFFF800000000000;
 void* kheap_base       = (void*)0xFFFF900000000000;

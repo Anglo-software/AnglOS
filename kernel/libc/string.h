@@ -20,6 +20,7 @@ char *strcpy(char *dest, const char *src);
 char *strncpy(char *dest, const char *src, size_t n);
 char *strerror(int);
 size_t strlen(const char* str);
+size_t strnlen(const char*, size_t);
 size_t strspn(const char *, const char *accept);
 size_t strcspn(const char *, const char *reject);
 char *strpbrk(const char *, const char *accept);
