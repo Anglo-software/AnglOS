@@ -39,8 +39,8 @@ void timer_one_shot(uint64_t time) { // time is in nanoseconds
         time = nanoseconds_per_tick;
     }
 
-    write_lapic_reg(APIC_TMRINITCNT, time / nanoseconds_per_tick);
     write_lapic_reg(APIC_LVT_TMR, IRQ0);
+    write_lapic_reg(APIC_TMRINITCNT, time / nanoseconds_per_tick);
 }
 
 void timer_periodic_start(uint64_t time) { // time is in nanoseconds
@@ -48,8 +48,8 @@ void timer_periodic_start(uint64_t time) { // time is in nanoseconds
         time = nanoseconds_per_tick;
     }
 
-    write_lapic_reg(APIC_TMRINITCNT, time / nanoseconds_per_tick);
     write_lapic_reg(APIC_LVT_TMR, IRQ0 | TMR_PERIODIC);
+    write_lapic_reg(APIC_TMRINITCNT, time / nanoseconds_per_tick);
 }
 
 void timer_periodic_stop() {

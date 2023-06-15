@@ -10,6 +10,7 @@ ovmf-x64/OVMF-X64.zip:Zone.Identifier
 ovmf-x64/OVMF.fd
 ovmf-x64/readme.txt
 angl-os.iso
-kernel/angl-os.dump
+kernel/angl-os.asmdump
+kernel/angl-os.secdump
 .gitignore
 kernel/angl-os.elf

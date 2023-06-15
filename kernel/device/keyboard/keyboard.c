@@ -2,7 +2,8 @@
 #include "boot/interrupts/isr.h"
 #include "device/apic/apic.h"
 #include "device/io.h"
-#include "libc/stdio.h"
+#include "device/input/input.h"
+#include "boot/cpu/cpu.h"
 
 void irq_keyboard_handler(registers_t* registers);
 
@@ -45,62 +46,61 @@ bool is_letter(char c) {
 }
 
 void irq_keyboard_handler(registers_t* registers) {
-    __asm__ volatile ("cli");
     int scan = get_keyboard_byte();
 
     bool released = (scan & 0b10000000) >> 7;
     
     int scan2 = scan & 0b01111111;
     if (!released) {
+        char c = 0;
         if (scan_code_1[scan2] == LEFT_SHIFT) {
             shift_pressed = true;
+            goto out;
         }
         else if (scan_code_1[scan2] == LEFT_CONTROL) {
             ctrl_pressed = true;
+            goto out;
         }
         else if (scan_code_1[scan2] == LEFT_ALT) {
             alt_pressed = true;
+            goto out;
         }
         else if (scan_code_1[scan2] == BACKSPACE) {
-            printf("\b");
+            c = '\b';
         }
         else if (scan_code_1[scan2] == ENTER) {
-            printf("\n");
+            c = '\n';
         }
         else if (prev_scan != 0xE0) {
-            if (ctrl_pressed && scan_code_1[scan2] == 'c') {
-                printf("\033[2J\033[H");
-                goto end;
-            }
-            char str[2];
-            if (!shift_pressed) {
-                str[0] = scan_code_1[scan2];
+            if (!ctrl_pressed || scan_code_1[scan2] != 'c') {
+                if (!shift_pressed) {
+                    c = scan_code_1[scan2];
+                }
+                else {
+                    c = scan_code_1_shift[scan2];
+                }
             }
             else {
-                str[0] = scan_code_1_shift[scan2];
+                c = SCREEN_CLEAR;
             }
-            str[1] = '\0';
-            printf(str);
         }
-
-        else {
+        else if (prev_scan == 0xE0) {
             if (scan == 0x48) {
-                // Up
-                printf("\033[1A");
+                c = CURSOR_UP;
             }
             else if (scan == 0x4B) {
-                // Left
-                printf("\033[1D");
+                c = CURSOR_LEFT;
             }
             else if (scan == 0x4D) {
-                // Right
-                printf("\033[1C");
+                c = CURSOR_RIGHT;
             }
             else if (scan == 0x50) {
-                // Down
-                printf("\033[1B");
+                c = CURSOR_DOWN;
             }
         }
+        input_lock();
+        input_putc(c);
+        input_unlock();
     }
     else {
         if (scan_code_1[scan2] == LEFT_SHIFT) {
@@ -114,10 +114,9 @@ void irq_keyboard_handler(registers_t* registers) {
         }
     }
 
-    end:
+    out:
 
     prev_scan = scan;
 
     apic_send_eoi();
-    __asm__ volatile ("sti");
 }

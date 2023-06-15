@@ -155,35 +155,15 @@ void clear_screen() {
     memset((void*)get_fb_base(), 0x00, get_res_y() * get_pitch());
 }
 
-static bool ESC_seq = false;
-static bool CSI_seq = false;
-
 void vga_putc(uint8_t c) {
-    if (CSI_seq) {
-        switch (c) {
-            case 'A': cursor_up(); CSI_seq = false; ESC_seq = false; break;
-            case 'B': cursor_down(); CSI_seq = false; ESC_seq = false; break;
-            case 'C': cursor_right(); CSI_seq = false; ESC_seq = false; break;
-            case 'D': cursor_left(); CSI_seq = false; ESC_seq = false; break;
-            case 'J': clear_screen(); draw_cursor(); CSI_seq = false; ESC_seq = false; break;
-            case 'H': clear_cursor(); move_cursor(4, 4); CSI_seq = false; ESC_seq = false; break;
-            default: break;
-        }
-        return;
-    }
-
-    if (ESC_seq) {
-        switch (c) {
-            case '[': CSI_seq = true; break;
-            default: break;
-        }
-        return;
-    }
-
     switch (c) {
-        case '\e': ESC_seq = true; break;
         case '\n': newline(); break;
         case '\b': cursor_left(); clear_char_at_cursor(); break;
+        case 0x86: cursor_up(); break;
+        case 0x87: cursor_down(); break;
+        case 0x88: cursor_left(); break;
+        case 0x89: cursor_right(); break;
+        case 0x90: clear_screen(); move_cursor(4, 4); break;
         default:   clear_cursor(); draw_char_at_cursor(c, false); advance_cursor_right(); break;
     }
 }

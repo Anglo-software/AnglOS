@@ -1,7 +1,6 @@
 #include <basic_includes.h>
 #include "limine.h"
 #include "fs/kmodule.h"
-#include "device/vga/graphics.h"
 #include "cpu/cpu.h"
 #include "gdt/gdt.h"
 #include "tss/tss.h"
@@ -14,62 +13,81 @@
 #include "mm/heap/heap.h"
 #include "device/hpet/hpet.h"
 #include "device/apic/timer.h"
+#include "device/vga/graphics.h"
+#include "device/pci/pci.h"
+#include "device/input/input.h"
 #include "device/keyboard/keyboard.h"
 #include "libc/stdio.h"
+#include "libc/string.h"
+#include "device/io.h"
 
 static volatile struct limine_stack_size_request stack_request = {
     .id = LIMINE_STACK_SIZE_REQUEST,
     .revision = 0,
     .stack_size = 1024*1024
 };
- 
-static void done(void) {
-    for (;;) {
-        __asm__ volatile ("hlt");
-    }
-}
 
-static void really_done(void) {
-    printf("Halting\n");
-    for (;;) {
-        __asm__ volatile ("cli; hlt");
-    }
-}
+static void main_loop();
 
-void _start(void) {
-    if (stack_request.response == NULL) {
-        really_done();
-    }
-    init_kmodules();
+void _start() {
     init_sse();
     init_gdt();
+
     for (int i = 0; i < TSS_MAX_CPUS; i++) {
         init_tss(i);
     }
+
     init_idt();
     init_acpi();
     init_apic();
-    if (init_graphics(1024, 768, 32)) {
-        really_done();
-    }
     init_pmm();
     init_paging();
-    if (mem_init()) {
-        really_done();
-    }
-    
-    if (kmeminit()) {
-        really_done();
-    }
-    __asm__ volatile ("sti");
+    mem_init();
+    kmeminit();
+
+    sti();
+
     init_hpet();
     init_timer();
-    if(init_keyboard()) {
-        really_done();
-    }
+    init_kmodules();
+    init_graphics(1024, 768, 32);
 
-    printf("Welcome to Angl-OS\n");
+    init_pci();
+    init_input();
+    init_keyboard();
+
+    main_loop();
+}
+
+#define line_len 128
+char linebuf[line_len + 1];
+unsigned num = 0;
  
-    // We're done, just hang...
-    done();
+static void main_loop() {
+    printf("> ");
+    for (;;) {
+        uint8_t c = input_getc();
+        if (c == '\n') {
+            printf("\n");
+            printf("%s\n", linebuf);
+            printf("> ");
+            num = 0;
+            memset(linebuf, '\0', line_len + 1);
+            continue;
+        }
+        else if (c == '\b') {
+            if (num != 0) {
+                linebuf[num] = '\0';
+                num--;
+                printf("\b");
+            }
+            continue;
+        }
+        if (num + 1 == line_len + 1) {
+            continue;
+        }
+        linebuf[num] = c;
+        num++;
+        printf("%c", c);
+    }
 }
