@@ -195,6 +195,11 @@ void* kmalloc (size_t size) {
     return bp->payload;
 }
 
+void* kcalloc(size_t size) {
+    void* ptr = kmalloc(size);
+    return memset(ptr, 0, size);
+}
+
 /* 
  * mm_free - Free a block 
  */

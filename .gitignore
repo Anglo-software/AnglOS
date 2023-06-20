@@ -12,5 +12,4 @@ ovmf-x64/readme.txt
 angl-os.iso
 kernel/angl-os.asmdump
 kernel/angl-os.secdump
-.gitignore
 kernel/angl-os.elf

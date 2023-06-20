@@ -40,22 +40,22 @@ void isr_install() {
     idt_set_descriptor(30, (uint64_t) isr30, IDT_DESCRIPTOR_EXCEPTION, TSS_IST_EXCEPTION);
     idt_set_descriptor(31, (uint64_t) isr31, IDT_DESCRIPTOR_EXCEPTION, TSS_IST_EXCEPTION);
 
-    idt_set_descriptor(32, (uint64_t) irq0,  IDT_DESCRIPTOR_EXTERNAL, TSS_IST_EXCEPTION);
-    idt_set_descriptor(33, (uint64_t) irq1,  IDT_DESCRIPTOR_EXTERNAL, TSS_IST_EXCEPTION);
-    idt_set_descriptor(34, (uint64_t) irq2,  IDT_DESCRIPTOR_EXTERNAL, TSS_IST_EXCEPTION);
-    idt_set_descriptor(35, (uint64_t) irq3,  IDT_DESCRIPTOR_EXTERNAL, TSS_IST_EXCEPTION);
-    idt_set_descriptor(36, (uint64_t) irq4,  IDT_DESCRIPTOR_EXTERNAL, TSS_IST_EXCEPTION);
-    idt_set_descriptor(37, (uint64_t) irq5,  IDT_DESCRIPTOR_EXTERNAL, TSS_IST_EXCEPTION);
-    idt_set_descriptor(38, (uint64_t) irq6,  IDT_DESCRIPTOR_EXTERNAL, TSS_IST_EXCEPTION);
-    idt_set_descriptor(39, (uint64_t) irq7,  IDT_DESCRIPTOR_EXTERNAL, TSS_IST_EXCEPTION);
-    idt_set_descriptor(40, (uint64_t) irq8,  IDT_DESCRIPTOR_EXTERNAL, TSS_IST_EXCEPTION);
-    idt_set_descriptor(41, (uint64_t) irq9,  IDT_DESCRIPTOR_EXTERNAL, TSS_IST_EXCEPTION);
-    idt_set_descriptor(42, (uint64_t) irq10, IDT_DESCRIPTOR_EXTERNAL, TSS_IST_EXCEPTION);
-    idt_set_descriptor(43, (uint64_t) irq11, IDT_DESCRIPTOR_EXTERNAL, TSS_IST_EXCEPTION);
-    idt_set_descriptor(44, (uint64_t) irq12, IDT_DESCRIPTOR_EXTERNAL, TSS_IST_EXCEPTION);
-    idt_set_descriptor(45, (uint64_t) irq13, IDT_DESCRIPTOR_EXTERNAL, TSS_IST_EXCEPTION);
-    idt_set_descriptor(46, (uint64_t) irq14, IDT_DESCRIPTOR_EXTERNAL, TSS_IST_EXCEPTION);
-    idt_set_descriptor(47, (uint64_t) irq15, IDT_DESCRIPTOR_EXTERNAL, TSS_IST_EXCEPTION);
+    idt_set_descriptor(32, (uint64_t) irq0,  IDT_DESCRIPTOR_EXTERNAL, TSS_IST_ROUTINE);
+    idt_set_descriptor(33, (uint64_t) irq1,  IDT_DESCRIPTOR_EXTERNAL, TSS_IST_ROUTINE);
+    idt_set_descriptor(34, (uint64_t) irq2,  IDT_DESCRIPTOR_EXTERNAL, TSS_IST_ROUTINE);
+    idt_set_descriptor(35, (uint64_t) irq3,  IDT_DESCRIPTOR_EXTERNAL, TSS_IST_ROUTINE);
+    idt_set_descriptor(36, (uint64_t) irq4,  IDT_DESCRIPTOR_EXTERNAL, TSS_IST_ROUTINE);
+    idt_set_descriptor(37, (uint64_t) irq5,  IDT_DESCRIPTOR_EXTERNAL, TSS_IST_ROUTINE);
+    idt_set_descriptor(38, (uint64_t) irq6,  IDT_DESCRIPTOR_EXTERNAL, TSS_IST_ROUTINE);
+    idt_set_descriptor(39, (uint64_t) irq7,  IDT_DESCRIPTOR_EXTERNAL, TSS_IST_ROUTINE);
+    idt_set_descriptor(40, (uint64_t) irq8,  IDT_DESCRIPTOR_EXTERNAL, TSS_IST_ROUTINE);
+    idt_set_descriptor(41, (uint64_t) irq9,  IDT_DESCRIPTOR_EXTERNAL, TSS_IST_ROUTINE);
+    idt_set_descriptor(42, (uint64_t) irq10, IDT_DESCRIPTOR_EXTERNAL, TSS_IST_ROUTINE);
+    idt_set_descriptor(43, (uint64_t) irq11, IDT_DESCRIPTOR_EXTERNAL, TSS_IST_ROUTINE);
+    idt_set_descriptor(44, (uint64_t) irq12, IDT_DESCRIPTOR_EXTERNAL, TSS_IST_ROUTINE);
+    idt_set_descriptor(45, (uint64_t) irq13, IDT_DESCRIPTOR_EXTERNAL, TSS_IST_ROUTINE);
+    idt_set_descriptor(46, (uint64_t) irq14, IDT_DESCRIPTOR_EXTERNAL, TSS_IST_ROUTINE);
+    idt_set_descriptor(47, (uint64_t) irq15, IDT_DESCRIPTOR_EXTERNAL, TSS_IST_ROUTINE);
 }
 
 /* To print the message which defines every exception */

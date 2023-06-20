@@ -32,6 +32,10 @@ static void main_loop();
 void _start() {
     init_sse();
     init_gdt();
+    init_pmm();
+    init_paging();
+    mem_init();
+    kmeminit();
 
     for (int i = 0; i < TSS_MAX_CPUS; i++) {
         init_tss(i);
@@ -40,10 +44,6 @@ void _start() {
     init_idt();
     init_acpi();
     init_apic();
-    init_pmm();
-    init_paging();
-    mem_init();
-    kmeminit();
 
     sti();
 
@@ -59,11 +59,11 @@ void _start() {
     main_loop();
 }
 
-#define line_len 128
-char linebuf[line_len + 1];
+unsigned size = 16;
 unsigned num = 0;
  
 static void main_loop() {
+    char* linebuf = kcalloc(size + 1);
     printf("> ");
     for (;;) {
         uint8_t c = input_getc();
@@ -72,7 +72,7 @@ static void main_loop() {
             printf("%s\n", linebuf);
             printf("> ");
             num = 0;
-            memset(linebuf, '\0', line_len + 1);
+            memset(linebuf, '\0', size + 1);
             continue;
         }
         else if (c == '\b') {
@@ -83,8 +83,9 @@ static void main_loop() {
             }
             continue;
         }
-        if (num + 1 == line_len + 1) {
-            continue;
+        if (num == size) {
+            linebuf = krealloc(linebuf, size + 16);
+            size += 16;
         }
         linebuf[num] = c;
         num++;
