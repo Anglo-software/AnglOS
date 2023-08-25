@@ -49,12 +49,17 @@ void _start() {
 
     init_hpet();
     init_timer();
+
+    cli();
+
     init_kmodules();
     init_graphics(1024, 768, 32);
 
     init_pci();
     init_input();
     init_keyboard();
+
+    sti();
 
     main_loop();
 }
@@ -69,7 +74,12 @@ static void main_loop() {
         uint8_t c = input_getc();
         if (c == '\n') {
             printf("\n");
-            printf("%s\n", linebuf);
+            if (!strncmp(linebuf, "exit", 4)) {
+                printf("%s\n", "Exiting");
+            }
+            else {
+                printf("%s\n", linebuf);
+            }
             printf("> ");
             num = 0;
             memset(linebuf, '\0', size + 1);
