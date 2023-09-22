@@ -2,6 +2,7 @@
 #include <basic_includes.h>
 
 void init_sse();
+void init_syscall_ext();
 
 static inline void cli() {
     __asm__ volatile("cli");

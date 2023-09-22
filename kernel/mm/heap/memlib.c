@@ -17,7 +17,7 @@ int mem_init() {
 }
 
 void mem_deinit() {
-    vfree(mem_start_brk, MAX_HEAP / PAGE_SIZE);
+    vfree(mem_start_brk, MAX_HEAP / PAGE_SIZE, true);
 }
 
 void* mem_sbrk(int incr) {

@@ -18,8 +18,8 @@ void init_gdt() {
     gdt_add_descriptor(0, 0xFFFFF, GDT_BASIC_DESCRIPTOR,                                                  GDT_GRANULARITY_4K | GDT_GRANULARITY_X32);
     gdt_add_descriptor(0, 0,       GDT_BASIC_DESCRIPTOR | GDT_DESCRIPTOR_EXECUTABLE,                      GDT_GRANULARITY_X64);
     gdt_add_descriptor(0, 0,       GDT_BASIC_DESCRIPTOR,                                                  0);
-    gdt_add_descriptor(0, 0,       GDT_BASIC_DESCRIPTOR | GDT_DESCRIPTOR_DPL | GDT_DESCRIPTOR_EXECUTABLE, GDT_GRANULARITY_X64);
     gdt_add_descriptor(0, 0,       GDT_BASIC_DESCRIPTOR | GDT_DESCRIPTOR_DPL,                             0);
+    gdt_add_descriptor(0, 0,       GDT_BASIC_DESCRIPTOR | GDT_DESCRIPTOR_DPL | GDT_DESCRIPTOR_EXECUTABLE, GDT_GRANULARITY_X64);
 
     gdt_reload(&gdtr, GDT_OFFSET_KERNEL_CODE64, GDT_OFFSET_KERNEL_DATA64);
 }

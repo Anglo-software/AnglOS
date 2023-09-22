@@ -3,14 +3,27 @@
 #include "device/hpet/hpet.h"
 #include "device/io.h"
 #include "boot/interrupts/isr.h"
+#include "device/input/input.h"
 
 uint64_t ticks_per_second = 0;
 uint64_t nanoseconds_per_tick = 0;
 
 static uint64_t time_counter = 0;
 
+extern bool cursor_enabled;
+
 static void irq_timer_handler(registers_t* registers) {
     time_counter++;
+    if (cursor_enabled) {
+        if (!input_full()) {
+            input_putc(0x91);
+        }
+    }
+    else {
+        if (!input_full()) {
+            input_putc(0x92);
+        }
+    }
     apic_send_eoi();
 }
 

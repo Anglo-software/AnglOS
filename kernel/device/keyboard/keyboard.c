@@ -98,9 +98,9 @@ void irq_keyboard_handler(registers_t* registers) {
                 c = CURSOR_DOWN;
             }
         }
-        input_lock();
-        input_putc(c);
-        input_unlock();
+        if (!input_full()) {
+            input_putc(c);
+        }
     }
     else {
         if (scan_code_1[scan2] == LEFT_SHIFT) {

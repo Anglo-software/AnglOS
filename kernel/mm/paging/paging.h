@@ -198,10 +198,11 @@ void* alloc_table();
 void free_table(void* table_pptr);
 void add_entry(void* table_pptr, uint16_t entry_num, void* entry_pptr, uint64_t flags);
 void update_entry(void* table_pptr, uint16_t entry_num, void* entry_pptr, uint64_t flags);
-void remove_entry(void* table_pptr, uint16_t level, uint16_t entry_num);
+void remove_entry(void* table_pptr, uint16_t level, uint16_t entry_num, bool do_pfree);
 
 void* get_cr3();
 void set_cr3(void* pptr);
 
 void* vmalloc(void* vptr, size_t pages, uint64_t flags);
-void vfree(void* vptr, size_t pages);
+void vfree(void* vptr, size_t pages, bool do_pfree);
+void* videntity(void* vptr, void* pptr, size_t pages, uint64_t flags);

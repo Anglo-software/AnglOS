@@ -18,6 +18,8 @@ uint8_t* current_font = NULL;
 
 uint32_t pixels_at_cursor[8*16];
 
+bool cursor_enabled = true;
+
 void draw_cursor() {
     uint8_t* fb_base = get_fb_base();
     for (int cy = 0; cy < character_size_y; cy++) {
@@ -25,6 +27,7 @@ void draw_cursor() {
         memcpy(&pixels_at_cursor[cy * character_size_x], &fb_base[where], get_bytes_per_pixel() * character_size_x);
     }
     draw_char_at_cursor(219, false);
+    cursor_enabled = true;
 }
 
 void clear_cursor() {
@@ -34,6 +37,7 @@ void clear_cursor() {
         memcpy(&fb_base[where], &pixels_at_cursor[cy * character_size_x], get_bytes_per_pixel() * character_size_x);
     }
     memset(pixels_at_cursor, 0x00, 8*16*4);
+    cursor_enabled = false;
 }
 
 void draw_char_at_cursor(uint8_t c, bool transparent) {
@@ -164,6 +168,8 @@ void vga_putc(uint8_t c) {
         case 0x88: cursor_left(); break;
         case 0x89: cursor_right(); break;
         case 0x90: clear_screen(); move_cursor(4, 4); break;
+        case 0x91: clear_cursor(); break;
+        case 0x92: draw_cursor(); break;
         default:   clear_cursor(); draw_char_at_cursor(c, false); advance_cursor_right(); break;
     }
 }

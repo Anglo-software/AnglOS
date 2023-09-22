@@ -15,6 +15,8 @@
 #define CURSOR_LEFT 0x88
 #define CURSOR_RIGHT 0x89
 #define SCREEN_CLEAR 0x90
+#define CURSOR_EN 0x91
+#define CURSOR_DS 0x92
 
 int init_keyboard();
 void send_keyboard_command(uint8_t);

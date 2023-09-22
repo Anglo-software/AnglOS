@@ -99,7 +99,7 @@ char *exception_messages[] = {
 
 void isr_handler(registers_t *r) {
     printf("received interrupt: %d\n", r->vector);
-    printf("[%s] with error code: %x @ %x", exception_messages[r->vector], r->error_code, r->rip);
+    printf("[%s] with error code: %x @ %x\n", exception_messages[r->vector], r->error_code, r->rip);
     __asm__ volatile ("cli; hlt");
 }
 
