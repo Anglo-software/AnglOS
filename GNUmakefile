@@ -20,7 +20,7 @@ run-hdd: angl-os.hdd
 
 .PHONY: run-hdd-uefi
 run-hdd-uefi: ovmf-x64 angl-os.hdd
-	qemu-system-x86_64 -M q35 -m 8192 -device VGA -bios ovmf-x64/OVMF.fd -hda angl-os.hdd
+	qemu-system-x86_64 -M q35 -m 8192 -device VGA -bios ovmf-x64/OVMF.fd -hda angl-os.hdd -drive file=testdisk.qcow2,if=none,id=nvm -device nvme,serial=deadbeef,drive=nvm
 
 ovmf-x64:
 	mkdir -p ovmf-x64

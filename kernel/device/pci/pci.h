@@ -1,5 +1,59 @@
 #pragma once
 #include <basic_includes.h>
+#include "device/acpi/acpi.h"
+
+typedef struct {
+    acpi_sdt_header_t header;
+    uint64_t rsv1;
+    uint64_t addr;
+    uint16_t segment_group;
+    uint8_t start_bus;
+    uint8_t end_bus;
+    uint32_t rsv2;
+} __attribute__((packed)) mcfg_t;
+
+typedef struct {
+    union {
+        struct {
+            uint16_t io_space        : 1;
+            uint16_t mem_space       : 1;
+            uint16_t bus_master      : 1;
+            uint16_t spec_cycles     : 1;
+            uint16_t mem_wr_inv_en   : 1;
+            uint16_t vga_pal_snoop   : 1;
+            uint16_t parity_err_resp : 1;
+            uint16_t rev0            : 1;
+            uint16_t serr_en         : 1;
+            uint16_t fbtb_en         : 1;
+            uint16_t int_disable     : 1;
+            uint16_t rev1            : 5;
+        } g;
+
+        uint32_t command;
+    };
+} pci_command_t;
+
+typedef struct {
+    union {
+        struct {
+            uint16_t rev0            : 3;
+            uint16_t int_status      : 1;
+            uint16_t cap_list        : 1;
+            uint16_t mhz66_cap       : 1;
+            uint16_t rev1            : 1;
+            uint16_t fbtb_cap        : 1;
+            uint16_t mast_parity_err : 1;
+            uint16_t devsel_timing   : 2;
+            uint16_t sig_targ_abort  : 1;
+            uint16_t rec_targ_abort  : 1;
+            uint16_t rec_mast_abort  : 1;
+            uint16_t sig_sys_err     : 1;
+            uint16_t det_parity_err  : 1;
+        } g;
+
+        uint32_t status;
+    };
+} pci_status_t;
 
 #define PCI_CLASS_UNCLASSIFIED              0
 #define PCI_SUBCLASS_NON_VGA_COMPATIBLE     0
@@ -82,4 +136,23 @@
 
 #define PCI_CLASS_UNDEF                     255
 
+#define PCI_CONFIG_ADDR                     0xCF8
+#define PCI_CONFIG_DATA                     0xCFC
+
 void init_pci();
+uint8_t pciConfigReadByte(uint8_t bus, uint8_t device, uint8_t func, uint8_t offset);
+uint16_t pciConfigReadWord(uint8_t bus, uint8_t device, uint8_t func, uint8_t offset);
+uint32_t pciConfigReadLong(uint8_t bus, uint8_t device, uint8_t func, uint8_t offset);
+void pciConfigWriteLong(uint8_t bus, uint8_t device, uint8_t func, uint8_t offset, uint32_t data);
+uint8_t pciGetBaseClass(uint8_t bus, uint8_t device, uint8_t func);
+uint8_t pciGetSubClass(uint8_t bus, uint8_t device, uint8_t func);
+uint16_t pciReadStatus(uint8_t bus, uint8_t device, uint8_t func);
+uint16_t pciReadCommand(uint8_t bus, uint8_t device, uint8_t func);
+void pciWriteCommand(uint8_t bus, uint8_t device, uint8_t func, uint16_t command);
+uint32_t pciGetBAR(uint8_t bus, uint8_t device, uint8_t func, uint8_t bar);
+uint8_t pciGetCapPointer(uint8_t bus, uint8_t device, uint8_t func);
+uint8_t pciGetCapabilityOffset(uint8_t bus, uint8_t device, uint8_t func, uint8_t cap);
+uint64_t pciGetMessageTableBaseAddr(uint8_t bus, uint8_t device, uint8_t func);
+uint32_t pciGetMessageTableOffset(uint8_t bus, uint8_t device, uint8_t func);
+uint32_t pciGetMessageTableSize(uint8_t bus, uint8_t device, uint8_t func);
+uint8_t pciEnableMSIX(uint8_t bus, uint8_t device, uint8_t func);
