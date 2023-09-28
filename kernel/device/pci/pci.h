@@ -28,7 +28,6 @@ typedef struct {
             uint16_t int_disable     : 1;
             uint16_t rev1            : 5;
         } g;
-
         uint32_t command;
     };
 } pci_command_t;
@@ -50,10 +49,16 @@ typedef struct {
             uint16_t sig_sys_err     : 1;
             uint16_t det_parity_err  : 1;
         } g;
-
         uint32_t status;
     };
 } pci_status_t;
+
+typedef struct {
+    uint64_t message_addr;
+    uint32_t message_data;
+    uint32_t masked : 1;
+    uint32_t rev0   : 31;
+} __attribute__((packed)) msix_entry_t;
 
 #define PCI_CLASS_UNCLASSIFIED              0
 #define PCI_SUBCLASS_NON_VGA_COMPATIBLE     0
@@ -156,3 +161,6 @@ uint64_t pciGetMessageTableBaseAddr(uint8_t bus, uint8_t device, uint8_t func);
 uint32_t pciGetMessageTableOffset(uint8_t bus, uint8_t device, uint8_t func);
 uint32_t pciGetMessageTableSize(uint8_t bus, uint8_t device, uint8_t func);
 uint8_t pciEnableMSIX(uint8_t bus, uint8_t device, uint8_t func);
+void pciWriteMSIXEntry(msix_entry_t* msix_base, uint16_t idx, msix_entry_t* entry);
+void pciReadMSIXEntry(msix_entry_t* msix_base, uint16_t idx, msix_entry_t* entry);
+void pciMSIXSetMask(msix_entry_t* msix_base, uint16_t idx, bool mask);

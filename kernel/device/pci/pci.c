@@ -2,6 +2,7 @@
 #include "device/io.h"
 #include "mm/paging/paging.h"
 #include "libc/stdio.h"
+#include "libc/string.h"
 
 extern void* page_direct_base;
 
@@ -166,5 +167,19 @@ uint8_t pciEnableMSIX(uint8_t bus, uint8_t device, uint8_t func) {
     }
 
     uint32_t reg = pciConfigReadLong(bus, device, func, msix_base);
-    pciConfigWriteLong(bus, device, func, msix_base, reg | 0x80000000);
+    pciConfigWriteLong(bus, device, func, msix_base, (reg & 0x3FFF) | 0x80000000);
+}
+
+void pciWriteMSIXEntry(msix_entry_t* msix_base, uint16_t idx, msix_entry_t* entry) {
+    void* dest = &msix_base[idx];
+    memcpy(dest, (void*)entry, sizeof(msix_entry_t));
+}
+
+void pciReadMSIXEntry(msix_entry_t* msix_base, uint16_t idx, msix_entry_t* entry) {
+    void* src = &msix_base[idx];
+    memcpy((void*)entry, src, sizeof(msix_entry_t));
+}
+
+void pciMSIXSetMask(msix_entry_t* msix_base, uint16_t idx, bool mask) {
+    msix_base[idx].masked = mask;
 }
