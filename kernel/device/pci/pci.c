@@ -167,7 +167,7 @@ uint8_t pciEnableMSIX(uint8_t bus, uint8_t device, uint8_t func) {
     }
 
     uint32_t reg = pciConfigReadLong(bus, device, func, msix_base);
-    pciConfigWriteLong(bus, device, func, msix_base, (reg & 0x3FFF) | 0x80000000);
+    pciConfigWriteLong(bus, device, func, msix_base, (reg & 0x3FFFFFFF) | 0x80000000);
 }
 
 void pciWriteMSIXEntry(msix_entry_t* msix_base, uint16_t idx, msix_entry_t* entry) {

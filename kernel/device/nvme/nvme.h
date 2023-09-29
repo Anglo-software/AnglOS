@@ -151,6 +151,9 @@ typedef struct {
 #define NVME_READ                    0x02
 #define NVME_WRITE                   0x01
 
+#define NVME_QUEUE_FLAG_PC           0x01
+#define NVME_QUEUE_FLAG_INT          0x02
+
 void init_nvme();
 uint32_t nvmeReadStatus();
 uint32_t nvmeReadConfig();

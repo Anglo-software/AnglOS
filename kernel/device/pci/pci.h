@@ -54,7 +54,8 @@ typedef struct {
 } pci_status_t;
 
 typedef struct {
-    uint64_t message_addr;
+    uint32_t message_addr_lo;
+    uint32_t message_addr_hi;
     uint32_t message_data;
     uint32_t masked : 1;
     uint32_t rev0   : 31;
