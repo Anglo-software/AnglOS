@@ -22,6 +22,7 @@
 #include "libc/string.h"
 #include "device/io.h"
 #include "user/syscall.h"
+#include "user/userentry.h"
 
 static volatile struct limine_stack_size_request stack_request = {
     .id = LIMINE_STACK_SIZE_REQUEST,
@@ -30,12 +31,10 @@ static volatile struct limine_stack_size_request stack_request = {
 };
 
 static void main_loop();
-static void userfunc();
 
 NO_RETURN
 void _start() {
     init_sse();
-    init_syscall();
     init_gdt();
     init_pmm();
 
@@ -63,6 +62,7 @@ void _start() {
     init_pci();
     init_input();
     init_keyboard();
+    init_syscall();
 
     sti();
 
@@ -81,89 +81,71 @@ extern uint64_t mem_size;
 
 NO_RETURN
 static void main_loop() {
-    char* linebuf = kcalloc(size + 1);
-    printf("> ");
-    timer_periodic_start(500000000);
-    for (;;) {
-        uint8_t c = input_getc();
-        if (c == '\n') {
-            printf("\n");
-            if (!strncmp(linebuf, "q", 1)) {
-                __asm__ volatile ("hlt");
-                printf("%s", "Exiting");
-                __asm__ volatile ("hlt");
-                printf(".");
-                __asm__ volatile ("hlt");
-                printf(".");
-                __asm__ volatile ("hlt");
-                printf(".");
-                __asm__ volatile ("hlt");
-                outw(0x604, 0x2000);
-            }
-            else {
-                printf("%s\n", linebuf);
-            }
-            printf("> ");
-            num = 0;
-            memset(linebuf, '\0', size + 1);
-            continue;
-        }
-        else if (c == '\b') {
-            if (num != 0) {
-                linebuf[num] = '\0';
-                num--;
-                printf("\b");
-            }
-            continue;
-        }
-        if (num == size) {
-            linebuf = krealloc(linebuf, size + 16);
-            size += 16;
-        }
-        if (c != CURSOR_EN && c != CURSOR_DS) {
-            linebuf[num] = c;
-            num++;
-        }
-        printf("%c", c);
-        if (c == SCREEN_CLEAR) {
-            printf("> ");
-            num = 0;
-            memset(linebuf, '\0', size + 1);
-            continue;
-        }
-    }
+    // char* linebuf = kcalloc(size + 1);
+    // printf("> ");
+    // timer_periodic_start(500000000);
+    // for (;;) {
+    //     uint8_t c = input_getc();
+    //     if (c == '\n') {
+    //         printf("\n");
+    //         if (!strncmp(linebuf, "q", 1)) {
+    //             __asm__ volatile ("hlt");
+    //             printf("%s", "Exiting");
+    //             __asm__ volatile ("hlt");
+    //             printf(".");
+    //             __asm__ volatile ("hlt");
+    //             printf(".");
+    //             __asm__ volatile ("hlt");
+    //             printf(".");
+    //             __asm__ volatile ("hlt");
+    //             outw(0x604, 0x2000);
+    //         }
+    //         else {
+    //             printf("%s\n", linebuf);
+    //         }
+    //         printf("> ");
+    //         num = 0;
+    //         memset(linebuf, '\0', size + 1);
+    //         continue;
+    //     }
+    //     else if (c == '\b') {
+    //         if (num != 0) {
+    //             linebuf[num] = '\0';
+    //             num--;
+    //             printf("\b");
+    //         }
+    //         continue;
+    //     }
+    //     if (num == size) {
+    //         linebuf = krealloc(linebuf, size + 16);
+    //         size += 16;
+    //     }
+    //     if (c != CURSOR_EN && c != CURSOR_DS) {
+    //         linebuf[num] = c;
+    //         num++;
+    //     }
+    //     printf("%c", c);
+    //     if (c == SCREEN_CLEAR) {
+    //         printf("> ");
+    //         num = 0;
+    //         memset(linebuf, '\0', size + 1);
+    //         continue;
+    //     }
+    // }
 
-    // void* vcodeptr = 0x0000000080000000;
-    // void* vstackptr = 0x0000000080010000 - PAGE_SIZE;
-    // void* ptr = vmalloc(vcodeptr, 1, PAGE_FLAG_USERSUPER | PAGE_FLAG_READWRITE | PAGE_FLAG_PRESENT);
-    // void* usrptr = (void*)&userfunc;
+    void* vcodeptr =  0x0000000000010000;
+    void* vstackptr = 0x00007FFFFFFFF000 - PAGE_SIZE;
+    void* ptr = vmalloc(vcodeptr, 1, PAGE_FLAG_USERSUPER | PAGE_FLAG_READWRITE | PAGE_FLAG_PRESENT);
+    void* usrptr = (void*)&kerneluserentry;
 
-    // memcpy(ptr, usrptr, PAGE_SIZE);
+    memcpy(ptr, usrptr, PAGE_SIZE);
 
-    // void* stack = vmalloc(vstackptr, 1, PAGE_FLAG_USERSUPER | PAGE_FLAG_READWRITE | PAGE_FLAG_PRESENT);
+    void* stack = vmalloc(vstackptr, 1, PAGE_FLAG_USERSUPER | PAGE_FLAG_READWRITE | PAGE_FLAG_PRESENT);
 
-    // __asm__ volatile (".intel_syntax noprefix;"
-    //                   "mov rsp, 0x80010000;"
-    //                   "mov ecx, 0x80000000;"
-    //                   "mov r11, 0x202;"
-    //                   ".att_syntax prefix;");
-    // __asm__ volatile ("sysretq;");
-
-    // cli();
-    // halt();
-}
-
-__attribute__((noreturn, aligned(4096)))
-void userfunc() {
-    volatile bool a = false;
-    while(true) {
-        if (a == false) {
-            a = true;
-        }
-        else {
-            a = false;
-        }
-    }
-
-    bool b = a;
+    __asm__ volatile (".intel_syntax noprefix;"
+                      "mov rsp, %0;"
+                      "mov rcx, %1;"
+                      "mov r11, 0x202;"
+                      ".att_syntax prefix;" : : "r" ((uint64_t)vstackptr + PAGE_SIZE), "r" ((uint64_t)vcodeptr));
+    __asm__ volatile ("sysretq;");
 }

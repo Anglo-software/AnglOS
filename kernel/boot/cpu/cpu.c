@@ -11,18 +11,3 @@ void init_sse() {
                       "mov cr4, rax;"
                       ".att_syntax prefix;");
 }
-
-void init_syscall_ext() {
-    __asm__ volatile (".intel_syntax noprefix;"
-                      "mov rcx, 0xC0000082;"
-                      "wrmsr;"
-                      "mov rcx, 0xC0000080;"
-                      "rdmsr;"
-                      "or eax, 1;"
-                      "wrmsr;"
-                      "mov rcx, 0xC0000081;"
-                      "rdmsr;"
-                      "mov edx, 0x00300008;"
-                      "wrmsr;"
-                      ".att_syntax prefix;");
-}
