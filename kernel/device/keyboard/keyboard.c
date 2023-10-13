@@ -1,6 +1,5 @@
 #include "keyboard.h"
 #include "boot/interrupts/isr.h"
-#include "device/apic/apic.h"
 #include "device/io.h"
 #include "device/input/input.h"
 #include "boot/cpu/cpu.h"
@@ -18,11 +17,13 @@ static unsigned char* scan_code_1_shift = (unsigned char*)"\0""\0""!@#$%^&*()_+"
                                                           "\x83""ASDFGHJKL:\"~""\x84""\\""ZXCVBNM<>?""\x84""*""\x85"" ";
 
 int init_keyboard() {
-    register_interrupt_handler(IRQ1, irq_keyboard_handler);
-    ioapic_redirection_t redir = {.vector = IRQ1};
-    write_ioapic_redir(0x01, &redir);
-
+    register_interrupt_handler(KEYBOARD_IRQ, irq_keyboard_handler);
     return 0;
+}
+
+void keyboard_set_redir(ioapic_redirection_t* redir) {
+    redir->vector = KEYBOARD_IRQ;
+    write_ioapic_redir(KEYBOARD_IRQ - 32, redir);
 }
 
 uint8_t get_keyboard_status() {

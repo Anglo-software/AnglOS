@@ -1,7 +1,7 @@
 #pragma once
 #include "basic_includes.h"
 
-#define GDT_MAX_DESCRIPTORS         0x2000
+#define GDT_MAX_DESCRIPTORS         0x20
 #define GDT_DESCRIPTOR_SIZE         0x08
 
 #define GDT_DESCRIPTOR_ACCESS       0x01
@@ -26,8 +26,10 @@
 #define GDT_OFFSET_KERNEL_DATA32 (0x04 * 0x08)
 #define GDT_OFFSET_KERNEL_CODE64 (0x05 * 0x08)
 #define GDT_OFFSET_KERNEL_DATA64 (0x06 * 0x08)
-#define GDT_OFFSET_USER_CODE64   (0x07 * 0x08)
-#define GDT_OFFSET_USER_DATA64   (0x08 * 0x08)
+#define GDT_OFFSET_USER_DATA64   (0x07 * 0x08)
+#define GDT_OFFSET_USER_CODE64   (0x08 * 0x08)
+
+#define GDT_NUM_SEGMENTS 9
 
 typedef struct {
     uint16_t    limit;         
@@ -54,7 +56,7 @@ typedef struct {
     uintptr_t base;       
 } __attribute__((packed)) gdtr_t;
 
-void        gdt_add_descriptor(uint64_t base, uint32_t limit, uint8_t access, uint8_t granularity);
+void        gdt_add_descriptor(uint64_t num_cpu, uint64_t base, uint32_t limit, uint8_t access, uint8_t granularity);
 void        gdt_reload(gdtr_t* gdtr, uint16_t code, uint16_t data);
-uint16_t    gdt_install_tss(uint64_t tss);
+uint16_t    gdt_install_tss(uint64_t tss, int num_cpu);
 void        init_gdt();

@@ -2,15 +2,19 @@
 #include "stdarg.h"
 #include "libc/stdio.h"
 #include "device/vga/text.h"
+#include "threads/spinlock.h"
 
 static void vprintf_helper(char, void*);
-static void putchar_have_lock(uint8_t c);
+static void putcharLocked(uint8_t c);
 
 static int64_t write_cnt;
 
 static enum console_mode current_mode = NORMAL_MODE;
 
-void console_init() {
+static spinlock spin;
+
+void init_console() {
+    spin_init(&spin);
 }
 
 void console_set_mode(enum console_mode mode) {
@@ -22,12 +26,11 @@ void console_print_stats() {
 }
 
 static void acquire_console() {
+    spin_lock(&spin);
 }
 
 static void release_console() {
-}
-
-static bool console_locked_by_current_thread() {
+    spin_unlock(&spin);
 }
 
 int vprintf(const char* format, va_list args) {
@@ -39,29 +42,39 @@ int vprintf(const char* format, va_list args) {
 }
 
 int puts(const char* s) {
-    while (*s != '\0')
-        putchar_have_lock(*s++);
-    putchar_have_lock('\n');
+    acquire_console();
+    while (*s != '\0') {
+        putcharLocked(*s++);
+    }
+    putcharLocked('\n');
+    release_console();
     return 0;
 }
 
 void putbuf(const char* buffer, size_t n) {
-    while (n-- > 0)
-        putchar_have_lock(*buffer++);
+    acquire_console();
+    while (n-- > 0) {
+        putcharLocked(*buffer++);
+    }
+    release_console();
 }
 
 int putchar(int c) {
-    putchar_have_lock(c);
+    acquire_console();
+    putcharLocked(c);
+    release_console();
     return c;
 }
 
 static void vprintf_helper(char c, void* char_cnt_) {
+    acquire_console();
     int *char_cnt = char_cnt_;
     (*char_cnt)++;
-    putchar_have_lock(c);
+    putcharLocked(c);
+    release_console();
 }
 
-static void putchar_have_lock(uint8_t c) {
+static void putcharLocked(uint8_t c) {
     write_cnt++;
     vga_putc(c);
 }

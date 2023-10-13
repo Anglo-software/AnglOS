@@ -34,5 +34,6 @@ typedef struct {
 } __attribute__((packed)) idtr_t;
 
 void 		idt_reload(idtr_t* idtr);
+void		idt_reload_ap();
 void 		idt_set_descriptor(uint8_t vector, uintptr_t isr, uint8_t flags, uint8_t ist);
 void 		init_idt();

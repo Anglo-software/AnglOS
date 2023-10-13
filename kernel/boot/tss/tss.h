@@ -1,10 +1,11 @@
 #pragma once
 #include "basic_includes.h"
-
-#define TSS_MAX_CPUS 1
+#include "boot/cpu/cpu.h"
 
 #define TSS_IST_EXCEPTION   001
 #define TSS_IST_ROUTINE     002
+
+#define IST_STACK_NUM_PAGES 4
 
 typedef struct tss {
     uint32_t    rsv0;
@@ -19,3 +20,5 @@ typedef struct tss {
 void    init_tss(int num_cpu);
 uint8_t tss_add_stack(int num_cpu);
 void    tss_reload(uint16_t selector);
+tss_t*  tss_get(int num_cpu);
+void*   tss_get_stack(int num_cpu, uint8_t ist);

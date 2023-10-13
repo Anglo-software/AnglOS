@@ -14,14 +14,16 @@ extern bool cursor_enabled;
 
 static void irq_timer_handler(registers_t* registers) {
     time_counter++;
-    if (cursor_enabled) {
-        if (!input_full()) {
-            input_putc(0x91);
+    if (read_lapic_reg(APIC_APICID) >> 24 == 0) {
+        if (cursor_enabled) {
+            if (!input_full()) {
+                input_putc(0x91);
+            }
         }
-    }
-    else {
-        if (!input_full()) {
-            input_putc(0x92);
+        else {
+            if (!input_full()) {
+                input_putc(0x92);
+            }
         }
     }
     apic_send_eoi();
@@ -41,6 +43,11 @@ void init_timer() {
     uint32_t ticks = 0xFFFFFFFF - read_lapic_reg(APIC_TMRCURRCNT);
     ticks_per_second = ticks * 10;
     nanoseconds_per_tick = (1000000000 / ticks_per_second) + ((1000000000 % ticks_per_second) != 0);
+}
+
+void init_timer_ap() {
+    write_lapic_reg(APIC_TMRDIV, 0x00);
+    write_lapic_reg(APIC_LVT_TMR, IRQ0);
 }
 
 uint64_t get_resolution() {

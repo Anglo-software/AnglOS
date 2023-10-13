@@ -116,6 +116,8 @@ void write_lapic_reg(uint32_t reg, uint32_t data);
 uint32_t read_ioapic_reg(uint32_t reg);
 void write_ioapic_reg(uint32_t reg, uint32_t data);
 void init_apic();
+void init_apic_ap();
 void read_ioapic_redir(uint8_t irq, ioapic_redirection_t* entry);
 void write_ioapic_redir(uint8_t irq, ioapic_redirection_t* entry);
+uint64_t apic_get_cpuid();
 void apic_send_eoi();

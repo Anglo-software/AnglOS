@@ -1,26 +1,49 @@
 .PHONY: all
 all: angl-os.iso
-	 cd kernel && objdump -d angl-os.elf > angl-os.asmdump && objdump -s angl-os.elf > angl-os.secdump && cd ..
+	 cd kernel && objdump -d -Mintel angl-os.elf > angl-os.asmdump && objdump -s angl-os.elf > angl-os.secdump && cd ..
 
 .PHONY: all-hdd
 all-hdd: angl-os.hdd
-	 cd kernel && objdump -d angl-os.elf > angl-os.asmdump && objdump -s angl-os.elf > angl-os.secdump && cd ..
+	 cd kernel && objdump -d -Mintel angl-os.elf > angl-os.asmdump && objdump -s angl-os.elf > angl-os.secdump && cd ..
 
 .PHONY: run
 run: angl-os.iso
-	qemu-system-x86_64 -M q35 -m 8192 -device VGA -cdrom angl-os.iso -boot d
+	qemu-system-x86_64 \
+		-M q35 \
+		-m 8192 \
+		-device VGA \
+		-cdrom angl-os.iso \
+		-boot d
 
 .PHONY: run-uefi
 run-uefi: ovmf-x64 angl-os.iso
-	qemu-system-x86_64 -M q35 -m 8192 -device VGA -bios ovmf-x64/OVMF.fd -cdrom angl-os.iso -boot d
+	qemu-system-x86_64 \
+		-M q35 \
+		-m 8192 \
+		-device VGA \
+		-bios ovmf-x64/OVMF.fd \
+		-cdrom angl-os.iso \
+		-boot d
 
 .PHONY: run-hdd
 run-hdd: angl-os.hdd
-	qemu-system-x86_64 -M q35 -m 8192 -device VGA -hda angl-os.hdd
+	qemu-system-x86_64 \
+		-M q35 \
+		-m 8192 \
+		-device VGA \
+		-hda angl-os.hdd
 
 .PHONY: run-hdd-uefi
 run-hdd-uefi: ovmf-x64 angl-os.hdd
-	qemu-system-x86_64 -M q35 -m 8192 -device VGA -bios ovmf-x64/OVMF.fd -hda angl-os.hdd -drive file=testdisk.qcow2,if=none,id=nvm -device nvme,serial=deadbeef,drive=nvm,cmb_size_mb=4
+	qemu-system-x86_64 \
+		-M q35 \
+		-m 8192 \
+		-device VGA \
+		-bios ovmf-x64/OVMF.fd \
+		-hda angl-os.hdd \
+		-drive file=testdisk.qcow2,if=none,id=nvm \
+		-device nvme,serial=deadbeef,drive=nvm,cmb_size_mb=4 \
+		-smp 4
 
 ovmf-x64:
 	mkdir -p ovmf-x64

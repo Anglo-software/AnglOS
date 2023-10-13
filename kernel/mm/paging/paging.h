@@ -119,8 +119,10 @@
  * Kernel:
  * FFFF 8000 0000 0000 - FFFF 8007 FFFF FFFF -> 32  GB   direct mapping of all physical memory (page_direct_base)
  * FFFF 9000 0000 0000 - FFFF 9020 FFFF FFFF -> 128 GB   kernel heap (kheap_base) (start at 1GB)
- * FFFF A000 0000 0000 - FFFF A00F FFFF FFFF -> 64  GB   mem-mapped io base (Allocate as necessary)
+ * FFFF A000 0000 0000 - FFFF A00F FFFF FFFF -> 64  GB   lapic_base
+ * FFFF A100 0000 0000 - FFFF A10F FFFF FFFF -> 64  GB   ioapic_base
  * FFFF B000 0000 0000 - FFFF B00F FFFF FFFF -> 64  GB   kernel and irq/isr stacks (kstack_base) (start at 512MB)
+ * FFFF FF80 0000 0000 - FFFF FF85 0000 FFFF -> ??  GB   NVMe
  * FFFF FFFF 8000 0000 - FFFF FFFF FFFF FFFF -> 2   GB   kernel text mapping (kernel_base)
  */
 
@@ -180,6 +182,7 @@ typedef struct {
 } __attribute__((packed)) page_table_entry_t;
 
 void init_paging();
+void init_paging_ap();
 
 /**
  * alloc  - allocate one table (page) and return its physical address

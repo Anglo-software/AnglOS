@@ -2,6 +2,7 @@
 #include <basic_includes.h>
 
 void init_timer();
+void init_timer_ap();
 uint64_t get_resolution();
 void timer_start();
 void timer_stop();

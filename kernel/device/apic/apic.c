@@ -2,8 +2,10 @@
 #include "device/io.h"
 #include "device/8259/pic.h"
 #include "boot/interrupts/isr.h"
+#include "mm/paging/paging.h"
 
-extern uint8_t* page_direct_base;
+extern void* lapic_base;
+extern void* ioapic_base;
 
 static madt_t* madt_addr;
 static uint64_t lapic_addr;
@@ -25,7 +27,6 @@ static uintptr_t cpu_get_apic_base() {
 static void apic_enable() {
     cpu_set_apic_base(cpu_get_apic_base());
     write_lapic_reg(APIC_SPURIOUS, read_lapic_reg(APIC_SPURIOUS) | APIC_SW_ENABLE);
-    //write_lapic_reg(APIC_TASKPRIOR, read_lapic_reg(APIC_TASKPRIOR) | 0x01);
 }
 
 static void irq_spurious_handler(registers_t* registers) {
@@ -54,18 +55,24 @@ void write_ioapic_reg(uint32_t reg, uint32_t data) {
 
 void init_apic() {
     madt_addr = acpi_find_sdt("APIC");
-    lapic_addr = (uint64_t)madt_addr->lapic_addr + (uint64_t)page_direct_base;
+    lapic_addr = (uint64_t)madt_addr->lapic_addr;
     uint8_t* ptr = (uint8_t*)madt_addr + sizeof(madt_t);
     uint8_t* ptr2 = (uint8_t*)madt_addr + madt_addr->header.length;
     for (; ptr < ptr2; ptr += ptr[1]) {
         switch (ptr[0]) {
-            case 1: ioapic_addr = (uint64_t)((madt_entry_type_1_t*)ptr)->ioapic_address + (uint64_t)page_direct_base; break;
-            case 5: lapic_addr = (uint64_t)((madt_entry_type_5_t*)ptr)->lapic_address + (uint64_t)page_direct_base; break;
+            case 1: ioapic_addr = (uint64_t)((madt_entry_type_1_t*)ptr)->ioapic_address; break;
+            case 5: lapic_addr = (uint64_t)((madt_entry_type_5_t*)ptr)->lapic_address; break;
         }
     }
+    lapic_addr = (uint64_t)videntity(lapic_base, (void*)lapic_addr, 1, PAGE_FLAG_PRESENT | PAGE_FLAG_READWRITE | PAGE_FLAG_CACHEDBLE);
+    ioapic_addr = (uint64_t)videntity(ioapic_base, (void*)ioapic_addr, 1, PAGE_FLAG_PRESENT | PAGE_FLAG_READWRITE | PAGE_FLAG_CACHEDBLE);
     pic_disable();
     apic_enable();
     register_interrupt_handler(IRQ7, irq_spurious_handler);
+}
+
+void init_apic_ap() {
+    apic_enable();
 }
 
 void read_ioapic_redir(uint8_t irq, ioapic_redirection_t* entry) {
@@ -77,6 +84,13 @@ void write_ioapic_redir(uint8_t irq, ioapic_redirection_t* entry) {
     uint64_t tmp = *(uint64_t*)entry;
     write_ioapic_reg(0x10 + irq * 2, (uint32_t)(tmp & 0xFFFFFFFF));
     write_ioapic_reg(0x10 + irq * 2 + 1, (uint32_t)((tmp >> 32) & 0xFFFFFFFF));
+}
+
+uint64_t apic_get_cpuid() {
+    if (lapic_addr) {
+        return (uint64_t)read_lapic_reg(APIC_APICID) >> 24;
+    }
+    return (uint16_t)-1;
 }
 
 void apic_send_eoi() {

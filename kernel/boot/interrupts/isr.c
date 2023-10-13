@@ -98,8 +98,8 @@ char *exception_messages[] = {
 };
 
 void isr_handler(registers_t *r) {
-    printf("received interrupt: %d\n", r->vector);
-    printf("[%s] with error code: %x @ %x\n", exception_messages[r->vector], r->error_code, r->rip);
+    printf("received interrupt: %ld from CPU %d\n", r->vector, read_lapic_reg(APIC_APICID) >> 24);
+    printf("[%s] with error code: %lx @ %lx\n", exception_messages[r->vector], r->error_code, r->rip);
     __asm__ volatile ("cli; hlt");
 }
 

@@ -29,3 +29,8 @@ void init_idt() {
 
     idt_reload(&idtr);
 }
+
+void idt_reload_ap() {
+    __asm__ volatile ("mov rax, %0;"
+                      "lidt [rax]" : : "r" (&idtr) : "memory");
+}

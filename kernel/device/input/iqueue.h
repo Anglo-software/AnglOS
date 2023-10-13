@@ -5,7 +5,7 @@
 #define IQUEUE_BUFSIZE 32
 
 typedef struct {
-    spin_t lock;
+    spinlock lock;
 
     uint8_t buf[IQUEUE_BUFSIZE];
     int head;

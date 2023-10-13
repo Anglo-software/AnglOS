@@ -1,5 +1,6 @@
 #pragma once
 #include "basic_includes.h"
+#include "device/apic/apic.h"
 
 #define KEYBOARD_DATA_PORT 0x60
 #define KEYBOARD_STATUS_REGISTER 0x64
@@ -18,7 +19,10 @@
 #define CURSOR_EN 0x91
 #define CURSOR_DS 0x92
 
+#define KEYBOARD_IRQ 33
+
 int init_keyboard();
+void keyboard_set_redir(ioapic_redirection_t* redir);
 void send_keyboard_command(uint8_t);
 void send_keyboard_byte(uint8_t);
 uint8_t get_keyboard_byte();

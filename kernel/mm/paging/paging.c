@@ -1,20 +1,28 @@
 #include "paging.h"
 #include "mm/pmm/pmm.h"
 #include "boot/limine.h"
+#include "libc/stdio.h"
 
 void* page_direct_base = (void*)0xFFFF800000000000;
 void* kheap_base       = (void*)0xFFFF900000000000;
-void* iomap_base       = (void*)0xFFFFA00000000000;
+void* lapic_base       = (void*)0xFFFFA00000000000;
+void* ioapic_base      = (void*)0xFFFFA10000000000;
 void* kstack_base      = (void*)0xFFFFB00000000000;
 void* kernel_base      = (void*)0xFFFFFFFF80000000;
+
+static void* bsp_cr3;
 
 extern uint64_t mem_size;
 
 void init_paging() {
     update_bitmap_base((uint64_t)page_direct_base);
-    // remove_entry(get_cr3(), 4, 0);
     vfree((void*)0, mem_size / PAGE_SIZE, false);
+    bsp_cr3 = get_cr3();
     return;
+}
+
+void init_paging_ap() {
+    set_cr3(bsp_cr3 - page_direct_base);
 }
 
 #define NUM_ALLOC 64
@@ -96,7 +104,7 @@ void* get_cr3() {
 
 void set_cr3(void* pptr) {
     uint64_t cr3 = (uint64_t)pptr;
-    __asm__ volatile ("mov cr3, %0" : : "r"(cr3));
+    __asm__ volatile ("mov cr3, %0" : : "r"(cr3) : "memory");
 }
 
 #define min(a, b) (a < b ? a : b)
