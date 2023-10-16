@@ -7,10 +7,10 @@ typedef struct {
     uint64_t size;
 } __attribute__((packed)) bitmap_stat_t;
 
-void init_pmm();
+void initPMM();
 
-uint64_t get_free_mem();
-void update_bitmap_base(uint64_t offset);
+uint64_t pmmGetFreeMem();
+void pmmUpdateBitmapBase(uint64_t offset);
 
 void* pmalloc(size_t pages);
 void pfree(void* pptr, size_t pages);

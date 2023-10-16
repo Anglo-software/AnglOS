@@ -1,11 +1,11 @@
 #pragma once
 #include <basic_includes.h>
 
-#define DISP_IOPORT_INDEX 0x01CE
-#define DISP_IOPORT_DATA  0x01CF
+#define DISP_IOPORT_INDEX      0x01CE
+#define DISP_IOPORT_DATA       0x01CF
 
-#define DISP_DISABLED 0x0000
-#define DISP_ENABLED  0x0001
+#define DISP_DISABLED          0x0000
+#define DISP_ENABLED           0x0001
 
 #define DISP_INDEX_ID          0x0000
 #define DISP_INDEX_XRES        0x0001
@@ -18,17 +18,17 @@
 #define DISP_INDEX_X_OFFSET    0x0008
 #define DISP_INDEX_Y_OFFSET    0x0009
 
-#define DISP_BPP_4  0x0004
-#define DISP_BPP_8  0x0008
-#define DISP_BPP_15 0x000F
-#define DISP_BPP_16 0x0010
-#define DISP_BPP_24 0x0018
-#define DISP_BPP_32 0x0020
+#define DISP_BPP_4             0x0004
+#define DISP_BPP_8             0x0008
+#define DISP_BPP_15            0x000F
+#define DISP_BPP_16            0x0010
+#define DISP_BPP_24            0x0018
+#define DISP_BPP_32            0x0020
 
-int init_graphics(uint16_t width, uint16_t height, uint16_t depth);
-uint64_t get_res_x();
-uint64_t get_res_y();
-uint64_t get_pitch();
-uint64_t get_bytes_per_pixel();
-uint8_t* get_fb_base();
-void putpixel(uint16_t pos_x, uint16_t pos_y, uint32_t color);
+int initGraphics(uint16_t width, uint16_t height, uint16_t depth);
+uint64_t graphicsGetXRes();
+uint64_t graphicsGetYRes();
+uint64_t GraphicsGetPitch();
+uint64_t graphicsGetBytesPerPixel();
+uint8_t* graphicsGetFramebufferBase();
+void graphicsPutpixel(uint16_t pos_x, uint16_t pos_y, uint32_t color);

@@ -1,6 +1,6 @@
-[GLOBAL idt_reload]
+[GLOBAL idtReload]
 
-idt_reload:
+idtReload:
     push rbp
     mov rbp, rsp
     pushfq

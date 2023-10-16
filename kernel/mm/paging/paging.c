@@ -1,7 +1,7 @@
 #include "paging.h"
-#include "mm/pmm/pmm.h"
 #include "boot/limine.h"
 #include "libc/stdio.h"
+#include "mm/pmm/pmm.h"
 
 void* page_direct_base = (void*)0xFFFF800000000000;
 void* kheap_base       = (void*)0xFFFF900000000000;
@@ -14,15 +14,17 @@ static void* bsp_cr3;
 
 extern uint64_t mem_size;
 
-void init_paging() {
-    update_bitmap_base((uint64_t)page_direct_base);
+void initPaging()
+{
+    pmmUpdateBitmapBase((uint64_t)page_direct_base);
     vfree((void*)0, mem_size / PAGE_SIZE, false);
-    bsp_cr3 = get_cr3();
+    bsp_cr3 = pagingGetCR3();
     return;
 }
 
-void init_paging_ap() {
-    set_cr3(bsp_cr3 - page_direct_base);
+void initAPPaging()
+{
+    pagingSetCR3((void*)((uint64_t)bsp_cr3 - (uint64_t)page_direct_base));
 }
 
 #define NUM_ALLOC 64
@@ -31,7 +33,8 @@ static void* bulk_alloc_ptrs[NUM_ALLOC];
 
 static uint8_t curr = 63;
 
-static void* pmalloc_bulk() {
+static void* pmallocBulk()
+{
     if (curr + 1 == NUM_ALLOC) {
         void* ptr = pmalloc(NUM_ALLOC);
         for (int i = 0; i < NUM_ALLOC; i++) {
@@ -42,8 +45,9 @@ static void* pmalloc_bulk() {
     return bulk_alloc_ptrs[curr++];
 }
 
-void* alloc_table() {
-    void* pptr = pmalloc_bulk();
+void* pagingAllocTable()
+{
+    void* pptr     = pmallocBulk();
     uint64_t* vptr = (uint64_t*)(pptr + (uint64_t)page_direct_base);
     for (int i = 0; i < PAGE_SIZE / 8; i++) {
         *vptr = 0;
@@ -51,23 +55,27 @@ void* alloc_table() {
     return pptr;
 }
 
-void free_table(void* table_pptr) {
-    pfree(table_pptr, 1);
+void pagingFreeTable(void* table_pptr) { pfree(table_pptr, 1); }
+
+void pagingAddEntry(void* table_vptr, uint16_t entry_num, void* entry_pptr,
+                    uint64_t flags)
+{
+    uint64_t* entry_vptr = (uint64_t*)(table_vptr + entry_num * 8);
+    *entry_vptr          = ((uint64_t)entry_pptr & (~0xFFF)) | flags;
 }
 
-void add_entry(void* table_vptr, uint16_t entry_num, void* entry_pptr, uint64_t flags) {
+void pagingUpdateEntry(void* table_vptr, uint16_t entry_num, void* entry_pptr,
+                       uint64_t flags)
+{
     uint64_t* entry_vptr = (uint64_t*)(table_vptr + entry_num * 8);
-    *entry_vptr = ((uint64_t)entry_pptr & (~0xFFF)) | flags;
-}
-
-void update_entry(void* table_vptr, uint16_t entry_num, void* entry_pptr, uint64_t flags) {
-    uint64_t* entry_vptr = (uint64_t*)(table_vptr + entry_num * 8);
-    *entry_vptr = ((uint64_t)entry_pptr & (~0xFFF)) | flags;
+    *entry_vptr          = ((uint64_t)entry_pptr & (~0xFFF)) | flags;
 }
 
 extern uint64_t mem_size;
 
-void remove_entry(void* table_vptr, uint16_t level, uint16_t entry_num, bool do_pfree) {
+void pagingRemoveEntry(void* table_vptr, uint16_t level, uint16_t entry_num,
+                       bool do_pfree)
+{
     uint64_t* entry = (uint64_t*)((uint64_t)table_vptr + 8 * entry_num);
 
     if ((*entry & 0x1) != 0x1) {
@@ -89,66 +97,74 @@ void remove_entry(void* table_vptr, uint16_t level, uint16_t entry_num, bool do_
 
     else {
         for (int i = 0; i < 512; i++) {
-            remove_entry(entry_pptr + (uint64_t)page_direct_base, level - 1, i, do_pfree);
+            pagingRemoveEntry(entry_pptr + (uint64_t)page_direct_base,
+                              level - 1, i, do_pfree);
         }
-        free_table(entry_pptr);
+        pagingFreeTable(entry_pptr);
         *entry = 0;
     }
 }
 
-void* get_cr3() {
+void* pagingGetCR3()
+{
     uint64_t cr3;
-    __asm__ volatile ("mov %0, cr3" : "=r"(cr3));
+    __asm__ volatile("mov %0, cr3" : "=r"(cr3));
     return (void*)((cr3 & (~0xFFF)) + (uint64_t)page_direct_base);
 }
 
-void set_cr3(void* pptr) {
+void pagingSetCR3(void* pptr)
+{
     uint64_t cr3 = (uint64_t)pptr;
-    __asm__ volatile ("mov cr3, %0" : : "r"(cr3) : "memory");
+    __asm__ volatile("mov cr3, %0" : : "r"(cr3) : "memory");
 }
 
 #define min(a, b) (a < b ? a : b)
 
-static void* vmalloc_helper(void* vptr, uint64_t* p4tp, uint64_t flags) {
+static void* vmallocHelper(void* vptr, uint64_t* p4tp, uint64_t flags)
+{
     void* pptr;
 
     uint64_t p4e_num = PAGE_P4E((uint64_t)vptr);
-    uint64_t p4e = p4tp[p4e_num];
+    uint64_t p4e     = p4tp[p4e_num];
     if (p4e == 0) {
-        pptr = alloc_table();
-        add_entry((void*)p4tp, p4e_num, pptr, flags);
+        pptr = pagingAllocTable();
+        pagingAddEntry((void*)p4tp, p4e_num, pptr, flags);
     }
     p4e = p4tp[p4e_num];
-    uint64_t* p3tp = (uint64_t*)((p4e & 0x000FFFFFFFFFF000) + (uint64_t)page_direct_base);
-    
+    uint64_t* p3tp =
+        (uint64_t*)((p4e & 0x000FFFFFFFFFF000) + (uint64_t)page_direct_base);
+
     uint64_t p3e_num = PAGE_P3E((uint64_t)vptr);
-    uint64_t p3e = p3tp[p3e_num];
+    uint64_t p3e     = p3tp[p3e_num];
     if (p3e == 0) {
-        pptr = alloc_table();
-        add_entry((void*)p3tp, p3e_num, pptr, flags);
+        pptr = pagingAllocTable();
+        pagingAddEntry((void*)p3tp, p3e_num, pptr, flags);
     }
     p3e = p3tp[p3e_num];
-    uint64_t* p2tp = (uint64_t*)((p3e & 0x000FFFFFFFFFF000) + (uint64_t)page_direct_base);
-    
+    uint64_t* p2tp =
+        (uint64_t*)((p3e & 0x000FFFFFFFFFF000) + (uint64_t)page_direct_base);
+
     uint64_t p2e_num = PAGE_P2E((uint64_t)vptr);
-    uint64_t p2e = p2tp[p2e_num];
+    uint64_t p2e     = p2tp[p2e_num];
     if (p2e == 0) {
-        pptr = alloc_table();
-        add_entry((void*)p2tp, p2e_num, pptr, flags);
+        pptr = pagingAllocTable();
+        pagingAddEntry((void*)p2tp, p2e_num, pptr, flags);
     }
     p2e = p2tp[p2e_num];
-    uint64_t* p1tp = (uint64_t*)((p2e & 0x000FFFFFFFFFF000) + (uint64_t)page_direct_base);
-    
+    uint64_t* p1tp =
+        (uint64_t*)((p2e & 0x000FFFFFFFFFF000) + (uint64_t)page_direct_base);
+
     uint64_t p1e_num = PAGE_P1E((uint64_t)vptr);
-    pptr = pmalloc_bulk();
-    add_entry((void*)p1tp, p1e_num, pptr, flags);
+    pptr             = pmallocBulk();
+    pagingAddEntry((void*)p1tp, p1e_num, pptr, flags);
     return vptr;
 }
 
-void* vmalloc(void* vptr, size_t pages, uint64_t flags) {
-    uint64_t* p4tp = (uint64_t*)get_cr3();
+void* vmalloc(void* vptr, size_t pages, uint64_t flags)
+{
+    uint64_t* p4tp = (uint64_t*)pagingGetCR3();
     for (size_t i = 0; i < pages; i++) {
-        void* ptr = vmalloc_helper(vptr + i * PAGE_SIZE, p4tp, flags);
+        void* ptr = vmallocHelper(vptr + i * PAGE_SIZE, p4tp, flags);
         if (ptr == NULL) {
             return NULL;
         }
@@ -156,31 +172,35 @@ void* vmalloc(void* vptr, size_t pages, uint64_t flags) {
     return vptr;
 }
 
-static void vfree_helper(void* vptr, uint64_t* p4tp, bool do_pfree) {
+static void vfreeHelper(void* vptr, uint64_t* p4tp, bool do_pfree)
+{
     uint64_t p4e_num = PAGE_P4E((uint64_t)vptr);
-    uint64_t p4e = p4tp[p4e_num];
+    uint64_t p4e     = p4tp[p4e_num];
     if (p4e == 0) {
         return;
     }
-    uint64_t* p3tp = (uint64_t*)((p4e & 0x000FFFFFFFFFF000) + (uint64_t)page_direct_base);
-    
+    uint64_t* p3tp =
+        (uint64_t*)((p4e & 0x000FFFFFFFFFF000) + (uint64_t)page_direct_base);
+
     uint64_t p3e_num = PAGE_P3E((uint64_t)vptr);
-    uint64_t p3e = p3tp[p3e_num];
+    uint64_t p3e     = p3tp[p3e_num];
     if (p3e == 0) {
         return;
     }
-    uint64_t* p2tp = (uint64_t*)((p3e & 0x000FFFFFFFFFF000) + (uint64_t)page_direct_base);
-    
+    uint64_t* p2tp =
+        (uint64_t*)((p3e & 0x000FFFFFFFFFF000) + (uint64_t)page_direct_base);
+
     uint64_t p2e_num = PAGE_P2E((uint64_t)vptr);
-    uint64_t p2e = p2tp[p2e_num];
+    uint64_t p2e     = p2tp[p2e_num];
     if (p2e == 0) {
         return;
     }
-    uint64_t* p1tp = (uint64_t*)((p2e & 0x000FFFFFFFFFF000) + (uint64_t)page_direct_base);
-    
+    uint64_t* p1tp =
+        (uint64_t*)((p2e & 0x000FFFFFFFFFF000) + (uint64_t)page_direct_base);
+
     uint64_t p1e_num = PAGE_P1E((uint64_t)vptr);
-    uint64_t p1e = p1tp[p1e_num];
-    remove_entry((void*)p1tp, 1, p1e_num, do_pfree);
+    uint64_t p1e     = p1tp[p1e_num];
+    pagingRemoveEntry((void*)p1tp, 1, p1e_num, do_pfree);
 
     for (int i = 0; i < 512; i++) {
         p1e = p1tp[i];
@@ -188,7 +208,7 @@ static void vfree_helper(void* vptr, uint64_t* p4tp, bool do_pfree) {
             return;
         }
     }
-    remove_entry((void*)p2tp, 2, p2e_num, do_pfree);
+    pagingRemoveEntry((void*)p2tp, 2, p2e_num, do_pfree);
 
     for (int i = 0; i < 512; i++) {
         p2e = p2tp[i];
@@ -196,7 +216,7 @@ static void vfree_helper(void* vptr, uint64_t* p4tp, bool do_pfree) {
             return;
         }
     }
-    remove_entry((void*)p3tp, 3, p3e_num, do_pfree);
+    pagingRemoveEntry((void*)p3tp, 3, p3e_num, do_pfree);
 
     for (int i = 0; i < 512; i++) {
         p3e = p3tp[i];
@@ -204,55 +224,63 @@ static void vfree_helper(void* vptr, uint64_t* p4tp, bool do_pfree) {
             return;
         }
     }
-    remove_entry((void*)p4tp, 4, p4e_num, do_pfree);
+    pagingRemoveEntry((void*)p4tp, 4, p4e_num, do_pfree);
 }
 
-void vfree(void* vptr, size_t pages, bool do_pfree) {
-    uint64_t* p4tp = (uint64_t*)get_cr3();
+void vfree(void* vptr, size_t pages, bool do_pfree)
+{
+    uint64_t* p4tp = (uint64_t*)pagingGetCR3();
     for (size_t i = 0; i < pages; i++) {
-        vfree_helper(vptr + i * PAGE_SIZE, p4tp, do_pfree);
+        vfreeHelper(vptr + i * PAGE_SIZE, p4tp, do_pfree);
     }
 }
 
-static void* videntity_helper(void* vptr, void* pptr, uint64_t* p4tp, uint64_t flags) {
+static void* videntityHelper(void* vptr, void* pptr, uint64_t* p4tp,
+                             uint64_t flags)
+{
     void* tmpptr;
 
     uint64_t p4e_num = PAGE_P4E((uint64_t)vptr);
-    uint64_t p4e = p4tp[p4e_num];
+    uint64_t p4e     = p4tp[p4e_num];
     if (p4e == 0) {
-        tmpptr = alloc_table();
-        add_entry((void*)p4tp, p4e_num, tmpptr, flags);
+        tmpptr = pagingAllocTable();
+        pagingAddEntry((void*)p4tp, p4e_num, tmpptr, flags);
     }
     p4e = p4tp[p4e_num];
-    uint64_t* p3tp = (uint64_t*)((p4e & 0x000FFFFFFFFFF000) + (uint64_t)page_direct_base);
-    
+    uint64_t* p3tp =
+        (uint64_t*)((p4e & 0x000FFFFFFFFFF000) + (uint64_t)page_direct_base);
+
     uint64_t p3e_num = PAGE_P3E((uint64_t)vptr);
-    uint64_t p3e = p3tp[p3e_num];
+    uint64_t p3e     = p3tp[p3e_num];
     if (p3e == 0) {
-        tmpptr = alloc_table();
-        add_entry((void*)p3tp, p3e_num, tmpptr, flags);
+        tmpptr = pagingAllocTable();
+        pagingAddEntry((void*)p3tp, p3e_num, tmpptr, flags);
     }
     p3e = p3tp[p3e_num];
-    uint64_t* p2tp = (uint64_t*)((p3e & 0x000FFFFFFFFFF000) + (uint64_t)page_direct_base);
-    
+    uint64_t* p2tp =
+        (uint64_t*)((p3e & 0x000FFFFFFFFFF000) + (uint64_t)page_direct_base);
+
     uint64_t p2e_num = PAGE_P2E((uint64_t)vptr);
-    uint64_t p2e = p2tp[p2e_num];
+    uint64_t p2e     = p2tp[p2e_num];
     if (p2e == 0) {
-        tmpptr = alloc_table();
-        add_entry((void*)p2tp, p2e_num, tmpptr, flags);
+        tmpptr = pagingAllocTable();
+        pagingAddEntry((void*)p2tp, p2e_num, tmpptr, flags);
     }
     p2e = p2tp[p2e_num];
-    uint64_t* p1tp = (uint64_t*)((p2e & 0x000FFFFFFFFFF000) + (uint64_t)page_direct_base);
-    
+    uint64_t* p1tp =
+        (uint64_t*)((p2e & 0x000FFFFFFFFFF000) + (uint64_t)page_direct_base);
+
     uint64_t p1e_num = PAGE_P1E((uint64_t)vptr);
-    add_entry((void*)p1tp, p1e_num, pptr, flags);
+    pagingAddEntry((void*)p1tp, p1e_num, pptr, flags);
     return vptr;
 }
 
-void* videntity(void* vptr, void* pptr, size_t pages, uint64_t flags) {
-    uint64_t* p4tp = (uint64_t*)get_cr3();
+void* videntity(void* vptr, void* pptr, size_t pages, uint64_t flags)
+{
+    uint64_t* p4tp = (uint64_t*)pagingGetCR3();
     for (size_t i = 0; i < pages; i++) {
-        void* ptr = videntity_helper(vptr + i * PAGE_SIZE, pptr + i * PAGE_SIZE, p4tp, flags);
+        void* ptr = videntityHelper(vptr + i * PAGE_SIZE, pptr + i * PAGE_SIZE,
+                                    p4tp, flags);
         if (ptr == NULL) {
             return NULL;
         }

@@ -1,7 +1,8 @@
 #include "userentry.h"
 #include "syscall.h"
 
-void kerneluserentry() {
+void kerneluserentry()
+{
     int ret = printSyscall(2);
     printSyscall2(ret, 4);
     printSyscall3(1, 2, 3, 4, 5, 6);
@@ -13,7 +14,7 @@ void kerneluserentry() {
         else {
             a = false;
         }
-        __asm__ volatile ("hlt");
+        __asm__ volatile("hlt");
     }
 
     bool b = a;

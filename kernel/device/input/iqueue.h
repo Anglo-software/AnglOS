@@ -1,6 +1,6 @@
 #pragma once
-#include <basic_includes.h>
 #include "threads/spinlock.h"
+#include <basic_includes.h>
 
 #define IQUEUE_BUFSIZE 32
 
@@ -12,10 +12,10 @@ typedef struct {
     int tail;
 } iqueue_t;
 
-void init_iqueue(iqueue_t* queue);
-void iqueue_lock(iqueue_t* queue);
-void iqueue_unlock(iqueue_t* queue);
-bool iqueue_empty(iqueue_t* queue);
-bool iqueue_full(iqueue_t* queue);
-uint8_t iqueue_getc(iqueue_t* queue);
-void iqueue_putc(iqueue_t* queue, uint8_t c);
+void initIQueue(iqueue_t* queue);
+void iqueueLock(iqueue_t* queue);
+void iqueueUnlock(iqueue_t* queue);
+bool iqueueEmpty(iqueue_t* queue);
+bool iqueueFull(iqueue_t* queue);
+uint8_t iqueueGetc(iqueue_t* queue);
+void iqueuePutc(iqueue_t* queue, uint8_t c);

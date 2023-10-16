@@ -1,7 +1,8 @@
 #include "pic.h"
 #include "../io.h"
 
-void pic_mask_irq(uint8_t irq) {
+void picMaskIRQ(uint8_t irq)
+{
     uint16_t port;
     uint8_t masks;
 
@@ -18,7 +19,8 @@ void pic_mask_irq(uint8_t irq) {
     outb(port, masks);
 }
 
-void pic_unmask_irq(uint8_t irq) {
+void picUnmaskIRQ(uint8_t irq)
+{
     uint16_t port;
     uint8_t masks;
 
@@ -35,11 +37,12 @@ void pic_unmask_irq(uint8_t irq) {
     outb(port, masks);
 }
 
-void pic_remap_offsets(uint8_t offset) {
+void picRemapOffsets(uint8_t offset)
+{
     uint8_t master_mask, slave_mask;
 
     master_mask = inb(PIC_MASTER_DATA);
-    slave_mask = inb(PIC_SLAVE_DATA);
+    slave_mask  = inb(PIC_SLAVE_DATA);
 
     outb(PIC_MASTER_COMMAND, PIC_ICW1_INIT | PIC_ICW1_ICW4);
     outb(PIC_SLAVE_COMMAND, PIC_ICW1_INIT | PIC_ICW1_ICW4);
@@ -57,14 +60,16 @@ void pic_remap_offsets(uint8_t offset) {
     outb(PIC_SLAVE_DATA, slave_mask);
 }
 
-void pic_send_eoi(uint8_t irq) {
+void picSendEOI(uint8_t irq)
+{
     if (irq >= 8)
         outb(PIC_SLAVE_COMMAND, PIC_EOI);
     outb(PIC_MASTER_COMMAND, PIC_EOI);
 }
 
-void pic_disable() {
-    pic_remap_offsets(0x20);
+void picDisable()
+{
+    picRemapOffsets(0x20);
     for (uint8_t irq = 0; irq < 16; irq++)
-        pic_mask_irq(irq);
+        picMaskIRQ(irq);
 }

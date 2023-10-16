@@ -1,6 +1,6 @@
 ; Defined in isr.c
-[extern isr_handler]
-[extern irq_handler]
+[extern isrHandler]
+[extern irqHandler]
 
 %macro pushagrd 0
 push rax
@@ -56,7 +56,7 @@ isr_common_stub:
     mov ss, ax
 
     lea rdi, [rsp + 0x10]
-    call isr_handler
+    call isrHandler
 
     pop rax
     pop rax
@@ -84,7 +84,7 @@ irq_common_stub:
     mov ss, ax
 
     lea rdi, [rsp + 0x10]
-    call irq_handler
+    call irqHandler
 
     pop rax
     pop rax

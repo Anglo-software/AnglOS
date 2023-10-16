@@ -2,29 +2,25 @@
 #include "libc/string.h"
 
 static volatile struct limine_module_request module_request = {
-    .id = LIMINE_MODULE_REQUEST,
-    .revision = 0
-};
+    .id = LIMINE_MODULE_REQUEST, .revision = 0};
 
 struct limine_module_response* module_response;
 
-void init_kmodules() {
-    module_response = module_request.response;
-}
+void initKmodules() { module_response = module_request.response; }
 
-uint64_t num_kmodules() {
-    return module_response->module_count;
-}
+uint64_t kmodulesGetNum() { return module_response->module_count; }
 
-kmodule_t* get_kmodule(uint64_t num) {
-    if (num > num_kmodules()) {
+kmodule_t* kmoduleGet(uint64_t num)
+{
+    if (num > kmodulesGetNum()) {
         return NULL;
     }
     return module_response->modules[num];
 }
 
-kmodule_t* find_by_path(const char* path) {
-    for (int i = 0; i < num_kmodules(); i++) {
+kmodule_t* kmoduleFindByPath(const char* path)
+{
+    for (unsigned int i = 0; i < kmodulesGetNum(); i++) {
         if (!strcmp(path, module_response->modules[i]->path)) {
             return module_response->modules[i];
         }
@@ -32,7 +28,8 @@ kmodule_t* find_by_path(const char* path) {
     return NULL;
 }
 
-uint8_t kmod_getc(kmodule_t* file, uint64_t index) {
+uint8_t kmoduleGetc(kmodule_t* file, uint64_t index)
+{
     if (file && index < file->size) {
         return ((uint8_t*)(file->address))[index];
     }

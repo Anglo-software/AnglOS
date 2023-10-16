@@ -7,20 +7,22 @@ static char* mem_start_brk;
 static char* mem_brk;
 static char* mem_max_addr;
 
-int mem_init() {
-    if ((mem_start_brk = (char*)vmalloc(kheap_base, MAX_HEAP / PAGE_SIZE, PAGE_FLAG_PRESENT | PAGE_FLAG_READWRITE)) == NULL) {
+int initKernelHeapMem()
+{
+    if ((mem_start_brk =
+             (char*)vmalloc(kheap_base, MAX_HEAP / PAGE_SIZE,
+                            PAGE_FLAG_PRESENT | PAGE_FLAG_READWRITE)) == NULL) {
         return -1;
     }
     mem_max_addr = mem_start_brk + MAX_HEAP;
-    mem_brk = mem_start_brk;
+    mem_brk      = mem_start_brk;
     return 0;
 }
 
-void mem_deinit() {
-    vfree(mem_start_brk, MAX_HEAP / PAGE_SIZE, true);
-}
+void mem_deinit() { vfree(mem_start_brk, MAX_HEAP / PAGE_SIZE, true); }
 
-void* mem_sbrk(int incr) {
+void* mem_sbrk(int incr)
+{
     char* old_brk = mem_brk;
 
     if ((incr < 0) || ((mem_brk + incr) > mem_max_addr)) {
@@ -30,22 +32,12 @@ void* mem_sbrk(int incr) {
     return (void*)old_brk;
 }
 
-void mem_reset_brk() {
-    mem_brk = mem_start_brk;
-}
+void mem_reset_brk() { mem_brk = mem_start_brk; }
 
-void* mem_heap_lo() {
-    return (void*)mem_start_brk;
-}
+void* mem_heap_lo() { return (void*)mem_start_brk; }
 
-void* mem_heap_hi() {
-    return (void*)(mem_brk - 1);
-}
+void* mem_heap_hi() { return (void*)(mem_brk - 1); }
 
-size_t mem_heapsize() {
-    return (size_t)(mem_brk - mem_start_brk);
-}
+size_t mem_heapsize() { return (size_t)(mem_brk - mem_start_brk); }
 
-size_t mem_pagesize() {
-    return PAGE_SIZE;
-}
+size_t mem_pagesize() { return PAGE_SIZE; }

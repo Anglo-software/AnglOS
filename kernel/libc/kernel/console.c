@@ -1,11 +1,11 @@
 #include "console.h"
-#include "stdarg.h"
-#include "libc/stdio.h"
 #include "device/vga/text.h"
+#include "libc/stdio.h"
+#include "stdarg.h"
 #include "threads/spinlock.h"
 
-static void vprintf_helper(char, void*);
-static void putcharLocked(uint8_t c);
+static void vkprintf_helper(char, void*);
+static void consolePutcharLocked(uint8_t c);
 
 static int64_t write_cnt;
 
@@ -13,68 +13,67 @@ static enum console_mode current_mode = NORMAL_MODE;
 
 static spinlock spin;
 
-void init_console() {
-    spin_init(&spin);
+void initConsole() { spinInit(&spin); }
+
+void consoleSetMode(enum console_mode mode) { current_mode = mode; }
+
+void consolePrintStats()
+{
+    kprintf("Console: %ld characters output\n", write_cnt);
 }
 
-void console_set_mode(enum console_mode mode) {
-    current_mode = mode;
-}
+static void consoleLock() { spinLock(&spin); }
 
-void console_print_stats() {
-    printf ("Console: %lld characters output\n", write_cnt);
-}
+static void consoleUnlock() { spinUnlock(&spin); }
 
-static void acquire_console() {
-    spin_lock(&spin);
-}
-
-static void release_console() {
-    spin_unlock(&spin);
-}
-
-int vprintf(const char* format, va_list args) {
+int vkprintf(const char* format, va_list args)
+{
     int char_cnt = 0;
 
-    __vprintf(format, args, vprintf_helper, &char_cnt);
+    __vkprintf(format, args, vkprintf_helper, &char_cnt);
 
     return char_cnt;
 }
 
-int puts(const char* s) {
-    acquire_console();
+int consolePuts(const char* s)
+{
+    consoleLock();
     while (*s != '\0') {
-        putcharLocked(*s++);
+        consolePutcharLocked(*s++);
     }
-    putcharLocked('\n');
-    release_console();
+    consolePutcharLocked('\n');
+    consoleUnlock();
     return 0;
 }
 
-void putbuf(const char* buffer, size_t n) {
-    acquire_console();
+void consolePutbuf(const char* buffer, size_t n)
+{
+    consoleLock();
     while (n-- > 0) {
-        putcharLocked(*buffer++);
+        consolePutcharLocked(*buffer++);
     }
-    release_console();
+    consoleUnlock();
 }
 
-int putchar(int c) {
-    acquire_console();
-    putcharLocked(c);
-    release_console();
+int consolePutchar(int c)
+{
+    consoleLock();
+    consolePutcharLocked(c);
+    consoleUnlock();
     return c;
 }
 
-static void vprintf_helper(char c, void* char_cnt_) {
-    acquire_console();
-    int *char_cnt = char_cnt_;
+static void vkprintf_helper(char c, void* char_cnt_)
+{
+    consoleLock();
+    int* char_cnt = char_cnt_;
     (*char_cnt)++;
-    putcharLocked(c);
-    release_console();
+    consolePutcharLocked(c);
+    consoleUnlock();
 }
 
-static void putcharLocked(uint8_t c) {
+static void consolePutcharLocked(uint8_t c)
+{
     write_cnt++;
-    vga_putc(c);
+    textPutc(c);
 }

@@ -3,29 +3,20 @@
 
 static iqueue_t buffer;
 
-void init_input() {
-    init_iqueue(&buffer);
-}
+void initInputQueue() { initIQueue(&buffer); }
 
-void input_putc(uint8_t c) {
-    iqueue_putc(&buffer, c);
-}
+void inputPutc(uint8_t c) { iqueuePutc(&buffer, c); }
 
-uint8_t input_getc() {
-    input_lock();
-    uint8_t c = iqueue_getc(&buffer);
-    input_unlock();
+uint8_t inputGetc()
+{
+    inputLock();
+    uint8_t c = iqueueGetc(&buffer);
+    inputUnlock();
     return c;
 }
 
-bool input_full() {
-    return iqueue_full(&buffer);
-}
+bool inputFull() { return iqueueFull(&buffer); }
 
-void input_lock() {
-    iqueue_lock(&buffer);
-}
+void inputLock() { iqueueLock(&buffer); }
 
-void input_unlock() {
-    iqueue_unlock(&buffer);
-}
+void inputUnlock() { iqueueUnlock(&buffer); }

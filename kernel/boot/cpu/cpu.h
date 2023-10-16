@@ -1,6 +1,6 @@
 #pragma once
-#include <basic_includes.h>
 #include "boot/gdt/gdt.h"
+#include <basic_includes.h>
 
 #define NCPU_MAX 8
 
@@ -23,24 +23,17 @@ typedef struct {
 } cpu_t;
 
 extern bool cpu_can_acquire_spinlock;
-extern cpu_t *bcpu;
+extern cpu_t* bcpu;
 extern cpu_t cpus[NCPU_MAX];
 extern bool cpu_ismp;
 extern uint16_t ncpu;
 extern bool cpu_started_others;
 
-void init_sse();
+void initSSE();
 cpu_t* getCurrentCpu();
 
-static inline void cli() {
-    __asm__ volatile("cli");
-}
+static inline void cli() { __asm__ volatile("cli"); }
 
-static inline void sti() {
-    __asm__ volatile("sti");
-}
+static inline void sti() { __asm__ volatile("sti"); }
 
-static inline void halt() {
-    __asm__ volatile("hlt");
-}
-
+static inline void halt() { __asm__ volatile("hlt"); }

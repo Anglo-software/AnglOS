@@ -1,0 +1,44 @@
+---
+IndentWidth: 4
+ColumnLimit: 80
+AlignAfterOpenBracket: Align
+AlignConsecutiveAssignments: AcrossEmptyLines
+AlignConsecutiveMacros: AcrossEmptyLines
+AlignConsecutiveBitFields: AcrossEmptyLines
+AlignEscapedNewlines: Left
+AlignOperands: Align
+AlignTrailingComments: true
+AllowShortBlocksOnASingleLine: Empty
+AllowShortCaseLabelsOnASingleLine: true
+AllowShortEnumsOnASingleLine: True
+
+BraceWrapping:
+  AfterCaseLabel: false
+  AfterClass: false
+  AfterControlStatement: Never
+  AfterFunction: false
+  AfterStruct: false
+  AfterUnion: false
+  BeforeElse: true
+
+BreakBeforeBraces: Stroustrup
+BreakStringLiterals: true
+IndentGotoLabels: false
+IndentPPDirectives: AfterHash
+PointerAlignment: Left
+QualifierAlignment: Leave
+ReferenceAlignment: Left
+SpaceAfterCStyleCast: false
+SpaceBeforeCaseColon: false
+SpaceBeforeParens: ControlStatementsExceptControlMacros
+SpaceBeforeSquareBrackets: false
+SpaceInEmptyBlock: false
+SpaceInEmptyParentheses: false
+SpacesBeforeTrailingComments: 1
+SpacesInCStyleCastParentheses: false
+SpacesInConditionalStatement: false
+SpacesInContainerLiterals: false
+SpacesInParentheses: false
+SpacesInSquareBrackets: false
+UseCRLF: false
+UseTab: Never

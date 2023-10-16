@@ -3,5 +3,5 @@
 
 extern int num_cpus;
 
-void init_smp();
+void initSMP();
 void smpStartAP(uint64_t _start_func, uint64_t id);

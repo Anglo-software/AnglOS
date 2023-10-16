@@ -1,57 +1,81 @@
 #include "keyboard.h"
-#include "boot/interrupts/isr.h"
-#include "device/io.h"
-#include "device/input/input.h"
 #include "boot/cpu/cpu.h"
+#include "boot/interrupts/isr.h"
+#include "device/input/input.h"
+#include "device/io.h"
 
-void irq_keyboard_handler(registers_t* registers);
+void irqKeyboardHandler(registers_t* registers);
 
-static bool shift_pressed = false;
-static bool ctrl_pressed = false;
-static bool alt_pressed = false;
-static uint8_t prev_scan = 0x00;
+static bool shift_pressed               = false;
+static bool ctrl_pressed                = false;
+static bool alt_pressed                 = false;
+static uint8_t prev_scan                = 0x00;
 
-static unsigned char* scan_code_1 =       (unsigned char*)"\0""\0""1234567890-=""\x80""\x09""qwertyuiop[]""\x82"
-                                                          "\x83""asdfghjkl;'`""\x84""\\""zxcvbnm,./""\x84""*""\x85"" ";
-static unsigned char* scan_code_1_shift = (unsigned char*)"\0""\0""!@#$%^&*()_+""\x80""\x09""QWERTYUIOP{}""\x82"
-                                                          "\x83""ASDFGHJKL:\"~""\x84""\\""ZXCVBNM<>?""\x84""*""\x85"" ";
+static unsigned char* scan_code_1       = (unsigned char*)"\0"
+                                                          "\0"
+                                                          "1234567890-="
+                                                          "\x80"
+                                                          "\x09"
+                                                          "qwertyuiop[]"
+                                                          "\x82"
+                                                          "\x83"
+                                                          "asdfghjkl;'`"
+                                                          "\x84"
+                                                          "\\"
+                                                          "zxcvbnm,./"
+                                                          "\x84"
+                                                          "*"
+                                                          "\x85"
+                                                          " ";
+static unsigned char* scan_code_1_shift = (unsigned char*)"\0"
+                                                          "\0"
+                                                          "!@#$%^&*()_+"
+                                                          "\x80"
+                                                          "\x09"
+                                                          "QWERTYUIOP{}"
+                                                          "\x82"
+                                                          "\x83"
+                                                          "ASDFGHJKL:\"~"
+                                                          "\x84"
+                                                          "\\"
+                                                          "ZXCVBNM<>?"
+                                                          "\x84"
+                                                          "*"
+                                                          "\x85"
+                                                          " ";
 
-int init_keyboard() {
-    register_interrupt_handler(KEYBOARD_IRQ, irq_keyboard_handler);
+int initKeyboard()
+{
+    isrRegisterHandler(KEYBOARD_IRQ, irqKeyboardHandler);
     return 0;
 }
 
-void keyboard_set_redir(ioapic_redirection_t* redir) {
+void keyboardSetRedir(ioapic_redirection_t* redir)
+{
     redir->vector = KEYBOARD_IRQ;
-    write_ioapic_redir(KEYBOARD_IRQ - 32, redir);
+    ioapicWriteRedir(KEYBOARD_IRQ - 32, redir);
 }
 
-uint8_t get_keyboard_status() {
-    return inb(KEYBOARD_STATUS_REGISTER);
-}
+uint8_t keyboardGetStatus() { return inb(KEYBOARD_STATUS_REGISTER); }
 
-uint8_t get_keyboard_byte() {
-    return inb(KEYBOARD_DATA_PORT);
-}
+uint8_t keyboardGetByte() { return inb(KEYBOARD_DATA_PORT); }
 
-void send_keyboard_byte(uint8_t data) {
-    outb(KEYBOARD_DATA_PORT, data);
-}
+void keyboardSendByte(uint8_t data) { outb(KEYBOARD_DATA_PORT, data); }
 
-void send_keyboard_command(uint8_t command) {
+void keyboardSendCommand(uint8_t command)
+{
     outb(KEYBOARD_COMMAND_PORT, command);
 }
 
-bool is_letter(char c) {
-    return (0x61 <= c) && (c <= 0x7A);
-}
+bool keyboardIsLetter(char c) { return (0x61 <= c) && (c <= 0x7A); }
 
-void irq_keyboard_handler(registers_t* registers) {
-    int scan = get_keyboard_byte();
+void irqKeyboardHandler(registers_t* registers)
+{
+    int scan      = keyboardGetByte();
 
     bool released = (scan & 0b10000000) >> 7;
-    
-    int scan2 = scan & 0b01111111;
+
+    int scan2     = scan & 0b01111111;
     if (!released) {
         char c = 0;
         if (scan_code_1[scan2] == LEFT_SHIFT) {
@@ -87,20 +111,20 @@ void irq_keyboard_handler(registers_t* registers) {
         }
         else if (prev_scan == 0xE0) {
             if (scan == 0x48) {
-                c = CURSOR_UP;
+                c = textCursorUp;
             }
             else if (scan == 0x4B) {
-                c = CURSOR_LEFT;
+                c = textCursorLeft;
             }
             else if (scan == 0x4D) {
-                c = CURSOR_RIGHT;
+                c = textCursorRight;
             }
             else if (scan == 0x50) {
-                c = CURSOR_DOWN;
+                c = textCursorDown;
             }
         }
-        if (!input_full()) {
-            input_putc(c);
+        if (!inputFull()) {
+            inputPutc(c);
         }
     }
     else {
@@ -115,9 +139,9 @@ void irq_keyboard_handler(registers_t* registers) {
         }
     }
 
-    out:
+out:
 
     prev_scan = scan;
 
-    apic_send_eoi();
+    apicSendEOI();
 }

@@ -1,6 +1,6 @@
-[GLOBAL tss_reload]
+[GLOBAL tssReload]
 
-tss_reload:
+tssReload:
     push rbp
     mov rbp, rsp
     pushfq

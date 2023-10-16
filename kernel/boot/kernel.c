@@ -1,75 +1,73 @@
-#include <basic_includes.h>
-#include "limine.h"
-#include "fs/kmodule.h"
 #include "cpu/cpu.h"
 #include "cpu/smp.h"
-#include "gdt/gdt.h"
-#include "tss/tss.h"
-#include "interrupts/idt.h"
-#include "mm/pmm/pmm.h"
-#include "mm/paging/paging.h"
-#include "mm/heap/memlib.h"
-#include "mm/heap/heap.h"
 #include "device/acpi/acpi.h"
 #include "device/apic/apic.h"
-#include "device/hpet/hpet.h"
 #include "device/apic/timer.h"
-#include "device/vga/graphics.h"
-#include "device/pci/pci.h"
-#include "device/nvme/nvme.h"
+#include "device/hpet/hpet.h"
 #include "device/input/input.h"
-#include "device/keyboard/keyboard.h"
-#include "libc/stdio.h"
-#include "libc/kernel/console.h"
-#include "libc/string.h"
 #include "device/io.h"
+#include "device/keyboard/keyboard.h"
+#include "device/nvme/nvme.h"
+#include "device/pci/pci.h"
+#include "device/vga/graphics.h"
+#include "fs/kmodule.h"
+#include "gdt/gdt.h"
+#include "interrupts/idt.h"
+#include "libc/kernel/console.h"
+#include "libc/stdio.h"
+#include "libc/string.h"
+#include "limine.h"
+#include "mm/heap/heap.h"
+#include "mm/heap/memlib.h"
+#include "mm/paging/paging.h"
+#include "mm/pmm/pmm.h"
+#include "threads/spinlock.h"
+#include "tss/tss.h"
 #include "user/syscall.h"
 #include "user/userentry.h"
-#include "threads/spinlock.h"
+#include <basic_includes.h>
 #include <stdatomic.h>
 
 static volatile struct limine_stack_size_request stack_request = {
-    .id = LIMINE_STACK_SIZE_REQUEST,
-    .revision = 0,
-    .stack_size = 1024*1024
-};
+    .id = LIMINE_STACK_SIZE_REQUEST, .revision = 0, .stack_size = 1024 * 1024};
 
-static void main_loop();
+static void mainLoop();
 static void _start_ap();
-static void goto_user();
+static void gotoUser();
 
 NO_RETURN
-void _start() {
-    init_sse();
-    init_gdt(0);
-    init_pmm();
+void _start()
+{
+    initSSE();
+    initGDT(0);
+    initPMM();
 
-    init_kmodules();
-    init_graphics(1024, 768, 32);
+    initKmodules();
+    initGraphics(1024, 768, 32);
 
-    init_smp();
+    initSMP();
 
-    init_tss(0);
+    initTSS(0);
 
-    init_idt();
-    init_paging();
-    mem_init();
-    kmeminit();
-    init_acpi();
-    init_apic();
+    initIDT();
+    initPaging();
+    initKernelHeapMem();
+    initKernelHeap();
+    initACPI();
+    initAPIC();
 
     sti();
 
-    init_hpet();
-    init_timer();
+    initHPET();
+    initAPICTimer();
 
     cli();
 
-    init_pci();
-    init_input();
-    init_console();
-    init_keyboard();
-    init_syscall();
+    initPCI();
+    initInputQueue();
+    initConsole();
+    initKeyboard();
+    initSyscall();
 
     for (int i = 1; i < num_cpus; i++) {
         smpStartAP((uint64_t)_start_ap, i);
@@ -77,28 +75,29 @@ void _start() {
 
     sti();
 
-    // init_nvme();
+    // initNVMe();
 
-    // main_loop();
+    // mainLoop();
 
-    goto_user();
+    gotoUser();
 
     cli();
     halt();
 }
 
-static void _start_ap(struct limine_smp_info* info) {
+static void _start_ap(struct limine_smp_info* info)
+{
     cpu_t* cpu = &cpus[info->processor_id];
 
     cli();
-    init_sse();
-    init_paging_ap();
-    init_gdt(cpu->cpu_id);
-    init_tss(cpu->cpu_id);
-    idt_reload_ap();
-    init_apic_ap();
-    init_timer_ap();
-    init_syscall();
+    initSSE();
+    initAPPaging();
+    initGDT(cpu->cpu_id);
+    initTSS(cpu->cpu_id);
+    idtAPReload();
+    initAPAPIC();
+    initAPAPICTimer();
+    initSyscall();
     sti();
 
     while (true) {
@@ -107,37 +106,38 @@ static void _start_ap(struct limine_smp_info* info) {
 }
 
 unsigned size = 16;
-unsigned num = 0;
+unsigned num  = 0;
 
 extern uint64_t mem_size;
 
 NO_RETURN
-static void main_loop() {
+static void mainLoop()
+{
     ioapic_redirection_t redir = {.destination_mode = 0, .destination = 0};
-    keyboard_set_redir(&redir);
+    keyboardSetRedir(&redir);
     char* linebuf = kcalloc(size + 1);
-    printf("> ");
-    timer_periodic_start(500000000);
+    kprintf("> ");
+    apicTimerPeriodicStart(500000000);
     for (;;) {
-        uint8_t c = input_getc();
+        uint8_t c = inputGetc();
         if (c == '\n') {
-            printf("\n");
+            kprintf("\n");
             if (!strncmp(linebuf, "q", 1)) {
                 halt();
-                printf("%s", "Exiting");
+                kprintf("%s", "Exiting");
                 halt();
-                printf(".");
+                kprintf(".");
                 halt();
-                printf(".");
+                kprintf(".");
                 halt();
-                printf(".");
+                kprintf(".");
                 halt();
                 outw(0x604, 0x2000);
             }
             else {
-                printf("%s\n", linebuf);
+                kprintf("%s\n", linebuf);
             }
-            printf("> ");
+            kprintf("> ");
             num = 0;
             memset(linebuf, '\0', size + 1);
             continue;
@@ -146,7 +146,7 @@ static void main_loop() {
             if (num != 0) {
                 linebuf[num] = '\0';
                 num--;
-                printf("\b");
+                kprintf("\b");
             }
             continue;
         }
@@ -158,9 +158,9 @@ static void main_loop() {
             linebuf[num] = c;
             num++;
         }
-        printf("%c", c);
+        kprintf("%c", c);
         if (c == SCREEN_CLEAR) {
-            printf("> ");
+            kprintf("> ");
             num = 0;
             memset(linebuf, '\0', size + 1);
             continue;
@@ -168,20 +168,28 @@ static void main_loop() {
     }
 }
 
-void goto_user() {
-    void* vcodeptr =  0x0000000000010000;
-    void* vstackptr = 0x00007FFFFFFFF000 - PAGE_SIZE;
-    void* ptr = vmalloc(vcodeptr, 1, PAGE_FLAG_USERSUPER | PAGE_FLAG_READWRITE | PAGE_FLAG_PRESENT);
+void gotoUser()
+{
+    void* vcodeptr  = (void*)0x0000000000010000;
+    void* vstackptr = (void*)0x00007FFFFFFFF000 - PAGE_SIZE;
+    void* ptr =
+        vmalloc(vcodeptr, 1,
+                PAGE_FLAG_USERSUPER | PAGE_FLAG_READWRITE | PAGE_FLAG_PRESENT);
     void* usrptr = (void*)&kerneluserentry;
 
     memcpy(ptr, usrptr, PAGE_SIZE);
 
-    void* stack = vmalloc(vstackptr, 1, PAGE_FLAG_USERSUPER | PAGE_FLAG_READWRITE | PAGE_FLAG_PRESENT);
+    void* stack =
+        vmalloc(vstackptr, 1,
+                PAGE_FLAG_USERSUPER | PAGE_FLAG_READWRITE | PAGE_FLAG_PRESENT);
 
-    __asm__ volatile (".intel_syntax noprefix;"
-                      "mov rsp, %0;"
-                      "mov rcx, %1;"
-                      "mov r11, 0x202;"
-                      ".att_syntax prefix;" : : "r" ((uint64_t)vstackptr + PAGE_SIZE), "r" ((uint64_t)vcodeptr));
-    __asm__ volatile ("sysretq;");
+    __asm__ volatile(".intel_syntax noprefix;"
+                     "mov rsp, %0;"
+                     "mov rcx, %1;"
+                     "mov r11, 0x202;"
+                     ".att_syntax prefix;"
+                     :
+                     : "r"((uint64_t)vstackptr + PAGE_SIZE),
+                       "r"((uint64_t)vcodeptr));
+    __asm__ volatile("sysretq;");
 }

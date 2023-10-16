@@ -154,12 +154,14 @@ typedef struct {
 #define NVME_QUEUE_FLAG_PC           0x01
 #define NVME_QUEUE_FLAG_INT          0x02
 
-void init_nvme();
+void initNVMe();
 uint32_t nvmeReadStatus();
 uint32_t nvmeReadConfig();
 void nvmeWriteConfig(uint32_t config);
-void nvmeCreateSubQueue(void* paddr, uint16_t id, uint16_t size, uint16_t flags, uint16_t com_id);
-void nvmeCreateComQueue(void* paddr, uint16_t id, uint16_t size, uint16_t flags, uint16_t int_vector);
+void nvmeCreateSubQueue(void* paddr, uint16_t id, uint16_t size, uint16_t flags,
+                        uint16_t com_id);
+void nvmeCreateComQueue(void* paddr, uint16_t id, uint16_t size, uint16_t flags,
+                        uint16_t int_vector);
 void nvmeIdentifyNamespace(void* paddr, uint32_t nsid);
 void nvmeIdentifyController(void* paddr);
 void nvmeIdentifyNamespaceList(void* paddr);

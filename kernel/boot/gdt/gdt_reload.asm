@@ -1,6 +1,6 @@
-[GLOBAL gdt_reload]
+[GLOBAL gdtReload]
 
-gdt_reload:
+gdtReload:
     lgdt  [rdi]
     push 0x28
     lea rax, [rel .reload_CS]
