@@ -12,8 +12,7 @@ static uint64_t time_counter  = 0;
 
 extern bool cursor_enabled;
 
-static void irqAPICTimerHandler(registers_t* registers)
-{
+static void irqAPICTimerHandler(registers_t* registers) {
     time_counter++;
     if (lapicReadReg(APIC_APICID) >> 24 == 0) {
         if (cursor_enabled) {
@@ -30,8 +29,7 @@ static void irqAPICTimerHandler(registers_t* registers)
     apicSendEOI();
 }
 
-void initAPICTimer()
-{
+void initAPICTimer() {
     isrRegisterHandler(IRQ0, irqAPICTimerHandler);
     lapicWriteReg(APIC_TMRDIV, 0x00);
     lapicWriteReg(APIC_LVT_TMR, IRQ0);
@@ -48,16 +46,14 @@ void initAPICTimer()
                            ((1000000000 % ticks_per_second) != 0);
 }
 
-void initAPAPICTimer()
-{
+void initAPAPICTimer() {
     lapicWriteReg(APIC_TMRDIV, 0x00);
     lapicWriteReg(APIC_LVT_TMR, IRQ0);
 }
 
 uint64_t apicTimerGetResolution() { return nanoseconds_per_tick; }
 
-void apicTimerOneShot(uint64_t time)
-{ // time is in nanoseconds
+void apicTimerOneShot(uint64_t time) { // time is in nanoseconds
     if (time < nanoseconds_per_tick) {
         time = nanoseconds_per_tick;
     }
@@ -66,8 +62,7 @@ void apicTimerOneShot(uint64_t time)
     lapicWriteReg(APIC_TMRINITCNT, time / nanoseconds_per_tick);
 }
 
-void apicTimerPeriodicStart(uint64_t time)
-{ // time is in nanoseconds
+void apicTimerPeriodicStart(uint64_t time) { // time is in nanoseconds
     if (time < nanoseconds_per_tick) {
         time = nanoseconds_per_tick;
     }
@@ -78,8 +73,7 @@ void apicTimerPeriodicStart(uint64_t time)
 
 void apicTimerPeriodicStop() { lapicWriteReg(APIC_LVT_TMR, APIC_LVT_MASK); }
 
-void apicNanosleep(uint64_t nanos)
-{
+void apicNanosleep(uint64_t nanos) {
     apicTimerOneShot(nanos);
     while (!time_counter) {
         __asm__ volatile("hlt;");

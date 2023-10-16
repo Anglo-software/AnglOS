@@ -3,8 +3,7 @@
 
 static int next(int pos) { return (pos + 1) % IQUEUE_BUFSIZE; }
 
-void initIQueue(iqueue_t* queue)
-{
+void initIQueue(iqueue_t* queue) {
     spinInit(&queue->lock);
     queue->head = 0;
     queue->tail = 0;
@@ -18,8 +17,7 @@ bool iqueueEmpty(iqueue_t* queue) { return queue->head == queue->tail; }
 
 bool iqueueFull(iqueue_t* queue) { return next(queue->head) == queue->tail; }
 
-uint8_t iqueueGetc(iqueue_t* queue)
-{
+uint8_t iqueueGetc(iqueue_t* queue) {
     while (iqueueEmpty(queue)) {
         iqueueUnlock(queue);
         halt();
@@ -31,8 +29,7 @@ uint8_t iqueueGetc(iqueue_t* queue)
     return c;
 }
 
-void iqueuePutc(iqueue_t* queue, uint8_t c)
-{
+void iqueuePutc(iqueue_t* queue, uint8_t c) {
     while (iqueueFull(queue)) {
         iqueueUnlock(queue);
         halt();

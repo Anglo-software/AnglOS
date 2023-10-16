@@ -8,8 +8,7 @@ static gdtr_t gdtr;
 static uint16_t gindex[NCPU_MAX];
 static spinlock lock = SPINLOCK_INITIALIZER;
 
-void initGDT(uint64_t num_cpu)
-{
+void initGDT(uint64_t num_cpu) {
     spinLock(&lock);
     gdtr.limit = (sizeof(gdt_desc_t) * GDT_MAX_DESCRIPTORS) - 1;
     gdtr.base  = (uintptr_t)&gdt[num_cpu][0];
@@ -39,8 +38,7 @@ void initGDT(uint64_t num_cpu)
 }
 
 void gdtAddDescriptor(uint64_t num_cpu, uint64_t base, uint32_t limit,
-                      uint8_t access, uint8_t granularity)
-{
+                      uint8_t access, uint8_t granularity) {
     if (gindex[num_cpu] >= GDT_MAX_DESCRIPTORS)
         return;
 
@@ -59,8 +57,7 @@ void gdtAddDescriptor(uint64_t num_cpu, uint64_t base, uint32_t limit,
 
 #define TSS_SIZE 0x70
 
-uint16_t gdtInstallTSS(uint64_t tss, int num_cpu)
-{
+uint16_t gdtInstallTSS(uint64_t tss, int num_cpu) {
     uint8_t tss_type = GDT_DESCRIPTOR_ACCESS | GDT_DESCRIPTOR_EXECUTABLE |
                        GDT_DESCRIPTOR_PRESENT;
 

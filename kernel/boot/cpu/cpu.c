@@ -1,7 +1,6 @@
 #include "cpu.h"
 
-void initSSE()
-{
+void initSSE() {
     __asm__ volatile(".intel_syntax noprefix;"
                      "mov rax, cr0;"
                      "and ax, 0xFFFB;"
@@ -13,8 +12,7 @@ void initSSE()
                      ".att_syntax prefix;");
 }
 
-cpu_t* getCurrentCpu()
-{
+cpu_t* getCurrentCpu() {
     cpu_t* cpu;
     __asm__ volatile(".intel_syntax noprefix;"
                      "mov %0, [gs:0x20];"

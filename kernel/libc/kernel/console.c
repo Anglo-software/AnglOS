@@ -17,8 +17,7 @@ void initConsole() { spinInit(&spin); }
 
 void consoleSetMode(enum console_mode mode) { current_mode = mode; }
 
-void consolePrintStats()
-{
+void consolePrintStats() {
     kprintf("Console: %ld characters output\n", write_cnt);
 }
 
@@ -26,8 +25,7 @@ static void consoleLock() { spinLock(&spin); }
 
 static void consoleUnlock() { spinUnlock(&spin); }
 
-int vkprintf(const char* format, va_list args)
-{
+int vkprintf(const char* format, va_list args) {
     int char_cnt = 0;
 
     __vkprintf(format, args, vkprintf_helper, &char_cnt);
@@ -35,8 +33,7 @@ int vkprintf(const char* format, va_list args)
     return char_cnt;
 }
 
-int consolePuts(const char* s)
-{
+int consolePuts(const char* s) {
     consoleLock();
     while (*s != '\0') {
         consolePutcharLocked(*s++);
@@ -46,8 +43,7 @@ int consolePuts(const char* s)
     return 0;
 }
 
-void consolePutbuf(const char* buffer, size_t n)
-{
+void consolePutbuf(const char* buffer, size_t n) {
     consoleLock();
     while (n-- > 0) {
         consolePutcharLocked(*buffer++);
@@ -55,16 +51,14 @@ void consolePutbuf(const char* buffer, size_t n)
     consoleUnlock();
 }
 
-int consolePutchar(int c)
-{
+int consolePutchar(int c) {
     consoleLock();
     consolePutcharLocked(c);
     consoleUnlock();
     return c;
 }
 
-static void vkprintf_helper(char c, void* char_cnt_)
-{
+static void vkprintf_helper(char c, void* char_cnt_) {
     consoleLock();
     int* char_cnt = char_cnt_;
     (*char_cnt)++;
@@ -72,8 +66,7 @@ static void vkprintf_helper(char c, void* char_cnt_)
     consoleUnlock();
 }
 
-static void consolePutcharLocked(uint8_t c)
-{
+static void consolePutcharLocked(uint8_t c) {
     write_cnt++;
     textPutc(c);
 }

@@ -24,8 +24,7 @@ uint32_t pixels_at_cursor[8 * 16];
 
 bool cursor_enabled = true;
 
-void textDrawCursor()
-{
+void textDrawCursor() {
     uint8_t* fb_base = graphicsGetFramebufferBase();
     for (int cy = 0; cy < character_size_y; cy++) {
         uint32_t where = cursor_x * graphicsGetBytesPerPixel() +
@@ -37,8 +36,7 @@ void textDrawCursor()
     cursor_enabled = true;
 }
 
-void textClearCursor()
-{
+void textClearCursor() {
     uint8_t* fb_base = graphicsGetFramebufferBase();
     for (int cy = 0; cy < character_size_y; cy++) {
         uint32_t where = cursor_x * graphicsGetBytesPerPixel() +
@@ -50,13 +48,11 @@ void textClearCursor()
     cursor_enabled = false;
 }
 
-void textDrawCharAtCursor(uint8_t c, bool transparent)
-{
+void textDrawCharAtCursor(uint8_t c, bool transparent) {
     textDrawChar(c, cursor_x, cursor_y, transparent);
 }
 
-void textDrawChar(uint8_t c, uint16_t x, uint16_t y, bool transparent)
-{
+void textDrawChar(uint8_t c, uint16_t x, uint16_t y, bool transparent) {
     if (!current_font) {
         kmodule_t* font = kmoduleFindByPath("/resources/VGA8.F16");
         current_font    = (uint8_t*)(font->address);
@@ -80,8 +76,7 @@ void textDrawChar(uint8_t c, uint16_t x, uint16_t y, bool transparent)
     }
 }
 
-void textNewline()
-{
+void textNewline() {
     textClearCursor();
     if (cursor_y + character_size_y * 2U + spacing_y >
         graphicsGetYRes() - margin_y) {
@@ -93,8 +88,7 @@ void textNewline()
     }
 }
 
-void textCursorUp()
-{
+void textCursorUp() {
     if (cursor_y == margin_y) {
         return;
     }
@@ -102,8 +96,7 @@ void textCursorUp()
     textMoveCursor(cursor_x, cursor_y - spacing_y - character_size_y);
 }
 
-void textCursorDown()
-{
+void textCursorDown() {
     if (cursor_y + character_size_y * 2U + spacing_y >
         graphicsGetYRes() - margin_y) {
         return;
@@ -112,8 +105,7 @@ void textCursorDown()
     textMoveCursor(cursor_x, cursor_y + spacing_y + character_size_y);
 }
 
-void textCursorLeft()
-{
+void textCursorLeft() {
     if (cursor_x == margin_x) {
         return;
     }
@@ -121,8 +113,7 @@ void textCursorLeft()
     textMoveCursor(cursor_x - spacing_x - character_size_x, cursor_y);
 }
 
-void textCursorRight()
-{
+void textCursorRight() {
     if (cursor_x + character_size_x * 2U + spacing_x >
         graphicsGetXRes() - margin_x) {
         return;
@@ -131,15 +122,13 @@ void textCursorRight()
     textMoveCursor(cursor_x + spacing_x + character_size_x, cursor_y);
 }
 
-void textMoveCursor(uint16_t x, uint16_t y)
-{
+void textMoveCursor(uint16_t x, uint16_t y) {
     cursor_x = x;
     cursor_y = y;
     textDrawCursor();
 }
 
-void textAdvanceCursorRight()
-{
+void textAdvanceCursorRight() {
     if (cursor_y + character_size_y * 2U + spacing_y >
             graphicsGetYRes() - margin_y &&
         cursor_x + character_size_x * 2U + spacing_x >
@@ -160,15 +149,13 @@ void textSetBackground(uint32_t color) { background_color = color; }
 
 void textSetForeground(uint32_t color) { foreground_color = color; }
 
-void textClearCharAtCursor()
-{
+void textClearCharAtCursor() {
     textClearCursor();
     textDrawCharAtCursor(' ', false);
     textDrawCursor();
 }
 
-void textMoveScreenUpOneLine()
-{
+void textMoveScreenUpOneLine() {
     uint8_t* fb_base = graphicsGetFramebufferBase();
 
     for (uint64_t i = margin_y + spacing_y + character_size_y;
@@ -185,15 +172,13 @@ void textMoveScreenUpOneLine()
            (character_size_y + margin_y) * GraphicsGetPitch());
 }
 
-void textClearScreen()
-{
+void textClearScreen() {
     textClearCursor();
     memset((void*)graphicsGetFramebufferBase(), 0x00,
            graphicsGetYRes() * GraphicsGetPitch());
 }
 
-void textPutc(uint8_t c)
-{
+void textPutc(uint8_t c) {
     switch (c) {
     case '\n': textNewline(); break;
     case '\b':

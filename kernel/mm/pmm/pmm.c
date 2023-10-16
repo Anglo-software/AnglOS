@@ -17,32 +17,28 @@ static uint64_t free_mem; // In bytes
 static bitmap_stat_t
     bitmaps[NUM_BITMAPS]; // 4K Blocks (1 page) to 256K Blocks (64 page)
 
-static void pmmSetBit(uint8_t* base, uint64_t index)
-{
+static void pmmSetBit(uint8_t* base, uint64_t index) {
     // Index is in BITS (The i-th block in this bitmap)
     uint8_t bit   = index % 8;
     uint64_t byte = index / 8;
     base[byte] |= 1UL << bit;
 }
 
-static void pmmClearBit(uint8_t* base, uint64_t index)
-{
+static void pmmClearBit(uint8_t* base, uint64_t index) {
     // Index is in BITS (The i-th block in this bitmap)
     uint8_t bit   = index % 8;
     uint64_t byte = index / 8;
     base[byte] &= ~(1UL << bit);
 }
 
-static uint8_t pmmCheckBit(uint8_t* base, uint64_t index)
-{
+static uint8_t pmmCheckBit(uint8_t* base, uint64_t index) {
     // Index is in BITS (The i-th block in this bitmap)
     uint8_t bit   = index % 8;
     uint64_t byte = index / 8;
     return (base[byte] >> bit) & 1UL;
 }
 
-static uint8_t pmmGetStatusFromMMap(uint64_t page)
-{
+static uint8_t pmmGetStatusFromMMap(uint64_t page) {
     for (uint64_t i = 0; i < entry_count; i++) {
         if (mmap_entries[i]->base / PAGE_SIZE <= page &&
             page <
@@ -56,8 +52,7 @@ static uint8_t pmmGetStatusFromMMap(uint64_t page)
 
 uint64_t pmmGetFreeMem() { return free_mem; }
 
-void pmmUpdateBitmapBase(uint64_t offset)
-{
+void pmmUpdateBitmapBase(uint64_t offset) {
     bitmap_base += offset;
     for (int i = 0; i < NUM_BITMAPS; i++) {
         bitmaps[i].base += offset;
@@ -68,8 +63,7 @@ void pmmUpdateBitmapBase(uint64_t offset)
 #define R_CHILD(index) (index * 2 + 1)
 #define PARENT(index)  (index / 2)
 
-void initPMM()
-{
+void initPMM() {
     entry_count  = mmap_request.response->entry_count;
     mmap_entries = mmap_request.response->entries;
     mem_size     = mmap_entries[entry_count - 1]->base +
@@ -142,8 +136,7 @@ void initPMM()
     }
 }
 
-static void pmmPropagateDown(size_t pages, size_t level, uint64_t index)
-{
+static void pmmPropagateDown(size_t pages, size_t level, uint64_t index) {
     if (level == 0) {
         return;
     }
@@ -163,8 +156,7 @@ static void pmmPropagateDown(size_t pages, size_t level, uint64_t index)
     }
 }
 
-void* pmalloc(size_t pages)
-{
+void* pmalloc(size_t pages) {
     if (pages == 0) {
         return NULL;
     }
@@ -205,8 +197,7 @@ void* pmalloc(size_t pages)
     return NULL;
 }
 
-static void coalesce(size_t pages, size_t level, uint64_t index)
-{
+static void coalesce(size_t pages, size_t level, uint64_t index) {
     if (index % 2 == 0) {
         for (uint64_t i = index; i < index + pages; i += 2) {
             if (!pmmCheckBit(bitmaps[level].base, i) &&
@@ -241,8 +232,7 @@ static void coalesce(size_t pages, size_t level, uint64_t index)
     }
 }
 
-void pfree(void* pptr, size_t pages)
-{
+void pfree(void* pptr, size_t pages) {
     if (pptr == NULL || pages == 0) {
         return;
     }

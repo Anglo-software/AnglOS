@@ -42,8 +42,7 @@ void irqNVMeHandler(registers_t* registers);
 #pragma GCC push_options
 #pragma GCC optimize("O1")
 
-void initNVMe()
-{
+void initNVMe() {
     uint8_t nvme_bus = 0;
     uint8_t nvme_dev = 0;
 
@@ -187,8 +186,7 @@ uint32_t nvmeReadConfig() { return nvme_reg->config; }
 void nvmeWriteConfig(uint32_t config) { nvme_reg->config = config; }
 
 void nvmeCreateSubQueue(void* paddr, uint16_t id, uint16_t size, uint16_t flags,
-                        uint16_t com_id)
-{
+                        uint16_t com_id) {
     nvme_submission_t command;
     command.c.opcode  = NVME_CREATE_SUBMISSION_QUEUE;
     command.c.fused   = 0;
@@ -209,8 +207,7 @@ void nvmeCreateSubQueue(void* paddr, uint16_t id, uint16_t size, uint16_t flags,
 }
 
 void nvmeCreateComQueue(void* paddr, uint16_t id, uint16_t size, uint16_t flags,
-                        uint16_t int_vector)
-{
+                        uint16_t int_vector) {
     nvme_submission_t command;
     command.c.opcode  = NVME_CREATE_COMPLETION_QUEUE;
     command.c.fused   = 0;
@@ -230,8 +227,7 @@ void nvmeCreateComQueue(void* paddr, uint16_t id, uint16_t size, uint16_t flags,
     putAdminCommand(&command);
 }
 
-void nvmeIdentifyNamespace(void* paddr, uint32_t nsid)
-{
+void nvmeIdentifyNamespace(void* paddr, uint32_t nsid) {
     nvme_submission_t command;
     command.c.opcode  = NVME_IDENTIFY;
     command.c.fused   = 0;
@@ -251,8 +247,7 @@ void nvmeIdentifyNamespace(void* paddr, uint32_t nsid)
     putAdminCommand(&command);
 }
 
-void nvmeIdentifyController(void* paddr)
-{
+void nvmeIdentifyController(void* paddr) {
     nvme_submission_t command;
     command.c.opcode  = NVME_IDENTIFY;
     command.c.fused   = 0;
@@ -272,8 +267,7 @@ void nvmeIdentifyController(void* paddr)
     putAdminCommand(&command);
 }
 
-void nvmeIdentifyNamespaceList(void* paddr)
-{
+void nvmeIdentifyNamespaceList(void* paddr) {
     nvme_submission_t command;
     command.c.opcode  = NVME_IDENTIFY;
     command.c.fused   = 0;
@@ -293,28 +287,24 @@ void nvmeIdentifyNamespaceList(void* paddr)
     putAdminCommand(&command);
 }
 
-static void putAdminCommand(nvme_submission_t* command)
-{
+static void putAdminCommand(nvme_submission_t* command) {
     void* dest = &nvme_admin_sub_addr[admin_sub_tail];
     memcpy(dest, (void*)command, sizeof(nvme_submission_t));
 }
 
-static void ringAdminSub(uint16_t num)
-{
+static void ringAdminSub(uint16_t num) {
     admin_sub_tail = (admin_sub_tail + num) % admin_queue_size;
     volatile uint16_t* reg =
         (uint16_t*)((uint64_t)(&nvme_reg->doorbell_base) + 0 * doorbell_stride);
     *reg = admin_sub_tail;
 }
 
-static void getAdminResponse(nvme_completion_t* response)
-{
+static void getAdminResponse(nvme_completion_t* response) {
     void* src = &nvme_admin_com_addr[admin_com_head];
     memcpy((void*)response, src, sizeof(nvme_completion_t));
 }
 
-static void ringAdminCom(uint16_t num)
-{
+static void ringAdminCom(uint16_t num) {
     admin_com_head = (admin_com_head + num) % admin_queue_size;
     if (admin_com_head == 0) {
         admin_new_phase = admin_new_phase ^ 0x1;

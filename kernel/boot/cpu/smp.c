@@ -10,8 +10,7 @@ static volatile struct limine_smp_request smp_request = {
 
 int num_cpus = 1;
 
-void initSMP()
-{
+void initSMP() {
     if (smp_request.response == NULL) {
         return;
     }
@@ -24,8 +23,7 @@ void initSMP()
     cpus[0].started = 1;
 }
 
-void smpStartAP(uint64_t _start_func, uint64_t id)
-{
+void smpStartAP(uint64_t _start_func, uint64_t id) {
     atomic_store((uint64_t*)(&(smp_request.response->cpus[id]->goto_address)),
                  _start_func);
 }

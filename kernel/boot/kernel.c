@@ -36,8 +36,7 @@ static void _start_ap();
 static void gotoUser();
 
 NO_RETURN
-void _start()
-{
+void _start() {
     initSSE();
     initGDT(0);
     initPMM();
@@ -85,8 +84,7 @@ void _start()
     halt();
 }
 
-static void _start_ap(struct limine_smp_info* info)
-{
+static void _start_ap(struct limine_smp_info* info) {
     cpu_t* cpu = &cpus[info->processor_id];
 
     cli();
@@ -111,8 +109,7 @@ unsigned num  = 0;
 extern uint64_t mem_size;
 
 NO_RETURN
-static void mainLoop()
-{
+static void mainLoop() {
     ioapic_redirection_t redir = {.destination_mode = 0, .destination = 0};
     keyboardSetRedir(&redir);
     char* linebuf = kcalloc(size + 1);
@@ -168,8 +165,7 @@ static void mainLoop()
     }
 }
 
-void gotoUser()
-{
+void gotoUser() {
     void* vcodeptr  = (void*)0x0000000000010000;
     void* vstackptr = (void*)0x00007FFFFFFFF000 - PAGE_SIZE;
     void* ptr =

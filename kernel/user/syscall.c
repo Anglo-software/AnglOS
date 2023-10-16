@@ -11,8 +11,7 @@
 extern void syscallEntryPoint();
 static spinlock lock = SPINLOCK_INITIALIZER;
 
-void initSyscall()
-{
+void initSyscall() {
     uint64_t syscall_entry_addr = (uint64_t)&syscallEntryPoint;
     uint32_t lo, hi;
     lo = syscall_entry_addr & 0xFFFFFFFF;
@@ -40,19 +39,16 @@ void initSyscall()
     wrmsr(0xC0000102, (uint32_t)lo, (uint32_t)hi);
 }
 
-int syscalltest(int num)
-{
+int syscalltest(int num) {
     kprintf("Syscall called: %d\n", num);
     return 3;
 }
 
-int syscalltest2(int num1, int num2)
-{
+int syscalltest2(int num1, int num2) {
     kprintf("The sum of %d and %d is %d\n", num1, num2, num1 + num2);
     return 0;
 }
 
-int syscalltest3(int n1, int n2, int n3, int n4, int n5, int n6)
-{
+int syscalltest3(int n1, int n2, int n3, int n4, int n5, int n6) {
     kprintf("%d, %d, %d, %d, %d, %d\n", n1, n2, n3, n4, n5, n6);
 }

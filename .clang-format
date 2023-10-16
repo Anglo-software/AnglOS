@@ -12,6 +12,7 @@ AllowShortBlocksOnASingleLine: Empty
 AllowShortCaseLabelsOnASingleLine: true
 AllowShortEnumsOnASingleLine: True
 
+BreakBeforeBraces: Custom
 BraceWrapping:
   AfterCaseLabel: false
   AfterClass: false
@@ -21,7 +22,6 @@ BraceWrapping:
   AfterUnion: false
   BeforeElse: true
 
-BreakBeforeBraces: Stroustrup
 BreakStringLiterals: true
 IndentGotoLabels: false
 IndentPPDirectives: AfterHash

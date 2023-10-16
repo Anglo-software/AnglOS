@@ -34,27 +34,23 @@ static bool is_sorted(struct list_elem* a, struct list_elem* b,
                       list_less_func* less, void* aux);
 
 /* Returns true if ELEM is a head, false otherwise. */
-static inline bool is_head(struct list_elem* elem)
-{
+static inline bool is_head(struct list_elem* elem) {
     return elem != NULL && elem->prev == NULL && elem->next != NULL;
 }
 
 /* Returns true if ELEM is an interior element,
    false otherwise. */
-static inline bool is_interior(struct list_elem* elem)
-{
+static inline bool is_interior(struct list_elem* elem) {
     return elem != NULL && elem->prev != NULL && elem->next != NULL;
 }
 
 /* Returns true if ELEM is a tail, false otherwise. */
-static inline bool is_tail(struct list_elem* elem)
-{
+static inline bool is_tail(struct list_elem* elem) {
     return elem != NULL && elem->prev != NULL && elem->next == NULL;
 }
 
 /* Initializes LIST as an empty list. */
-void list_init(struct list* list)
-{
+void list_init(struct list* list) {
     list->head.prev = NULL;
     list->head.next = &list->tail;
     list->tail.prev = &list->head;
@@ -62,28 +58,38 @@ void list_init(struct list* list)
 }
 
 /* Returns the beginning of LIST.  */
-struct list_elem* list_begin(struct list* list) { return list->head.next; }
+struct list_elem* list_begin(struct list* list) {
+    return list->head.next;
+}
 
 /* Returns the element after ELEM in its list.  If ELEM is the
    last element in its list, returns the list tail.  Results are
    undefined if ELEM is itself a list tail. */
-struct list_elem* list_next(struct list_elem* elem) { return elem->next; }
+struct list_elem* list_next(struct list_elem* elem) {
+    return elem->next;
+}
 
 /* Returns LIST's tail.
 
    list_end() is often used in iterating through a list from
    front to back.  See the big comment at the top of list.h for
    an example. */
-struct list_elem* list_end(struct list* list) { return &list->tail; }
+struct list_elem* list_end(struct list* list) {
+    return &list->tail;
+}
 
 /* Returns the LIST's reverse beginning, for iterating through
    LIST in reverse order, from back to front. */
-struct list_elem* list_rbegin(struct list* list) { return list->tail.prev; }
+struct list_elem* list_rbegin(struct list* list) {
+    return list->tail.prev;
+}
 
 /* Returns the element before ELEM in its list.  If ELEM is the
    first element in its list, returns the list head.  Results are
    undefined if ELEM is itself a list head. */
-struct list_elem* list_prev(struct list_elem* elem) { return elem->prev; }
+struct list_elem* list_prev(struct list_elem* elem) {
+    return elem->prev;
+}
 
 /* Returns LIST's head.
 
@@ -98,7 +104,9 @@ struct list_elem* list_prev(struct list_elem* elem) { return elem->prev; }
           ...do something with f...
         }
 */
-struct list_elem* list_rend(struct list* list) { return &list->head; }
+struct list_elem* list_rend(struct list* list) {
+    return &list->head;
+}
 
 /* Return's LIST's head.
 
@@ -111,16 +119,19 @@ struct list_elem* list_rend(struct list* list) { return &list->head; }
           ...
         }
 */
-struct list_elem* list_head(struct list* list) { return &list->head; }
+struct list_elem* list_head(struct list* list) {
+    return &list->head;
+}
 
 /* Return's LIST's tail. */
-struct list_elem* list_tail(struct list* list) { return &list->tail; }
+struct list_elem* list_tail(struct list* list) {
+    return &list->tail;
+}
 
 /* Inserts ELEM just before BEFORE, which may be either an
    interior element or a tail.  The latter case is equivalent to
    list_push_back(). */
-void list_insert(struct list_elem* before, struct list_elem* elem)
-{
+void list_insert(struct list_elem* before, struct list_elem* elem) {
     elem->prev         = before->prev;
     elem->next         = before;
     before->prev->next = elem;
@@ -131,8 +142,7 @@ void list_insert(struct list_elem* before, struct list_elem* elem)
    current list, then inserts them just before BEFORE, which may
    be either an interior element or a tail. */
 void list_splice(struct list_elem* before, struct list_elem* first,
-                 struct list_elem* last)
-{
+                 struct list_elem* last) {
     if (first == last)
         return;
     last = list_prev(last);
@@ -150,15 +160,13 @@ void list_splice(struct list_elem* before, struct list_elem* first,
 
 /* Inserts ELEM at the beginning of LIST, so that it becomes the
    front in LIST. */
-void list_push_front(struct list* list, struct list_elem* elem)
-{
+void list_push_front(struct list* list, struct list_elem* elem) {
     list_insert(list_begin(list), elem);
 }
 
 /* Inserts ELEM at the end of LIST, so that it becomes the
    back in LIST. */
-void list_push_back(struct list* list, struct list_elem* elem)
-{
+void list_push_back(struct list* list, struct list_elem* elem) {
     list_insert(list_end(list), elem);
 }
 
@@ -196,8 +204,7 @@ void list_push_back(struct list* list, struct list_elem* elem)
        ...do something with e...
      }
 */
-struct list_elem* list_remove(struct list_elem* elem)
-{
+struct list_elem* list_remove(struct list_elem* elem) {
     elem->prev->next = elem->next;
     elem->next->prev = elem->prev;
     return elem->next;
@@ -205,8 +212,7 @@ struct list_elem* list_remove(struct list_elem* elem)
 
 /* Removes the front element from LIST and returns it.
    Undefined behavior if LIST is empty before removal. */
-struct list_elem* list_pop_front(struct list* list)
-{
+struct list_elem* list_pop_front(struct list* list) {
     struct list_elem* front = list_front(list);
     list_remove(front);
     return front;
@@ -214,8 +220,7 @@ struct list_elem* list_pop_front(struct list* list)
 
 /* Removes the back element from LIST and returns it.
    Undefined behavior if LIST is empty before removal. */
-struct list_elem* list_pop_back(struct list* list)
-{
+struct list_elem* list_pop_back(struct list* list) {
     struct list_elem* back = list_back(list);
     list_remove(back);
     return back;
@@ -223,16 +228,19 @@ struct list_elem* list_pop_back(struct list* list)
 
 /* Returns the front element in LIST.
    Undefined behavior if LIST is empty. */
-struct list_elem* list_front(struct list* list) { return list->head.next; }
+struct list_elem* list_front(struct list* list) {
+    return list->head.next;
+}
 
 /* Returns the back element in LIST.
    Undefined behavior if LIST is empty. */
-struct list_elem* list_back(struct list* list) { return list->tail.prev; }
+struct list_elem* list_back(struct list* list) {
+    return list->tail.prev;
+}
 
 /* Returns the number of elements in LIST.
    Runs in O(n) in the number of elements. */
-size_t list_size(struct list* list)
-{
+size_t list_size(struct list* list) {
     struct list_elem* e;
     size_t cnt = 0;
 
@@ -242,22 +250,19 @@ size_t list_size(struct list* list)
 }
 
 /* Returns true if LIST is empty, false otherwise. */
-bool list_empty(struct list* list)
-{
+bool list_empty(struct list* list) {
     return list_begin(list) == list_end(list);
 }
 
 /* Swaps the `struct list_elem *'s that A and B point to. */
-static void swap(struct list_elem** a, struct list_elem** b)
-{
+static void swap(struct list_elem** a, struct list_elem** b) {
     struct list_elem* t = *a;
     *a                  = *b;
     *b                  = t;
 }
 
 /* Reverses the order of LIST. */
-void list_reverse(struct list* list)
-{
+void list_reverse(struct list* list) {
     if (!list_empty(list)) {
         struct list_elem* e;
 
@@ -275,8 +280,7 @@ static bool is_sorted(struct list_elem* a, struct list_elem* b,
 /* Returns true only if the list elements A through B (exclusive)
    are in order according to LESS given auxiliary data AUX. */
 static bool is_sorted(struct list_elem* a, struct list_elem* b,
-                      list_less_func* less, void* aux)
-{
+                      list_less_func* less, void* aux) {
     if (a != b)
         while ((a = list_next(a)) != b)
             if (less(a, list_prev(a), aux))
@@ -291,8 +295,7 @@ static bool is_sorted(struct list_elem* a, struct list_elem* b,
    A through B (exclusive) must form a non-empty range. */
 static struct list_elem* find_end_of_run(struct list_elem* a,
                                          struct list_elem* b,
-                                         list_less_func* less, void* aux)
-{
+                                         list_less_func* less, void* aux) {
     do {
         a = list_next(a);
     } while (a != b && !less(a, list_prev(a), aux));
@@ -305,8 +308,8 @@ static struct list_elem* find_end_of_run(struct list_elem* a,
    nondecreasing order according to LESS given auxiliary data
    AUX.  The output range will be sorted the same way. */
 static void inplace_merge(struct list_elem* a0, struct list_elem* a1b0,
-                          struct list_elem* b1, list_less_func* less, void* aux)
-{
+                          struct list_elem* b1, list_less_func* less,
+                          void* aux) {
     while (a0 != a1b0 && a1b0 != b1)
         if (!less(a1b0, a0, aux))
             a0 = list_next(a0);
@@ -319,8 +322,7 @@ static void inplace_merge(struct list_elem* a0, struct list_elem* a1b0,
 /* Sorts LIST according to LESS given auxiliary data AUX, using a
    natural iterative merge sort that runs in O(n lg n) time and
    O(1) space in the number of elements in LIST. */
-void list_sort(struct list* list, list_less_func* less, void* aux)
-{
+void list_sort(struct list* list, list_less_func* less, void* aux) {
     size_t output_run_cnt; /* Number of runs output in current pass. */
 
     /* Pass over the list repeatedly, merging adjacent runs of
@@ -352,8 +354,7 @@ void list_sort(struct list* list, list_less_func* less, void* aux)
    sorted according to LESS given auxiliary data AUX.
    Runs in O(n) average case in the number of elements in LIST. */
 void list_insert_ordered(struct list* list, struct list_elem* elem,
-                         list_less_func* less, void* aux)
-{
+                         list_less_func* less, void* aux) {
     struct list_elem* e;
 
     for (e = list_begin(list); e != list_end(list); e = list_next(e))
@@ -367,8 +368,7 @@ void list_insert_ordered(struct list* list, struct list_elem* elem,
    given auxiliary data AUX.  If DUPLICATES is non-null, then the
    elements from LIST are appended to DUPLICATES. */
 void list_unique(struct list* list, struct list* duplicates,
-                 list_less_func* less, void* aux)
-{
+                 list_less_func* less, void* aux) {
     struct list_elem *elem, *next;
 
     if (list_empty(list))
@@ -389,8 +389,7 @@ void list_unique(struct list* list, struct list* duplicates,
    to LESS given auxiliary data AUX.  If there is more than one
    maximum, returns the one that appears earlier in the list.  If
    the list is empty, returns its tail. */
-struct list_elem* list_max(struct list* list, list_less_func* less, void* aux)
-{
+struct list_elem* list_max(struct list* list, list_less_func* less, void* aux) {
     struct list_elem* max = list_begin(list);
     if (max != list_end(list)) {
         struct list_elem* e;
@@ -406,8 +405,7 @@ struct list_elem* list_max(struct list* list, list_less_func* less, void* aux)
    to LESS given auxiliary data AUX.  If there is more than one
    minimum, returns the one that appears earlier in the list.  If
    the list is empty, returns its tail. */
-struct list_elem* list_min(struct list* list, list_less_func* less, void* aux)
-{
+struct list_elem* list_min(struct list* list, list_less_func* less, void* aux) {
     struct list_elem* min = list_begin(list);
     if (min != list_end(list)) {
         struct list_elem* e;

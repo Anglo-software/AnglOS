@@ -7,8 +7,7 @@ void initInputQueue() { initIQueue(&buffer); }
 
 void inputPutc(uint8_t c) { iqueuePutc(&buffer, c); }
 
-uint8_t inputGetc()
-{
+uint8_t inputGetc() {
     inputLock();
     uint8_t c = iqueueGetc(&buffer);
     inputUnlock();

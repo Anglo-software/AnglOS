@@ -44,14 +44,12 @@ static unsigned char* scan_code_1_shift = (unsigned char*)"\0"
                                                           "\x85"
                                                           " ";
 
-int initKeyboard()
-{
+int initKeyboard() {
     isrRegisterHandler(KEYBOARD_IRQ, irqKeyboardHandler);
     return 0;
 }
 
-void keyboardSetRedir(ioapic_redirection_t* redir)
-{
+void keyboardSetRedir(ioapic_redirection_t* redir) {
     redir->vector = KEYBOARD_IRQ;
     ioapicWriteRedir(KEYBOARD_IRQ - 32, redir);
 }
@@ -62,15 +60,13 @@ uint8_t keyboardGetByte() { return inb(KEYBOARD_DATA_PORT); }
 
 void keyboardSendByte(uint8_t data) { outb(KEYBOARD_DATA_PORT, data); }
 
-void keyboardSendCommand(uint8_t command)
-{
+void keyboardSendCommand(uint8_t command) {
     outb(KEYBOARD_COMMAND_PORT, command);
 }
 
 bool keyboardIsLetter(char c) { return (0x61 <= c) && (c <= 0x7A); }
 
-void irqKeyboardHandler(registers_t* registers)
-{
+void irqKeyboardHandler(registers_t* registers) {
     int scan      = keyboardGetByte();
 
     bool released = (scan & 0b10000000) >> 7;

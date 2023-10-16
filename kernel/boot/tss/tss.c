@@ -14,8 +14,7 @@ tss_t tss_descriptors[NCPU_MAX];
 static uint8_t ist_index[NCPU_MAX];
 static spinlock lock = SPINLOCK_INITIALIZER;
 
-uint8_t tssAddStack(int num_cpu)
-{
+uint8_t tssAddStack(int num_cpu) {
     if (ist_index[num_cpu] >= 7)
         return 1;
 
@@ -27,8 +26,7 @@ uint8_t tssAddStack(int num_cpu)
     return ist_index[num_cpu];
 }
 
-void initTSS(int num_cpu)
-{
+void initTSS(int num_cpu) {
     spinLock(&lock);
     ist_index[num_cpu] = 0;
     uint64_t tss_base  = (uint64_t)&tss_descriptors[num_cpu];
@@ -50,7 +48,6 @@ void initTSS(int num_cpu)
 
 tss_t* tssGet(int num_cpu) { return &tss_descriptors[num_cpu]; }
 
-void* tssGetStack(int num_cpu, uint8_t ist)
-{
+void* tssGetStack(int num_cpu, uint8_t ist) {
     return (void*)tss_descriptors[num_cpu].ist[ist];
 }

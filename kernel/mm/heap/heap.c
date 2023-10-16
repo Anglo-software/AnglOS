@@ -34,8 +34,7 @@ struct block {
  */
 static struct list free_lists[NUM_LISTS];
 
-static int get_seg_index(size_t words)
-{
+static int get_seg_index(size_t words) {
     switch (words) {
     case 0 ... 8: return 0;
     case 9 ... 16: return 1;
@@ -54,8 +53,7 @@ static int get_seg_index(size_t words)
 
 static inline size_t max(size_t x, size_t y) { return x > y ? x : y; }
 
-static size_t align(size_t size)
-{
+static size_t align(size_t size) {
     return (size + ALIGNMENT - 1) & ~(ALIGNMENT - 1);
 }
 
@@ -73,8 +71,7 @@ static struct list* get_seg_list(size_t words);
  * Given a block, obtain previous's block footer.
  * Works for left-most block also.
  */
-static struct tag* prev_blk_footer(struct block* blk)
-{
+static struct tag* prev_blk_footer(struct block* blk) {
     return &blk->header - 1;
 }
 
@@ -88,8 +85,7 @@ static size_t blk_size(struct block* blk) { return blk->header.size; }
  * Given a block, obtain pointer to previous block.
  * Not meaningful for left-most block.
  */
-static struct block* prev_blk(struct block* blk)
-{
+static struct block* prev_blk(struct block* blk) {
     struct tag* prevfooter = prev_blk_footer(blk);
     return (struct block*)((void*)blk - WSIZE * prevfooter->size);
 }
@@ -98,35 +94,30 @@ static struct block* prev_blk(struct block* blk)
  * Given a block, obtain pointer to next block.
  * Not meaningful for right-most block.
  */
-static struct block* next_blk(struct block* blk)
-{
+static struct block* next_blk(struct block* blk) {
     return (struct block*)((void*)blk + WSIZE * blk->header.size);
 }
 
 /* Given a block, obtain its footer boundary tag */
-static struct tag* get_footer(void* blk)
-{
+static struct tag* get_footer(void* blk) {
     return (blk + WSIZE * ((struct block*)blk)->header.size) -
            sizeof(struct tag);
 }
 
 /* Set a block's size and inuse bit in header and footer */
-static void set_header_and_footer(struct block* blk, int size, int inuse)
-{
+static void set_header_and_footer(struct block* blk, int size, int inuse) {
     blk->header.inuse = inuse;
     blk->header.size  = size;
     *get_footer(blk)  = blk->header; /* Copy header to footer */
 }
 
 /* Mark a block as used and sets its size. */
-static void mark_block_used(struct block* blk, int size)
-{
+static void mark_block_used(struct block* blk, int size) {
     set_header_and_footer(blk, size, 1);
 }
 
 /* Mark a block as free, sets its size, and gives it an empty list_elem. */
-static void mark_block_free(struct block* blk, int size)
-{
+static void mark_block_free(struct block* blk, int size) {
     set_header_and_footer(blk, size, 0);
     struct list_elem tmp = {.next = NULL, .prev = NULL};
     memmove(&blk->payload, &tmp, sizeof(tmp));
@@ -135,8 +126,7 @@ static void mark_block_free(struct block* blk, int size)
 /*
  * mm_init - Initialize the memory manager
  */
-int initKernelHeap(void)
-{
+int initKernelHeap(void) {
     /* Create the initial empty heap */
     struct tag* initial = mem_sbrk(4 * sizeof(struct tag));
     if (initial == NULL)
@@ -165,8 +155,7 @@ int initKernelHeap(void)
 /*
  * mm_malloc - Allocate a block with at least size bytes of payload
  */
-void* kmalloc(size_t size)
-{
+void* kmalloc(size_t size) {
     struct block* bp;
 
     /* Ignore spurious requests */
@@ -199,8 +188,7 @@ void* kmalloc(size_t size)
     return bp->payload;
 }
 
-void* kcalloc(size_t size)
-{
+void* kcalloc(size_t size) {
     void* ptr = kmalloc(size);
     return memset(ptr, 0, size);
 }
@@ -208,8 +196,7 @@ void* kcalloc(size_t size)
 /*
  * mm_free - Free a block
  */
-void kfree(void* bp)
-{
+void kfree(void* bp) {
     if (bp == 0)
         return;
 
@@ -225,8 +212,7 @@ void kfree(void* bp)
 /*
  * mm_realloc - Naive implementation of realloc where a block is resized to size
  */
-void* krealloc(void* ptr, size_t size)
-{
+void* krealloc(void* ptr, size_t size) {
     if (ptr == NULL) {
         return kmalloc(size);
     }
@@ -366,8 +352,7 @@ void* krealloc(void* ptr, size_t size)
 /*
  * extend_heap - Extend heap with free block and return its block pointer
  */
-static struct block* extend_heap(size_t words)
-{
+static struct block* extend_heap(size_t words) {
     void* bp = mem_sbrk(words * WSIZE);
 
     if (bp == NULL)
@@ -389,8 +374,7 @@ static struct block* extend_heap(size_t words)
  * place - Place block of asize words at start of free block bp
  *         and split if remainder would be at least minimum block size
  */
-static void place(struct block* bp, size_t asize)
-{
+static void place(struct block* bp, size_t asize) {
     size_t csize = blk_size(bp);
 
     /* Makes sure to remove the free block from list */
@@ -413,8 +397,7 @@ static void place(struct block* bp, size_t asize)
 /*
  * find_fit - Find a fit for a block with asize words
  */
-static struct block* find_fit(size_t asize)
-{
+static struct block* find_fit(size_t asize) {
     /* Gets the smallest seg list that can fit block */
     size_t idx = get_seg_index(asize);
     /* Iterates through seg list entries until the first small enough one is
@@ -442,8 +425,7 @@ static struct block* find_fit(size_t asize)
 /*
  * coalesce - Boundary tag coalescing. Return ptr to coalesced block
  */
-static struct block* coalesce(struct block* bp)
-{
+static struct block* coalesce(struct block* bp) {
     bool prev_alloc =
         prev_blk_footer(bp)->inuse; /* is previous block allocated? */
     bool next_alloc = !blk_free(next_blk(bp)); /* is next block allocated? */
@@ -486,8 +468,7 @@ static struct block* coalesce(struct block* bp)
 /*
  * get_seg_list - Gets the list that this block size belongs to
  */
-static struct list* get_seg_list(size_t words)
-{
+static struct list* get_seg_list(size_t words) {
     /* Gets the number of words in payload */
     return &free_lists[get_seg_index(words)];
 }

@@ -6,8 +6,7 @@
 
 isr_t interrupt_handlers[256];
 
-void isrInstall()
-{
+void isrInstall() {
     idtSetDescriptor(0, (uint64_t)isr0, IDT_DESCRIPTOR_EXCEPTION,
                      TSS_IST_EXCEPTION);
     idtSetDescriptor(1, (uint64_t)isr1, IDT_DESCRIPTOR_EXCEPTION,
@@ -144,8 +143,7 @@ char* exception_messages[] = {"Division By Zero",
                               "Reserved",
                               "Reserved"};
 
-void isrHandler(registers_t* r)
-{
+void isrHandler(registers_t* r) {
     kprintf("received interrupt: %ld from CPU %d\n", r->vector,
             lapicReadReg(APIC_APICID) >> 24);
     kprintf("[%s] with error code: %lx @ %lx\n", exception_messages[r->vector],
@@ -153,13 +151,11 @@ void isrHandler(registers_t* r)
     __asm__ volatile("cli; hlt");
 }
 
-void isrRegisterHandler(uint8_t n, isr_t handler)
-{
+void isrRegisterHandler(uint8_t n, isr_t handler) {
     interrupt_handlers[n] = handler;
 }
 
-void irqHandler(registers_t* r)
-{
+void irqHandler(registers_t* r) {
     /* Handle the interrupt in a more modular way */
     if (interrupt_handlers[r->vector] != 0) {
         isr_t handler = interrupt_handlers[r->vector];

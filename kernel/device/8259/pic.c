@@ -1,8 +1,7 @@
 #include "pic.h"
 #include "../io.h"
 
-void picMaskIRQ(uint8_t irq)
-{
+void picMaskIRQ(uint8_t irq) {
     uint16_t port;
     uint8_t masks;
 
@@ -19,8 +18,7 @@ void picMaskIRQ(uint8_t irq)
     outb(port, masks);
 }
 
-void picUnmaskIRQ(uint8_t irq)
-{
+void picUnmaskIRQ(uint8_t irq) {
     uint16_t port;
     uint8_t masks;
 
@@ -37,8 +35,7 @@ void picUnmaskIRQ(uint8_t irq)
     outb(port, masks);
 }
 
-void picRemapOffsets(uint8_t offset)
-{
+void picRemapOffsets(uint8_t offset) {
     uint8_t master_mask, slave_mask;
 
     master_mask = inb(PIC_MASTER_DATA);
@@ -60,15 +57,13 @@ void picRemapOffsets(uint8_t offset)
     outb(PIC_SLAVE_DATA, slave_mask);
 }
 
-void picSendEOI(uint8_t irq)
-{
+void picSendEOI(uint8_t irq) {
     if (irq >= 8)
         outb(PIC_SLAVE_COMMAND, PIC_EOI);
     outb(PIC_MASTER_COMMAND, PIC_EOI);
 }
 
-void picDisable()
-{
+void picDisable() {
     picRemapOffsets(0x20);
     for (uint8_t irq = 0; irq < 16; irq++)
         picMaskIRQ(irq);

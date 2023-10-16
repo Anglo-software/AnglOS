@@ -10,16 +10,14 @@ void initKmodules() { module_response = module_request.response; }
 
 uint64_t kmodulesGetNum() { return module_response->module_count; }
 
-kmodule_t* kmoduleGet(uint64_t num)
-{
+kmodule_t* kmoduleGet(uint64_t num) {
     if (num > kmodulesGetNum()) {
         return NULL;
     }
     return module_response->modules[num];
 }
 
-kmodule_t* kmoduleFindByPath(const char* path)
-{
+kmodule_t* kmoduleFindByPath(const char* path) {
     for (unsigned int i = 0; i < kmodulesGetNum(); i++) {
         if (!strcmp(path, module_response->modules[i]->path)) {
             return module_response->modules[i];
@@ -28,8 +26,7 @@ kmodule_t* kmoduleFindByPath(const char* path)
     return NULL;
 }
 
-uint8_t kmoduleGetc(kmodule_t* file, uint64_t index)
-{
+uint8_t kmoduleGetc(kmodule_t* file, uint64_t index) {
     if (file && index < file->size) {
         return ((uint8_t*)(file->address))[index];
     }

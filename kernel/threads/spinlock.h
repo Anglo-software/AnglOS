@@ -14,8 +14,7 @@ typedef unsigned char spinlock;
 /* Pause instruction to prevent excess processor bus usage */
 #define cpu_relax() __asm__ volatile("pause\n" : : : "memory")
 
-static inline unsigned short xchg_8(void* ptr, unsigned char x)
-{
+static inline unsigned short xchg_8(void* ptr, unsigned char x) {
     __asm__ __volatile__("xchgb %0,%1"
                          : "=r"(x)
                          : "m"(*(volatile unsigned char*)ptr), "0"(x)
@@ -26,8 +25,7 @@ static inline unsigned short xchg_8(void* ptr, unsigned char x)
 
 static inline void spinInit(spinlock* lock) { *lock = SPINLOCK_INITIALIZER; }
 
-static inline void spinLock(spinlock* lock)
-{
+static inline void spinLock(spinlock* lock) {
     while (1) {
         if (!xchg_8(lock, BUSY))
             return;
@@ -42,8 +40,7 @@ static inline void spinLock(spinlock* lock)
     }
 }
 
-static inline void spinUnlock(spinlock* lock)
-{
+static inline void spinUnlock(spinlock* lock) {
     barrier();
     *lock = 0;
 }

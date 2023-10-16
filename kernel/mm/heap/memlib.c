@@ -7,8 +7,7 @@ static char* mem_start_brk;
 static char* mem_brk;
 static char* mem_max_addr;
 
-int initKernelHeapMem()
-{
+int initKernelHeapMem() {
     if ((mem_start_brk =
              (char*)vmalloc(kheap_base, MAX_HEAP / PAGE_SIZE,
                             PAGE_FLAG_PRESENT | PAGE_FLAG_READWRITE)) == NULL) {
@@ -21,8 +20,7 @@ int initKernelHeapMem()
 
 void mem_deinit() { vfree(mem_start_brk, MAX_HEAP / PAGE_SIZE, true); }
 
-void* mem_sbrk(int incr)
-{
+void* mem_sbrk(int incr) {
     char* old_brk = mem_brk;
 
     if ((incr < 0) || ((mem_brk + incr) > mem_max_addr)) {

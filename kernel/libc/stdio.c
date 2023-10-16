@@ -21,8 +21,8 @@ static void vsnkprintf_helper(char, void*);
    BUF_SIZE is zero.  Returns the number of characters that would
    have been written to BUFFER, not including a null terminator,
    had there been enough room. */
-int vsnkprintf(char* buffer, size_t buf_size, const char* format, va_list args)
-{
+int vsnkprintf(char* buffer, size_t buf_size, const char* format,
+               va_list args) {
     /* Set up aux data for vsnkprintf_helper(). */
     struct vsnkprintf_aux aux;
     aux.p          = buffer;
@@ -40,8 +40,7 @@ int vsnkprintf(char* buffer, size_t buf_size, const char* format, va_list args)
 }
 
 /* Helper function for vsnkprintf(). */
-static void vsnkprintf_helper(char ch, void* aux_)
-{
+static void vsnkprintf_helper(char ch, void* aux_) {
     struct vsnkprintf_aux* aux = aux_;
 
     if (aux->length++ < aux->max_length)
@@ -55,8 +54,7 @@ static void vsnkprintf_helper(char ch, void* aux_)
    BUF_SIZE is zero.  Returns the number of characters that would
    have been written to BUFFER, not including a null terminator,
    had there been enough room. */
-int snkprintf(char* buffer, size_t buf_size, const char* format, ...)
-{
+int snkprintf(char* buffer, size_t buf_size, const char* format, ...) {
     va_list args;
     int retval;
 
@@ -71,8 +69,7 @@ int snkprintf(char* buffer, size_t buf_size, const char* format, ...)
    In the kernel, the console is both the video display and first
    serial port.
    In userspace, the console is file descriptor 1. */
-int kprintf(const char* format, ...)
-{
+int kprintf(const char* format, ...) {
     va_list args;
     int retval;
 
@@ -142,8 +139,7 @@ static void format_string(const char* string, int length,
                           void (*output)(char, void*), void* aux);
 
 void __vkprintf(const char* format, va_list args, void (*output)(char, void*),
-                void* aux)
-{
+                void* aux) {
     for (; *format != '\0'; format++) {
         struct kprintf_conversion c;
 
@@ -276,8 +272,8 @@ void __vkprintf(const char* format, va_list args, void (*output)(char, void*),
    that indicates the conversion (e.g. the `d' in `%d').  Uses
    *ARGS for `*' field widths and precisions. */
 static const char* parse_conversion(const char* format,
-                                    struct kprintf_conversion* c, va_list* args)
-{
+                                    struct kprintf_conversion* c,
+                                    va_list* args) {
     /* Parse flag characters. */
     c->flags = 0;
     for (;;) {
@@ -374,8 +370,7 @@ not_a_flag:
 static void format_integer(uintmax_t value, bool is_signed, bool negative,
                            const struct integer_base* b,
                            const struct kprintf_conversion* c,
-                           void (*output)(char, void*), void* aux)
-{
+                           void (*output)(char, void*), void* aux) {
     char buf[64], *cp; /* Buffer and current position. */
     int x;             /* `x' character to use or 0 if none. */
     int sign;          /* Sign character or 0 if none. */
@@ -449,8 +444,7 @@ static void format_integer(uintmax_t value, bool is_signed, bool negative,
 
 /* Writes CH to OUTPUT with auxiliary data AUX, CNT times. */
 static void output_dup(char ch, size_t cnt, void (*output)(char, void*),
-                       void* aux)
-{
+                       void* aux) {
     while (cnt-- > 0)
         output(ch, aux);
 }
@@ -460,8 +454,7 @@ static void output_dup(char ch, size_t cnt, void (*output)(char, void*),
    auxiliary data AUX. */
 static void format_string(const char* string, int length,
                           struct kprintf_conversion* c,
-                          void (*output)(char, void*), void* aux)
-{
+                          void (*output)(char, void*), void* aux) {
     int i;
     if (c->width > length && (c->flags & MINUS) == 0)
         output_dup(' ', c->width - length, output, aux);
@@ -473,8 +466,8 @@ static void format_string(const char* string, int length,
 
 /* Wrapper for __vkprintf() that converts varargs into a
    va_list. */
-void __kprintf(const char* format, void (*output)(char, void*), void* aux, ...)
-{
+void __kprintf(const char* format, void (*output)(char, void*), void* aux,
+               ...) {
     va_list args;
 
     va_start(args, aux);
@@ -487,8 +480,7 @@ void __kprintf(const char* format, void (*output)(char, void*), void* aux, ...)
    starting at OFS for the first byte in BUF.  If ASCII is true
    then the corresponding ASCII characters are also rendered
    alongside. */
-void hex_dump(uintptr_t ofs, const void* buf_, size_t size, bool ascii)
-{
+void hex_dump(uintptr_t ofs, const void* buf_, size_t size, bool ascii) {
     const uint8_t* buf    = buf_;
     const size_t per_line = 16; /* Maximum bytes per line. */
 
@@ -532,8 +524,7 @@ void hex_dump(uintptr_t ofs, const void* buf_, size_t size, bool ascii)
 
 /* Prints SIZE, which represents a number of bytes, in a
    human-readable format, e.g. "256 kB". */
-void print_human_readable_size(uint64_t size)
-{
+void print_human_readable_size(uint64_t size) {
     if (size == 1)
         kprintf("1 byte");
     else {

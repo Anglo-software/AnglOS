@@ -1,8 +1,7 @@
 #include "userentry.h"
 #include "syscall.h"
 
-void kerneluserentry()
-{
+void kerneluserentry() {
     int ret = printSyscall(2);
     printSyscall2(ret, 4);
     printSyscall3(1, 2, 3, 4, 5, 6);
