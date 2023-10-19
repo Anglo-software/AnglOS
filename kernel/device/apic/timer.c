@@ -14,18 +14,18 @@ extern bool cursor_enabled;
 
 static void irqAPICTimerHandler(registers_t* registers) {
     time_counter++;
-    if (lapicReadReg(APIC_APICID) >> 24 == 0) {
-        if (cursor_enabled) {
-            if (!inputFull()) {
-                inputPutc(0x91);
-            }
-        }
-        else {
-            if (!inputFull()) {
-                inputPutc(0x92);
-            }
-        }
-    }
+    // if (lapicReadReg(APIC_APICID) >> 24 == 0) {
+    //     if (cursor_enabled) {
+    //         if (!inputFull()) {
+    //             inputPutc(0x91);
+    //         }
+    //     }
+    //     else {
+    //         if (!inputFull()) {
+    //             inputPutc(0x92);
+    //         }
+    //     }
+    // }
     apicSendEOI();
 }
 

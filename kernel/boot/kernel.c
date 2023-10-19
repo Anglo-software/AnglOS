@@ -26,7 +26,6 @@
 #include "user/syscall.h"
 #include "user/userentry.h"
 #include <basic_includes.h>
-#include <stdatomic.h>
 
 static volatile struct limine_stack_size_request stack_request = {
     .id = LIMINE_STACK_SIZE_REQUEST, .revision = 0, .stack_size = 1024 * 1024};
@@ -54,52 +53,55 @@ void _start() {
     initKernelHeap();
     initACPI();
     initAPIC();
+    initSyscall();
 
-    sti();
+    cpuSTI();
 
     initHPET();
     initAPICTimer();
 
-    cli();
+    cpuCLI();
 
     initPCI();
     initInputQueue();
     initConsole();
     initKeyboard();
-    initSyscall();
 
     for (int i = 1; i < num_cpus; i++) {
         smpStartAP((uint64_t)_start_ap, i);
     }
 
-    sti();
+    cpuSTI();
 
-    // initNVMe();
+    initNVMe();
 
     // mainLoop();
 
+    ioapic_redirection_t redir = {.destination_mode = 0, .destination = 0};
+    keyboardSetRedir(&redir);
+
     gotoUser();
 
-    cli();
-    halt();
+    cpuCLI();
+    cpuHLT();
 }
 
 static void _start_ap(struct limine_smp_info* info) {
     cpu_t* cpu = &cpus[info->processor_id];
 
-    cli();
+    cpuCLI();
     initSSE();
     initAPPaging();
     initGDT(cpu->cpu_id);
     initTSS(cpu->cpu_id);
     idtAPReload();
     initAPAPIC();
-    initAPAPICTimer();
     initSyscall();
-    sti();
+    initAPAPICTimer();
+    cpuSTI();
 
     while (true) {
-        halt();
+        cpuHLT();
     }
 }
 
@@ -120,15 +122,15 @@ static void mainLoop() {
         if (c == '\n') {
             kprintf("\n");
             if (!strncmp(linebuf, "q", 1)) {
-                halt();
+                cpuHLT();
                 kprintf("%s", "Exiting");
-                halt();
+                cpuHLT();
                 kprintf(".");
-                halt();
+                cpuHLT();
                 kprintf(".");
-                halt();
+                cpuHLT();
                 kprintf(".");
-                halt();
+                cpuHLT();
                 outw(0x604, 0x2000);
             }
             else {

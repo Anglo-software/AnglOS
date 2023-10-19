@@ -211,10 +211,10 @@ void pagingUpdateEntry(void* table_pptr, uint16_t entry_num, void* entry_pptr,
                        uint64_t flags);
 void pagingRemoveEntry(void* table_pptr, uint16_t level, uint16_t entry_num,
                        bool do_pfree);
-
 void* pagingGetCR3();
 void pagingSetCR3(void* pptr);
-
 void* vmalloc(void* vptr, size_t pages, uint64_t flags);
 void vfree(void* vptr, size_t pages, bool do_pfree);
 void* videntity(void* vptr, void* pptr, size_t pages, uint64_t flags);
+void* pagingCreateUser();
+void pagingDumpTable(void* vptr, uint16_t level);

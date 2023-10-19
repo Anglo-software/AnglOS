@@ -20,7 +20,7 @@ bool iqueueFull(iqueue_t* queue) { return next(queue->head) == queue->tail; }
 uint8_t iqueueGetc(iqueue_t* queue) {
     while (iqueueEmpty(queue)) {
         iqueueUnlock(queue);
-        halt();
+        cpuHLT();
         iqueueLock(queue);
     }
 
@@ -32,7 +32,7 @@ uint8_t iqueueGetc(iqueue_t* queue) {
 void iqueuePutc(iqueue_t* queue, uint8_t c) {
     while (iqueueFull(queue)) {
         iqueueUnlock(queue);
-        halt();
+        cpuHLT();
         iqueueLock(queue);
     }
 

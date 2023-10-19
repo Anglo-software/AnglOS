@@ -62,6 +62,12 @@ typedef struct {
 } __attribute__((packed)) nvme_identify_t;
 
 typedef struct {
+    uint64_t size;
+    uint64_t capacity;
+    uint64_t utilization;
+} __attribute__((packed)) nvme_namespace_t;
+
+typedef struct {
     union {
         struct {
             uint64_t max_queue_entries : 16;
@@ -145,6 +151,30 @@ typedef struct {
     uint64_t status   : 15;
 } __attribute__((packed)) nvme_completion_t;
 
+typedef struct {
+    uint32_t nsid;
+    uint64_t meta;
+    uint64_t prp0;
+    uint64_t prp1;
+    uint64_t lba_start;
+    bool limited_retry;
+    bool force_unit_access;
+    uint8_t protection_info;
+    uint16_t lba_num;
+} nvme_read_info_t;
+
+typedef struct {
+    uint32_t nsid;
+    uint64_t meta;
+    uint64_t prp0;
+    uint64_t prp1;
+    uint64_t lba_start;
+    bool limited_retry;
+    bool force_unit_access;
+    uint8_t protection_info;
+    uint16_t lba_num;
+} nvme_write_info_t;
+
 #define NVME_CREATE_SUBMISSION_QUEUE 0x01
 #define NVME_CREATE_COMPLETION_QUEUE 0x05
 #define NVME_IDENTIFY                0x06
@@ -165,3 +195,5 @@ void nvmeCreateComQueue(void* paddr, uint16_t id, uint16_t size, uint16_t flags,
 void nvmeIdentifyNamespace(void* paddr, uint32_t nsid);
 void nvmeIdentifyController(void* paddr);
 void nvmeIdentifyNamespaceList(void* paddr);
+void nvmeRead(nvme_read_info_t* info);
+void nvmeWrite(nvme_write_info_t* info);

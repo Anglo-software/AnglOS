@@ -32,8 +32,8 @@ extern bool cpu_started_others;
 void initSSE();
 cpu_t* getCurrentCpu();
 
-static inline void cli() { __asm__ volatile("cli"); }
+static inline void cpuCLI() { __asm__ volatile("cli"); }
 
-static inline void sti() { __asm__ volatile("sti"); }
+static inline void cpuSTI() { __asm__ volatile("sti"); }
 
-static inline void halt() { __asm__ volatile("hlt"); }
+static inline void cpuHLT() { __asm__ volatile("hlt"); }

@@ -3,14 +3,14 @@
 
 %define num_syscalls 3
 
-extern syscalltest
-extern syscalltest2
-extern syscalltest3
+extern sys_halt
+extern sys_print
+extern sys_getc
 
 syscall_table:
-    dq syscalltest
-    dq syscalltest2
-    dq syscalltest3
+    dq sys_halt
+    dq sys_print
+    dq sys_getc
     dq 0x0000000000000000
 
 syscall_user_to_kernel:
@@ -51,7 +51,7 @@ syscall_kernel_to_user:
     push rdx
 
     xor eax, eax
-    mov ax, 0x38
+    mov ax, 0x3B
     mov ds, ax
     mov es, ax
 
@@ -79,6 +79,7 @@ syscall_kernel_to_user:
 
 syscallEntryPoint:
     swapgs
+    mov QWORD [gs:0x00], 1
     mov [gs:0x10], rsp
     mov rsp, [gs:0x08]
     push rbp
@@ -104,10 +105,11 @@ syscallEntryPoint:
     call syscall_kernel_to_user
     pop rbp
     mov rsp, [gs:0x10]
+    mov QWORD [gs:0x00], 0
     swapgs
     o64 sysret
 
-    .undefined_syscall
+    .undefined_syscall:
     ud2
 
 section .data

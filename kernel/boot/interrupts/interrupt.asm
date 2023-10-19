@@ -1,8 +1,7 @@
-; Defined in isr.c
 [extern isrHandler]
 [extern irqHandler]
 
-%macro pushagrd 0
+%macro push_general 0
 push rax
 push rbx
 push rcx
@@ -11,7 +10,7 @@ push rsi
 push rdi
 %endmacro
 
-%macro popagrd 0
+%macro pop_general 0
 pop rdi
 pop rsi
 pop rdx
@@ -20,7 +19,7 @@ pop rbx
 pop rax
 %endmacro
 
-%macro pushacrd 0
+%macro push_control 0
 mov rax, cr0
 push rax
 mov rax, cr2
@@ -31,7 +30,7 @@ mov rax, cr4
 push rax
 %endmacro
 
-%macro popacrd 0
+%macro pop_control 0
 pop rax
 mov cr4, rax
 pop rax
@@ -42,14 +41,78 @@ pop rax
 mov cr0, rax
 %endmacro
 
+save_context:
+    push rbp
+    mov rbp, rsp
+
+    push rbx
+    mov rbx, [gs:0x28]
+    mov [rbx + 0x00], rax
+    pop rbx
+
+    push rax
+    mov rax, [gs:0x20]
+    mov [rax + 0x08], rbx
+    mov [rax + 0x10], rcx
+    mov [rax + 0x18], rdx
+    mov [rax + 0x20], rsi
+    mov [rax + 0x28], rdi
+    mov [rax + 0x30], r8
+    mov [rax + 0x38], r9
+    mov [rax + 0x40], r10
+    mov [rax + 0x48], r11
+    mov [rax + 0x50], r12
+    mov [rax + 0x58], r13
+    mov [rax + 0x60], r14
+    mov [rax + 0x68], r15
+
+    pop rax
+    pop rbp
+    ret
+
+restore_context:
+    push rbp
+    mov rbp, rsp
+
+    mov rax, [gs:0x28]
+    mov rbx, [rax + 0x08]
+    mov rcx, [rax + 0x10]
+    mov rdx, [rax + 0x18]
+    mov rsi, [rax + 0x20]
+    mov rdi, [rax + 0x28]
+    mov r8,  [rax + 0x30]
+    mov r9,  [rax + 0x38]
+    mov r10, [rax + 0x40]
+    mov r11, [rax + 0x48]
+    mov r12, [rax + 0x50]
+    mov r13, [rax + 0x58]
+    mov r14, [rax + 0x60]
+    mov r15, [rax + 0x68]
+    mov rax, [rax + 0x00]
+
+    pop rbp
+    ret
+
 isr_common_stub:
     push rbp
     mov rbp, rsp
-    pushagrd
-    pushacrd
+    push_general
+    push_control
     mov ax, ds
     push rax
     push qword 0
+
+    push rax
+    xor eax, eax
+    mov ax, ds
+    cmp ax, 0x30
+    pop rax
+    je .in_kernel
+
+    .in_user:
+    swapgs
+    call save_context
+
     mov ax, 0x30
     mov ds, ax
     mov es, ax
@@ -58,26 +121,53 @@ isr_common_stub:
     lea rdi, [rsp + 0x10]
     call isrHandler
 
+    call restore_context
+
     pop rax
     pop rax
     mov ds, ax
     mov es, ax
-    popacrd
-    popagrd
+    pop_control
+    pop_general
+    pop rbp
+    add rsp, 0x10
+    swapgs
+    iretq
+
+    .in_kernel:
+    lea rdi, [rsp + 0x10]
+    call isrHandler
+
+    pop rax
+    pop rax
+    mov ds, ax
+    mov es, ax
+    pop_control
+    pop_general
     pop rbp
     add rsp, 0x10
     iretq
 
-; Common IRQ code. Identical to ISR code except for the 'call'
-; and the 'pop ebx'
 irq_common_stub:
     push rbp
     mov rbp, rsp
-    pushagrd
-    pushacrd
+    push_general
+    push_control
     mov ax, ds
     push rax
     push qword 0
+
+    push rax
+    xor eax, eax
+    mov ax, ds
+    cmp ax, 0x30
+    pop rax
+    je .in_kernel
+
+    .in_user:
+    swapgs
+    call save_context
+
     mov ax, 0x30
     mov ds, ax
     mov es, ax
@@ -86,24 +176,33 @@ irq_common_stub:
     lea rdi, [rsp + 0x10]
     call irqHandler
 
+    call restore_context
+
     pop rax
     pop rax
     mov ds, ax
     mov es, ax
-    popacrd
-    popagrd
+    pop_control
+    pop_general
+    pop rbp
+    add rsp, 0x10
+    swapgs
+    iretq
+
+    .in_kernel:
+    lea rdi, [rsp + 0x10]
+    call irqHandler
+
+    pop rax
+    pop rax
+    mov ds, ax
+    mov es, ax
+    pop_control
+    pop_general
     pop rbp
     add rsp, 0x10
     iretq
 
-; We don't get information about which interrupt was caller
-; when the handler is run, so we will need to have a different handler
-; for every interrupt.
-; Furthermore, some interrupts push an error code onto the stack but others
-; don't, so we will push a dummy error code for those which don't, so that
-; we have a consistent stack for all of them.
-
-; First make the ISRs global
 global isr0
 global isr1
 global isr2
@@ -323,7 +422,6 @@ isr31:
     push byte 31
     jmp isr_common_stub
 
-; IRQs
 global irq0
 global irq1
 global irq2
@@ -341,7 +439,6 @@ global irq13
 global irq14
 global irq15
 
-; IRQ handlers
 irq0:
 	push byte 0
 	push byte 32

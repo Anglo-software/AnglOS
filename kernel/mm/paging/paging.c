@@ -2,6 +2,7 @@
 #include "boot/limine.h"
 #include "libc/stdio.h"
 #include "mm/pmm/pmm.h"
+#include "threads/spinlock.h"
 
 void* page_direct_base = (void*)0xFFFF800000000000;
 void* kheap_base       = (void*)0xFFFF900000000000;
@@ -11,6 +12,7 @@ void* kstack_base      = (void*)0xFFFFB00000000000;
 void* kernel_base      = (void*)0xFFFFFFFF80000000;
 
 static void* bsp_cr3;
+static spinlock lock = SPINLOCK_INITIALIZER;
 
 extern uint64_t mem_size;
 
@@ -151,13 +153,16 @@ static void* vmallocHelper(void* vptr, uint64_t* p4tp, uint64_t flags) {
 }
 
 void* vmalloc(void* vptr, size_t pages, uint64_t flags) {
+    spinLock(&lock);
     uint64_t* p4tp = (uint64_t*)pagingGetCR3();
     for (size_t i = 0; i < pages; i++) {
         void* ptr = vmallocHelper(vptr + i * PAGE_SIZE, p4tp, flags);
         if (ptr == NULL) {
+            spinUnlock(&lock);
             return NULL;
         }
     }
+    spinUnlock(&lock);
     return vptr;
 }
 
@@ -216,10 +221,12 @@ static void vfreeHelper(void* vptr, uint64_t* p4tp, bool do_pfree) {
 }
 
 void vfree(void* vptr, size_t pages, bool do_pfree) {
+    spinLock(&lock);
     uint64_t* p4tp = (uint64_t*)pagingGetCR3();
     for (size_t i = 0; i < pages; i++) {
         vfreeHelper(vptr + i * PAGE_SIZE, p4tp, do_pfree);
     }
+    spinUnlock(&lock);
 }
 
 static void* videntityHelper(void* vptr, void* pptr, uint64_t* p4tp,
@@ -262,13 +269,84 @@ static void* videntityHelper(void* vptr, void* pptr, uint64_t* p4tp,
 }
 
 void* videntity(void* vptr, void* pptr, size_t pages, uint64_t flags) {
+    spinLock(&lock);
     uint64_t* p4tp = (uint64_t*)pagingGetCR3();
     for (size_t i = 0; i < pages; i++) {
         void* ptr = videntityHelper(vptr + i * PAGE_SIZE, pptr + i * PAGE_SIZE,
                                     p4tp, flags);
         if (ptr == NULL) {
             return NULL;
+            spinUnlock(&lock);
         }
     }
+    spinUnlock(&lock);
     return vptr;
+}
+
+void* pagingCreateUser() {
+    uint64_t* p4tp =
+        (uint64_t*)((uint64_t)pagingAllocTable() + (uint64_t)page_direct_base);
+    uint64_t* ker_cr3 = (uint64_t*)bsp_cr3;
+    for (int i = 256; i < 512; i++) {
+        p4tp[i] = ker_cr3[i];
+    }
+    return (void*)((uint64_t)p4tp - (uint64_t)page_direct_base);
+}
+
+static void printTable(uint64_t* vptr) {
+    int cols = 8;
+    for (int i = 0; i < 512 / cols; i++) {
+        for (int j = 0; j < cols; j++) {
+            kprintf("%lx", vptr[j + cols * i]);
+            if (j != cols - 1) {
+                kprintf(" ");
+            }
+        }
+        i += cols;
+        kprintf("\n");
+    }
+}
+
+void pagingDumpTable(void* vptr, uint16_t level) {
+    uint64_t* p4tp = (uint64_t*)pagingGetCR3();
+
+    if (level == 4) {
+        printTable(p4tp);
+    }
+
+    uint64_t p4e_num = PAGE_P4E((uint64_t)vptr);
+    uint64_t p4e     = p4tp[p4e_num];
+    if (p4e == 0) {
+        return;
+    }
+    uint64_t* p3tp =
+        (uint64_t*)((p4e & 0x000FFFFFFFFFF000) + (uint64_t)page_direct_base);
+
+    if (level == 3) {
+        printTable(p3tp);
+    }
+
+    uint64_t p3e_num = PAGE_P3E((uint64_t)vptr);
+    uint64_t p3e     = p3tp[p3e_num];
+    if (p3e == 0) {
+        return;
+    }
+    uint64_t* p2tp =
+        (uint64_t*)((p3e & 0x000FFFFFFFFFF000) + (uint64_t)page_direct_base);
+
+    if (level == 2) {
+        printTable(p2tp);
+    }
+
+    uint64_t p2e_num = PAGE_P2E((uint64_t)vptr);
+    uint64_t p2e     = p2tp[p2e_num];
+    if (p2e == 0) {
+        return;
+    }
+    uint64_t* p1tp =
+        (uint64_t*)((p2e & 0x000FFFFFFFFFF000) + (uint64_t)page_direct_base);
+
+    if (level == 1) {
+        printTable(p1tp);
+    }
 }

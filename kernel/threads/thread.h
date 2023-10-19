@@ -1,5 +1,6 @@
 #pragma once
 #include "boot/cpu/cpu.h"
+#include "libc/kernel/list.h"
 #include <basic_includes.h>
 
 typedef struct {
@@ -20,11 +21,6 @@ typedef struct {
         uint64_t r15;
     } registers;
 
-    struct {
-        uint64_t rsp;
-        uint64_t rbp;
-    } stack;
-
     uint64_t rip;
     uint64_t cr3;
 } ctx_t;
@@ -36,4 +32,30 @@ typedef struct {
     uint64_t pc;      // gs:0x18
     cpu_t* cpu;       // gs:0x20
     ctx_t* ctx;       // gs:0x28
+    void* thread;     // gs:0x30
 } gs_base_t;
+
+typedef int64_t tid_t;
+enum thread_state {
+    THREAD_RUNNING,
+    THREAD_READY,
+    THREAD_BLOCKED,
+    THREAD_DYING
+};
+
+#define TID_ERROR    ((tid_t)-1)
+#define PRIO_MIN     -20
+#define PRIO_DEFAULT 0
+#define PRIO_MAX     19
+#define THREAD_MAGIC 0xE621CAFEDEADBEEF
+
+typedef struct {
+    tid_t id;
+    tid_t parent;
+    uint64_t priority;
+    uint64_t state;
+    void* stack;
+    struct list_elem elem;
+    gs_base_t* gs;
+    uint64_t magic;
+} thread_t;

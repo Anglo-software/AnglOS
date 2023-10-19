@@ -67,28 +67,28 @@ void initSyscall();
                      : "r"(r_rax), "r"(r_rdi), "r"(r_rsi), "r"(r_rdx), \
                        "r"(r_r10), "r"(r_r8), "r"(r_r9));
 
-inline int printSyscall(int num) {
+inline int halt() {
     uint64_t rax;
     save_regs();
-    syscall1(0, num);
+    syscall0(0);
     restore_regs();
     __asm__ volatile("mov %0, rax" : "=r"(rax));
     return rax;
 }
 
-inline int printSyscall2(int num1, int num2) {
+inline int print(char* str, size_t len) {
     uint64_t rax;
     save_regs();
-    syscall2(1, num1, num2);
+    syscall2(1, str, len);
     restore_regs();
     __asm__ volatile("mov %0, rax" : "=r"(rax));
     return rax;
 }
 
-inline int printSyscall3(int n1, int n2, int n3, int n4, int n5, int n6) {
+inline char getc() {
     uint64_t rax;
     save_regs();
-    syscall6(2, n1, n2, n3, n4, n5, n6);
+    syscall0(2);
     restore_regs();
     __asm__ volatile("mov %0, rax" : "=r"(rax));
     return rax;

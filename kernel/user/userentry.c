@@ -2,19 +2,12 @@
 #include "syscall.h"
 
 void kerneluserentry() {
-    int ret = printSyscall(2);
-    printSyscall2(ret, 4);
-    printSyscall3(1, 2, 3, 4, 5, 6);
-    volatile bool a = false;
+    print("Entered user space\n", 19);
+    char str[2];
+    str[1] = 0;
     while (true) {
-        if (a == false) {
-            a = true;
-        }
-        else {
-            a = false;
-        }
-        __asm__ volatile("hlt");
+        char c = getc();
+        str[0] = c;
+        print(str, 1);
     }
-
-    bool b = a;
 }
