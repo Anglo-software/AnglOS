@@ -83,17 +83,23 @@ PCISEARCHEND:
     msix_size             = pciGetMessageTableSize(nvme_bus, nvme_dev, 0);
 
     videntity(nvme_reg, nvme_paddr, 2,
-              PAGE_FLAG_PRESENT | PAGE_FLAG_READWRITE | PAGE_FLAG_CACHEDBLE);
+              PAGE_FLAG_PRESENT | PAGE_FLAG_READWRITE | PAGE_FLAG_CACHEDBLE |
+                  PAGE_FLAG_EXECDBLE);
     videntity(msix_addr, msix_paddr, 2,
-              PAGE_FLAG_PRESENT | PAGE_FLAG_READWRITE | PAGE_FLAG_CACHEDBLE);
+              PAGE_FLAG_PRESENT | PAGE_FLAG_READWRITE | PAGE_FLAG_CACHEDBLE |
+                  PAGE_FLAG_EXECDBLE);
     videntity(nvme_admin_sub_addr, admin_sub_paddr, 1,
-              PAGE_FLAG_PRESENT | PAGE_FLAG_READWRITE | PAGE_FLAG_CACHEDBLE);
+              PAGE_FLAG_PRESENT | PAGE_FLAG_READWRITE | PAGE_FLAG_CACHEDBLE |
+                  PAGE_FLAG_EXECDBLE);
     videntity(nvme_admin_com_addr, admin_com_paddr, 1,
-              PAGE_FLAG_PRESENT | PAGE_FLAG_READWRITE | PAGE_FLAG_CACHEDBLE);
+              PAGE_FLAG_PRESENT | PAGE_FLAG_READWRITE | PAGE_FLAG_CACHEDBLE |
+                  PAGE_FLAG_EXECDBLE);
     videntity(nvme_io_sub_addr, sub_paddr, 1,
-              PAGE_FLAG_PRESENT | PAGE_FLAG_READWRITE | PAGE_FLAG_CACHEDBLE);
+              PAGE_FLAG_PRESENT | PAGE_FLAG_READWRITE | PAGE_FLAG_CACHEDBLE |
+                  PAGE_FLAG_EXECDBLE);
     videntity(nvme_io_com_addr, com_paddr, 1,
-              PAGE_FLAG_PRESENT | PAGE_FLAG_READWRITE | PAGE_FLAG_CACHEDBLE);
+              PAGE_FLAG_PRESENT | PAGE_FLAG_READWRITE | PAGE_FLAG_CACHEDBLE |
+                  PAGE_FLAG_EXECDBLE);
 
     cap.capabilities = nvme_reg->capabilities;
     mem_page_min     = 1 << (12 + cap.g.mem_page_min);
@@ -218,9 +224,7 @@ PCISEARCHEND:
 
 #pragma GCC pop_options
 
-void irqNVMeHandler(registers_t* registers) {
-    apicSendEOI();
-}
+void irqNVMeHandler(registers_t* registers) { apicSendEOI(); }
 
 uint32_t nvmeReadStatus() { return nvme_reg->status; }
 

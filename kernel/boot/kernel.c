@@ -23,6 +23,7 @@
 #include "mm/pmm/pmm.h"
 #include "threads/spinlock.h"
 #include "tss/tss.h"
+#include "user/elf.h"
 #include "user/syscall.h"
 #include "user/userentry.h"
 #include <basic_includes.h>
@@ -67,20 +68,23 @@ void _start() {
     initConsole();
     initKeyboard();
 
-    for (int i = 1; i < num_cpus; i++) {
-        smpStartAP((uint64_t)_start_ap, i);
-    }
+    // for (int i = 1; i < num_cpus; i++) {
+    //     smpStartAP((uint64_t)_start_ap, i);
+    // }
 
     cpuSTI();
 
-    initNVMe();
+    // initNVMe();
 
     // mainLoop();
 
     ioapic_redirection_t redir = {.destination_mode = 0, .destination = 0};
     keyboardSetRedir(&redir);
 
-    gotoUser();
+    kmodule_t* prog_file = kmoduleFindByPath("/resources/testprog.elf");
+    uint64_t entry_point = elfLoad(prog_file->address);
+
+    gotoUser(entry_point);
 
     cpuCLI();
     cpuHLT();
@@ -167,19 +171,13 @@ static void mainLoop() {
     }
 }
 
-void gotoUser() {
-    void* vcodeptr  = (void*)0x0000000000010000;
-    void* vstackptr = (void*)0x00007FFFFFFFF000 - PAGE_SIZE;
-    void* ptr =
-        vmalloc(vcodeptr, 1,
-                PAGE_FLAG_USERSUPER | PAGE_FLAG_READWRITE | PAGE_FLAG_PRESENT);
-    void* usrptr = (void*)&kerneluserentry;
+void gotoUser(uint64_t entry_point) {
+    void* vcodeptr  = (void*)entry_point;
+    void* vstackptr = (void*)0x7FFFFFFFF000 - PAGE_SIZE;
 
-    memcpy(ptr, usrptr, PAGE_SIZE);
-
-    void* stack =
-        vmalloc(vstackptr, 1,
-                PAGE_FLAG_USERSUPER | PAGE_FLAG_READWRITE | PAGE_FLAG_PRESENT);
+    void* stack = vmalloc(vstackptr, 1,
+                          PAGE_FLAG_USERSUPER | PAGE_FLAG_READWRITE |
+                              PAGE_FLAG_PRESENT | PAGE_FLAG_EXECDBLE);
 
     __asm__ volatile(".intel_syntax noprefix;"
                      "mov rsp, %0;"

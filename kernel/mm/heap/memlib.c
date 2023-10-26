@@ -8,9 +8,10 @@ static char* mem_brk;
 static char* mem_max_addr;
 
 int initKernelHeapMem() {
-    if ((mem_start_brk =
-             (char*)vmalloc(kheap_base, MAX_HEAP / PAGE_SIZE,
-                            PAGE_FLAG_PRESENT | PAGE_FLAG_READWRITE)) == NULL) {
+    if ((mem_start_brk = (char*)vmalloc(
+             kheap_base, MAX_HEAP / PAGE_SIZE,
+             PAGE_FLAG_PRESENT | PAGE_FLAG_READWRITE | PAGE_FLAG_EXECDBLE)) ==
+        NULL) {
         return -1;
     }
     mem_max_addr = mem_start_brk + MAX_HEAP;

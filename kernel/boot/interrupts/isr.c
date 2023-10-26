@@ -148,6 +148,9 @@ void isrHandler(registers_t* r) {
             lapicReadReg(APIC_APICID) >> 24);
     kprintf("[%s] with error code: %lx @ %lx\n", exception_messages[r->vector],
             r->error_code, r->rip);
+    if (r->vector == 0xE) {
+        kprintf("Culprit address: %lx\n", r->cr2);
+    }
     __asm__ volatile("cli; hlt");
 }
 

@@ -32,18 +32,18 @@
  * size And as such the least significant bits 0-11 are just all 0's.
  *
  * Page Map Level 4 Entry:
- * |0|00000000000|0000000000000000000000000000000000000000|0000|00000000| AVL =
- * 0x001 |X|[   AVL   ]|[               PDPT  PA               ]|[AV]|[ FLAG ]|
+ * |0|00000000000|0000000000000000000000000000000000000000|0000|00000000|
+ * |X|[   AVL   ]|[               PDPT  PA               ]|[AV]|[ FLAG ]|
  * |D|62       52|51                                    12|11 8|7      0|
  *
  * Page Directory Pointer Table Entry:
- * |0|00000000000|0000000000000000000000000000000000000000|0000|00000000| AVL =
- * 0x002 |X|[   AVL   ]|[                PDT PA                ]|[AV]|[ FLAG ]|
+ * |0|00000000000|0000000000000000000000000000000000000000|0000|00000000|
+ * |X|[   AVL   ]|[                PDT PA                ]|[AV]|[ FLAG ]|
  * |D|62       52|51                                    12|11 8|7      0|
  *
  * Page Directory Entry:
- * |0|00000000000|0000000000000000000000000000000000000000|0000|00000000| AVL =
- * 0x004 |X|[   AVL   ]|[                PT  PA                ]|[AV]|[ FLAG ]|
+ * |0|00000000000|0000000000000000000000000000000000000000|0000|00000000|
+ * |X|[   AVL   ]|[                PT  PA                ]|[AV]|[ FLAG ]|
  * |D|62       52|51                                    12|11 8|7      0|
  *
  * XD       = Execution Disable
@@ -60,8 +60,8 @@
  *
  *
  * Page Table Entry:
- * |0|0000|0000000|0000000000000000000000000000000000000000|000|000000000| AVL =
- * 0x008 |X|[PK]|[ AVL ]|[         PHYSICAL PAGE NUMBER         ]|[A]|[ FLAGS ]|
+ * |0|0000|0000000|0000000000000000000000000000000000000000|000|000000000|
+ * |X|[PK]|[ AVL ]|[         PHYSICAL PAGE NUMBER         ]|[A]|[ FLAGS ]|
  * |D|    |58   52|51                                    12| V |8       0|
  *
  * XD       = Execution Disable
@@ -109,26 +109,36 @@
  * moment.
  *
  * Page fault error codes pushed onto stack: (these bits are the only ones used,
- * all others are reserved) Bit 0  (P)    present flag Bit 1  (R/W)  read/write
- * flag Bit 2  (U/S)  user/supervisor flag Bit 3  (RSVD) indicates whether a
- * reserved bit was set in some page-structure entry Bit 4  (I/D)
- * instruction/data flag (1 = instruction fetch, 0 = data access) Bit 5  (PK)
- * protection key violation Bit 6  (SS)   shadow-stack access fault Bit 15 (SGX)
- * SGX violation
+ * all others are reserved)
+ * Bit 0  (P)    present flag
+ * Bit 1  (R/W)  read/write flag
+ * Bit 2  (U/S)  user/supervisor flag
+ * Bit 3  (RSVD) indicates whether a reserved bit
+ *               was set in some page-structure entry
+ * Bit 4  (I/D)  instruction/data flag (1 = instruction fetch, 0 = data access)
+ * Bit 5  (PK)   protection key violation
+ * Bit 6  (SS)   shadow-stack access fault
+ * Bit 15 (SGX)  SGX violation
  *
  *
  *
  * Virtual memory mapping:
  *
  * Kernel:
- * FFFF 8000 0000 0000 - FFFF 8007 FFFF FFFF -> 32  GB   direct mapping of all
- * physical memory (page_direct_base) FFFF 9000 0000 0000 - FFFF 9020 FFFF FFFF
- * -> 128 GB   kernel heap (kheap_base) (start at 1GB) FFFF A000 0000 0000 -
- * FFFF A00F FFFF FFFF -> 64  GB   lapic_base FFFF A100 0000 0000 - FFFF A10F
- * FFFF FFFF -> 64  GB   ioapic_base FFFF B000 0000 0000 - FFFF B00F FFFF FFFF
- * -> 64  GB   kernel and irq/isr stacks (kstack_base) (start at 512MB) FFFF
- * FF80 0000 0000 - FFFF FF85 0000 FFFF -> ??  GB   NVMe FFFF FFFF 8000 0000 -
- * FFFF FFFF FFFF FFFF -> 2   GB   kernel text mapping (kernel_base)
+ * FFFF 8000 0000 0000 - FFFF 8007 FFFF FFFF -> 32  GB
+ *          direct mapping of all physical memory (page_direct_base)
+ * FFFF 9000 0000 0000 - FFFF 9020 FFFF FFFF -> 128 GB
+ *          kernel heap (kheap_base) (start at 1GB)
+ * FFFF A000 0000 0000 - FFFF A00F FFFF FFFF -> 64  GB
+ *          lapic_base
+ * FFFF A100 0000 0000 - FFFF A10F FFFF FFFF -> 64  GB
+ *          ioapic_base
+ * FFFF B000 0000 0000 - FFFF B00F FFFF FFFF -> 64  GB
+ *          kernel and irq/isr stacks (kstack_base) (start at 512MB)
+ * FFFF FF80 0000 0000 - FFFF FF85 0000 FFFF -> ??  GB
+ *          NVMe
+ * FFFF FFFF 8000 0000 - FFFF FFFF FFFF FFFF -> 2   GB
+ *          kernel text mapping (kernel_base)
  */
 
 #define PAGE_SIZE                 4096
@@ -161,11 +171,13 @@
 #define PAGE_STRUCTURE_P2         0x0040000000000000 // PDE
 #define PAGE_STRUCTURE_P1         0x0080000000000000 // PTE
 
-#define PAGE_OFFSET(vptr)         ((vptr >> 0) & 0xFFF)
-#define PAGE_P1E(vptr)            ((vptr >> 12) & 0x1FF)
-#define PAGE_P2E(vptr)            ((vptr >> 21) & 0x1FF)
-#define PAGE_P3E(vptr)            ((vptr >> 30) & 0x1FF)
-#define PAGE_P4E(vptr)            ((vptr >> 39) & 0x1FF)
+#define PAGE_OFFSET(vptr)         (((vptr) >> 0) & 0xFFF)
+#define PAGE_P1E(vptr)            (((vptr) >> 12) & 0x1FF)
+#define PAGE_P2E(vptr)            (((vptr) >> 21) & 0x1FF)
+#define PAGE_P3E(vptr)            (((vptr) >> 30) & 0x1FF)
+#define PAGE_P4E(vptr)            (((vptr) >> 39) & 0x1FF)
+#define ALIGN_TO_PAGE(vptr)       (((vptr) / PAGE_SIZE) * PAGE_SIZE)
+#define GET_NUM_PAGES(size)       (((size) + PAGE_SIZE - 1) / PAGE_SIZE)
 
 typedef struct {
     uint64_t xd_flag : 1;
@@ -213,8 +225,10 @@ void pagingRemoveEntry(void* table_pptr, uint16_t level, uint16_t entry_num,
                        bool do_pfree);
 void* pagingGetCR3();
 void pagingSetCR3(void* pptr);
+void pagingFlushTLB();
 void* vmalloc(void* vptr, size_t pages, uint64_t flags);
 void vfree(void* vptr, size_t pages, bool do_pfree);
 void* videntity(void* vptr, void* pptr, size_t pages, uint64_t flags);
+void vflags(void* vptr, size_t pages, uint64_t flags);
 void* pagingCreateUser();
 void pagingDumpTable(void* vptr, uint16_t level);

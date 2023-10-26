@@ -111,6 +111,10 @@ void pagingSetCR3(void* pptr) {
     __asm__ volatile("mov cr3, %0" : : "r"(cr3) : "memory");
 }
 
+void pagingFlushTLB() {
+    pagingSetCR3(pagingGetCR3() - (uint64_t)page_direct_base);
+}
+
 #define min(a, b) (a < b ? a : b)
 
 static void* vmallocHelper(void* vptr, uint64_t* p4tp, uint64_t flags) {
@@ -163,6 +167,7 @@ void* vmalloc(void* vptr, size_t pages, uint64_t flags) {
         }
     }
     spinUnlock(&lock);
+    pagingFlushTLB();
     return vptr;
 }
 
@@ -227,6 +232,7 @@ void vfree(void* vptr, size_t pages, bool do_pfree) {
         vfreeHelper(vptr + i * PAGE_SIZE, p4tp, do_pfree);
     }
     spinUnlock(&lock);
+    pagingFlushTLB();
 }
 
 static void* videntityHelper(void* vptr, void* pptr, uint64_t* p4tp,
@@ -280,7 +286,50 @@ void* videntity(void* vptr, void* pptr, size_t pages, uint64_t flags) {
         }
     }
     spinUnlock(&lock);
+    pagingFlushTLB();
     return vptr;
+}
+
+void vflagsHelper(void* vptr, uint64_t* p4tp, uint64_t flags) {
+    uint64_t p4e_num = PAGE_P4E((uint64_t)vptr);
+    uint64_t p4e     = p4tp[p4e_num];
+    if (p4e == 0) {
+        return;
+    }
+    p4e = p4tp[p4e_num];
+    uint64_t* p3tp =
+        (uint64_t*)((p4e & 0x000FFFFFFFFFF000) + (uint64_t)page_direct_base);
+
+    uint64_t p3e_num = PAGE_P3E((uint64_t)vptr);
+    uint64_t p3e     = p3tp[p3e_num];
+    if (p3e == 0) {
+        return;
+    }
+    p3e = p3tp[p3e_num];
+    uint64_t* p2tp =
+        (uint64_t*)((p3e & 0x000FFFFFFFFFF000) + (uint64_t)page_direct_base);
+
+    uint64_t p2e_num = PAGE_P2E((uint64_t)vptr);
+    uint64_t p2e     = p2tp[p2e_num];
+    if (p2e == 0) {
+        return;
+    }
+    p2e = p2tp[p2e_num];
+    uint64_t* p1tp =
+        (uint64_t*)((p2e & 0x000FFFFFFFFFF000) + (uint64_t)page_direct_base);
+
+    uint64_t p1e_num = PAGE_P1E((uint64_t)vptr);
+    p1tp[p1e_num] = (p1tp[p1e_num] & 0x8FFFFFFFFFFFFFE0) | flags;
+}
+
+void vflags(void* vptr, size_t pages, uint64_t flags) {
+    spinLock(&lock);
+    uint64_t* p4tp = (uint64_t*)pagingGetCR3();
+    for (size_t i = 0; i < pages; i++) {
+        vflagsHelper(vptr + i * PAGE_SIZE, p4tp, flags);
+    }
+    spinUnlock(&lock);
+    pagingFlushTLB();
 }
 
 void* pagingCreateUser() {
