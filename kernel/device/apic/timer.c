@@ -12,7 +12,7 @@ static uint64_t time_counter  = 0;
 
 extern bool cursor_enabled;
 
-static void irqAPICTimerHandler(registers_t* registers) {
+static void irqAPICTimerHandler() {
     time_counter++;
     if (lapicReadReg(APIC_APICID) >> 24 == 0) {
         if (cursor_enabled) {
@@ -30,7 +30,7 @@ static void irqAPICTimerHandler(registers_t* registers) {
 }
 
 void initAPICTimer() {
-    isrRegisterHandler(IRQ0, irqAPICTimerHandler);
+    irqRegisterHandler(IRQ0, (void*)irqAPICTimerHandler);
     lapicWriteReg(APIC_TMRDIV, 0x00);
     lapicWriteReg(APIC_LVT_TMR, IRQ0);
 

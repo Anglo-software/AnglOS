@@ -1,5 +1,6 @@
 #pragma once
 #include <basic_includes.h>
+#include "mm/addressspace/addressspace.h"
 
 typedef struct {
     uint8_t magic[4];
@@ -56,4 +57,4 @@ typedef struct {
 #define ELF_FLAG_WRITEABLE   (1 << 1)
 #define ELF_FLAG_READABLE    (1 << 2)
 
-uint64_t elfLoad(void* file);
+uint64_t elfLoad(address_space_t* space, void* file);

@@ -8,7 +8,7 @@
 #include "mm/paging/paging.h"
 #include "mm/pmm/pmm.h"
 
-nvme_registers_t* nvme_reg             = (nvme_registers_t*)0xFFFFFF8000000000;
+nvme_isr_frame_t* nvme_reg             = (nvme_isr_frame_t*)0xFFFFFF8000000000;
 msix_entry_t* msix_addr                = (msix_entry_t*)0xFFFFFF8100000000;
 nvme_submission_t* nvme_admin_sub_addr = (nvme_submission_t*)0xFFFFFF8200000000;
 nvme_completion_t* nvme_admin_com_addr = (nvme_completion_t*)0xFFFFFF8300000000;
@@ -45,7 +45,7 @@ static void ringIOSub(uint16_t num);
 static void getIOResponse(nvme_completion_t* response);
 static void ringIOCom(uint16_t num);
 
-void irqNVMeHandler(registers_t* registers);
+void irqNVMeHandler();
 
 #pragma GCC push_options
 #pragma GCC optimize("O0")
@@ -125,7 +125,7 @@ PCISEARCHEND:
     admin_int.rev0            = 0;
     lapicWriteReg(APIC_ICRH, 0);
     pciWriteMSIXEntry(msix_addr, 0, &admin_int);
-    isrRegisterHandler(IRQ3, irqNVMeHandler);
+    irqRegisterHandler(IRQ3, (void*)irqNVMeHandler);
 
     nvme_status_t status;
     nvme_config_t config;
@@ -224,7 +224,7 @@ PCISEARCHEND:
 
 #pragma GCC pop_options
 
-void irqNVMeHandler(registers_t* registers) { apicSendEOI(); }
+void irqNVMeHandler() { apicSendEOI(); }
 
 uint32_t nvmeReadStatus() { return nvme_reg->status; }
 

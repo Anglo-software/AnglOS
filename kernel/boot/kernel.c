@@ -22,10 +22,10 @@
 #include "mm/paging/paging.h"
 #include "mm/pmm/pmm.h"
 #include "threads/spinlock.h"
+#include "threads/thread.h"
 #include "tss/tss.h"
 #include "user/elf.h"
-#include "user/syscall.h"
-#include "user/userentry.h"
+#include "user/syscall_defs.h"
 #include <basic_includes.h>
 
 static volatile struct limine_stack_size_request stack_request = {
@@ -33,7 +33,6 @@ static volatile struct limine_stack_size_request stack_request = {
 
 static void mainLoop();
 static void _start_ap();
-static void gotoUser();
 
 NO_RETURN
 void _start() {
@@ -67,6 +66,7 @@ void _start() {
     initInputQueue();
     initConsole();
     initKeyboard();
+    initThread();
 
     // for (int i = 1; i < num_cpus; i++) {
     //     smpStartAP((uint64_t)_start_ap, i);
@@ -81,10 +81,9 @@ void _start() {
     ioapic_redirection_t redir = {.destination_mode = 0, .destination = 0};
     keyboardSetRedir(&redir);
 
-    kmodule_t* prog_file = kmoduleFindByPath("/resources/testprog.elf");
-    uint64_t entry_point = elfLoad(prog_file->address);
-
-    gotoUser(entry_point);
+    kmodule_t* prog_file   = kmoduleFindByPath("/resources/testprog.elf");
+    thread_t* thread = threadCreate(prog_file->address, PRIO_DEFAULT, 0);
+    threadContextSwitch(thread);
 
     cpuCLI();
     cpuHLT();
@@ -169,23 +168,4 @@ static void mainLoop() {
             continue;
         }
     }
-}
-
-void gotoUser(uint64_t entry_point) {
-    void* vcodeptr  = (void*)entry_point;
-    void* vstackptr = (void*)0x7FFFFFFFF000 - PAGE_SIZE;
-
-    void* stack = vmalloc(vstackptr, 1,
-                          PAGE_FLAG_USERSUPER | PAGE_FLAG_READWRITE |
-                              PAGE_FLAG_PRESENT | PAGE_FLAG_EXECDBLE);
-
-    __asm__ volatile(".intel_syntax noprefix;"
-                     "mov rsp, %0;"
-                     "mov rcx, %1;"
-                     "mov r11, 0x202;"
-                     ".att_syntax prefix;"
-                     :
-                     : "r"((uint64_t)vstackptr + PAGE_SIZE),
-                       "r"((uint64_t)vcodeptr));
-    __asm__ volatile("sysretq;");
 }

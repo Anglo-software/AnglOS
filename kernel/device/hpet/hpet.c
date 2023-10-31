@@ -21,7 +21,7 @@ static void hpetWriteReg(uint64_t reg, uint64_t data) {
 
 static uint64_t time_counter = 0;
 
-static void irqHPETHandler(registers_t* registers) {
+static void irqHPETHandler() {
     time_counter++;
     apicSendEOI();
 }
@@ -33,7 +33,7 @@ void initHPET() {
     period       = hpetReadReg(0x000) >> 32;
     freqency     = 1000000000000000 / period;
 
-    isrRegisterHandler(IRQ2, irqHPETHandler);
+    irqRegisterHandler(IRQ2, (void*)irqHPETHandler);
     ioapic_redirection_t redir = {.vector = IRQ2};
     ioapicWriteRedir(0x16, &redir);
     hpetWriteReg(hpet_config_reg(0),

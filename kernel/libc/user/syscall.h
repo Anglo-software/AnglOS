@@ -1,8 +1,6 @@
 #pragma once
 #include <basic_includes.h>
 
-void initSyscall();
-
 #define save_regs()    __asm__ volatile("push rcx; push r11;")
 
 #define restore_regs() __asm__ volatile("pop r11; pop rcx;")
@@ -67,29 +65,10 @@ void initSyscall();
                      : "r"(r_rax), "r"(r_rdi), "r"(r_rsi), "r"(r_rdx), \
                        "r"(r_r10), "r"(r_r8), "r"(r_r9));
 
-inline int halt() {
-    uint64_t rax;
-    save_regs();
-    syscall0(0);
-    restore_regs();
-    __asm__ volatile("mov %0, rax" : "=r"(rax));
-    return rax;
-}
+#define SYS_HALT  0
+#define SYS_PRINT 1
+#define SYS_GETC  2
 
-inline int print(char* str, size_t len) {
-    uint64_t rax;
-    save_regs();
-    syscall2(1, str, len);
-    restore_regs();
-    __asm__ volatile("mov %0, rax" : "=r"(rax));
-    return rax;
-}
-
-inline char getc() {
-    uint64_t rax;
-    save_regs();
-    syscall0(2);
-    restore_regs();
-    __asm__ volatile("mov %0, rax" : "=r"(rax));
-    return rax;
-}
+int halt();
+int print(char* str, size_t len);
+char getc();

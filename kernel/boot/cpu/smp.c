@@ -21,6 +21,7 @@ void initSMP() {
         cpus[i].lapic_id = smp_request.response->cpus[i]->lapic_id;
     }
     cpus[0].started = 1;
+    ncpu = num_cpus;
 }
 
 void smpStartAP(uint64_t _start_func, uint64_t id) {

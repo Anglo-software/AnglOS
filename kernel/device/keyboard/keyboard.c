@@ -4,7 +4,7 @@
 #include "device/input/input.h"
 #include "device/io.h"
 
-void irqKeyboardHandler(registers_t* registers);
+void irqKeyboardHandler();
 
 static bool shift_pressed               = false;
 static bool ctrl_pressed                = false;
@@ -45,7 +45,7 @@ static unsigned char* scan_code_1_shift = (unsigned char*)"\0"
                                                           " ";
 
 int initKeyboard() {
-    isrRegisterHandler(KEYBOARD_IRQ, irqKeyboardHandler);
+    irqRegisterHandler(KEYBOARD_IRQ, (void*)irqKeyboardHandler);
     return 0;
 }
 
@@ -66,7 +66,7 @@ void keyboardSendCommand(uint8_t command) {
 
 bool keyboardIsLetter(char c) { return (0x61 <= c) && (c <= 0x7A); }
 
-void irqKeyboardHandler(registers_t* registers) {
+void irqKeyboardHandler() {
     int scan      = keyboardGetByte();
 
     bool released = (scan & 0b10000000) >> 7;

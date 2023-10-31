@@ -78,6 +78,7 @@ override OBJ := $(CFILES:.c=.o) $(CXXFILES:.cpp=.o) $(NASMFILES:.asm=.o)
 override HEADER_DEPS := $(CFILES:.c=.d) $(CXXFILES:.cpp=.d)
 
 override LIBOBJ = ../../libc/string.o
+override LIBOBJ += ../../libc/user/syscall.o
 
 .PHONY: all
 all: $(PROG)

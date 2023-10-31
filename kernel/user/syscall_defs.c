@@ -1,4 +1,4 @@
-#include "syscall.h"
+#include "syscall_defs.h"
 #include "boot/cpu/cpu.h"
 #include "boot/tss/tss.h"
 #include "device/apic/apic.h"

@@ -31,7 +31,7 @@ typedef struct {
     uint32_t persist_upper;
     uint32_t set_specific[121];
     uint32_t doorbell_base;
-} __attribute__((packed)) nvme_registers_t;
+} __attribute__((packed)) nvme_isr_frame_t;
 
 typedef struct {
     uint16_t vendor;

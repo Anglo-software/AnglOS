@@ -29,7 +29,7 @@ static void apicEnable() {
     lapicWriteReg(APIC_SPURIOUS, lapicReadReg(APIC_SPURIOUS) | APIC_SW_ENABLE);
 }
 
-static void irqSpuriousHandler(registers_t* registers) {}
+static void irqSpuriousHandler() {}
 
 uint32_t lapicReadReg(uint32_t reg) { return *(uint32_t*)(lapic_addr + reg); }
 
@@ -73,7 +73,7 @@ void initAPIC() {
                                           PAGE_FLAG_CACHEDBLE);
     picDisable();
     apicEnable();
-    isrRegisterHandler(IRQ7, irqSpuriousHandler);
+    irqRegisterHandler(IRQ7, (void*)irqSpuriousHandler);
 }
 
 void initAPAPIC() { apicEnable(); }

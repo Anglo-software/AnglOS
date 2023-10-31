@@ -1,14 +1,14 @@
-#include "user/syscall.h"
+#include "libc/user/syscall.h"
 #include "libc/string.h"
 
-void _start() {
-    strlen("11");
-    print("Entered user space\n", 19);
-    char str[2];
-    str[1] = 0;
+void _start(int input) {
+    char* str = "Entered user space\n";
+    print(str, strlen(str));
+    char tmp[2];
+    tmp[1] = 0;
     while (true) {
         char c = getc();
-        str[0] = c;
-        print(str, 1);
+        tmp[0] = c;
+        print(tmp, 1);
     }
 }
