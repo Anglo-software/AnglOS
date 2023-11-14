@@ -85,6 +85,7 @@ angl-os.hdd: limine kernel
 	sudo mkdir -p img_mount/resources
 	sudo cp -v kernel/angl-os.elf limine.cfg limine/limine.sys img_mount/
 	sudo cp -v kernel/userprogs/testprog/testprog.elf resources
+	sudo cp -v kernel/userprogs/testprog2/testprog2.elf resources
 	sudo cp -r resources img_mount/
 	sudo cp -v limine/BOOTX64.EFI img_mount/EFI/BOOT/
 	sync

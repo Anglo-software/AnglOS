@@ -2,6 +2,9 @@
 #include "libc/kernel/list.h"
 #include "libc/string.h"
 #include "memlib.h"
+#include "threads/spinlock.h"
+
+static spinlock lock;
 
 struct tag {
     uint64_t size  : 63; // size of block, in words
@@ -135,6 +138,8 @@ int initKernelHeap(void) {
         list_init(&free_lists[i]);
     }
 
+    spinInit(&lock);
+
     /* We use a slightly different strategy than suggested in the book.
      * Rather than placing a min-sized prologue block at the beginning
      * of the heap, we simply place two fences.
@@ -155,7 +160,7 @@ int initKernelHeap(void) {
 /*
  * mm_malloc - Allocate a block with at least size bytes of payload
  */
-void* kmalloc(size_t size) {
+static void* _kmalloc(size_t size) {
     struct block* bp;
 
     /* Ignore spurious requests */
@@ -188,15 +193,15 @@ void* kmalloc(size_t size) {
     return bp->payload;
 }
 
-void* kcalloc(size_t size) {
-    void* ptr = kmalloc(size);
+static void* _kcalloc(size_t size) {
+    void* ptr = _kmalloc(size);
     return memset(ptr, 0, size);
 }
 
 /*
  * mm_free - Free a block
  */
-void kfree(void* bp) {
+static void _kfree(void* bp) {
     if (bp == 0)
         return;
 
@@ -212,12 +217,12 @@ void kfree(void* bp) {
 /*
  * mm_realloc - Naive implementation of realloc where a block is resized to size
  */
-void* krealloc(void* ptr, size_t size) {
+static void* _krealloc(void* ptr, size_t size) {
     if (ptr == NULL) {
-        return kmalloc(size);
+        return _kmalloc(size);
     }
     if (size == 0) {
-        kfree(ptr);
+        _kfree(ptr);
         return (void*)0;
     }
     struct block* blk = (struct block*)(ptr - offsetof(struct block, payload));
@@ -325,7 +330,7 @@ void* krealloc(void* ptr, size_t size) {
     }
 
     /* All other cases fall here (naive approach) */
-    void* newptr = kmalloc(size);
+    void* newptr = _kmalloc(size);
 
     /* If realloc() fails the original block is left untouched  */
     if (!newptr) {
@@ -340,7 +345,7 @@ void* krealloc(void* ptr, size_t size) {
     memmove(newptr, ptr, oldpayloadsize);
 
     /* Free the old block. */
-    kfree(ptr);
+    _kfree(ptr);
 
     return newptr;
 }
@@ -471,4 +476,31 @@ static struct block* coalesce(struct block* bp) {
 static struct list* get_seg_list(size_t words) {
     /* Gets the number of words in payload */
     return &free_lists[get_seg_index(words)];
+}
+
+void* kmalloc(size_t size) {
+    spinLock(&lock);
+    void* ptr = _kmalloc(size);
+    spinUnlock(&lock);
+    return ptr;
+}
+
+void* kcalloc(size_t size) {
+    spinLock(&lock);
+    void* ptr = _kcalloc(size);
+    spinUnlock(&lock);
+    return ptr;
+}
+
+void kfree(void* ptr) {
+    spinLock(&lock);
+    _kfree(ptr);
+    spinUnlock(&lock);
+}
+
+void* krealloc(void* ptr, size_t size) {
+    spinLock(&lock);
+    void* rptr = _krealloc(ptr, size);
+    spinUnlock(&lock);
+    return rptr;
 }

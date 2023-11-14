@@ -1,5 +1,6 @@
 #include "cpu/cpu.h"
 #include "cpu/smp.h"
+#include "cpuid.h"
 #include "device/acpi/acpi.h"
 #include "device/apic/apic.h"
 #include "device/apic/timer.h"
@@ -76,17 +77,21 @@ void _start() {
 
     // initNVMe();
 
-    // mainLoop();
+    mainLoop();
 
-    ioapic_redirection_t redir = {.destination_mode = 0, .destination = 0};
-    keyboardSetRedir(&redir);
+    // ioapic_redirection_t redir = {.destination_mode = 0, .destination = 0};
+    // keyboardSetRedir(&redir);
 
-    kmodule_t* prog_file   = kmoduleFindByPath("/resources/testprog.elf");
-    thread_t* thread = threadCreate(prog_file->address, PRIO_DEFAULT, 0);
-    threadContextSwitch(thread);
+    // kmodule_t* prog_file1 = kmoduleFindByPath("/resources/testprog.elf");
+    // thread_t* thread1     = threadCreate(prog_file1->address, PRIO_DEFAULT,
+    // 0); kmodule_t* prog_file2 =
+    // kmoduleFindByPath("/resources/testprog2.elf"); thread_t* thread2     =
+    // threadCreate(prog_file2->address, PRIO_DEFAULT, 0);
+    // threadContextSwitch(thread1);
 
-    cpuCLI();
-    cpuHLT();
+    while (true) {
+        cpuHLT();
+    }
 }
 
 static void _start_ap(struct limine_smp_info* info) {
@@ -119,7 +124,6 @@ static void mainLoop() {
     keyboardSetRedir(&redir);
     char* linebuf = kcalloc(size + 1);
     kprintf("> ");
-    apicTimerPeriodicStart(500000000);
     for (;;) {
         uint8_t c = inputGetc();
         if (c == '\n') {
@@ -135,6 +139,13 @@ static void mainLoop() {
                 kprintf(".");
                 cpuHLT();
                 outw(0x604, 0x2000);
+            }
+            else if (!strncmp(linebuf, "run", 3)) {
+                kmodule_t* prog_file =
+                    kmoduleFindByPath("/resources/testprog.elf");
+                tid_t id =
+                    threadCreate(prog_file->address, PRIO_DEFAULT, 0);
+                threadSelect(id);
             }
             else {
                 kprintf("%s\n", linebuf);

@@ -1,4 +1,5 @@
 #include "paging.h"
+#include "boot/interrupts/isr.h"
 #include "boot/limine.h"
 #include "libc/stdio.h"
 #include "mm/pmm/pmm.h"
@@ -313,7 +314,8 @@ void* videntity(void* vptr, void* pptr, size_t pages, uint64_t flags) {
     return vptr;
 }
 
-void* videntityCR3(void* vptr, void* pptr, size_t pages, uint64_t flags, void* cr3) {
+void* videntityCR3(void* vptr, void* pptr, size_t pages, uint64_t flags,
+                   void* cr3) {
     spinLock(&lock);
     uint64_t* p4tp = (uint64_t*)cr3;
     for (size_t i = 0; i < pages; i++) {
@@ -445,4 +447,22 @@ void pagingDumpTable(void* vptr, uint16_t level) {
     if (level == 1) {
         printTable(p1tp);
     }
+}
+
+void isrPageFaultHandler(isr_frame_t* r) {
+    kprintf("\nPage Fault @ %lx: ", r->base.rip);
+    switch(r->base.error_code) {
+        case 0b000: kprintf("Kernel tried to read non-present page\n"); break;
+        case 0b001: kprintf("Kernel tried to read protected page\n"); break;
+        case 0b010: kprintf("Kernel tried to write non-present page\n"); break;
+        case 0b011: kprintf("Kernel tried to write protected page\n"); break;
+        case 0b100: kprintf("User tried to read non-present page\n"); break;
+        case 0b101: kprintf("User tried to read protected page\n"); break;
+        case 0b110: kprintf("User tried to write non-present page\n"); break;
+        case 0b111: kprintf("User tried to write protected page\n"); break;
+    }
+    if (r->base.vector == 0xE) {
+        kprintf("Culprit address: %lx\n", r->control_regs.cr2);
+    }
+    __asm__ volatile("cli; hlt;");
 }

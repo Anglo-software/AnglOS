@@ -1,8 +1,8 @@
-#include "libc/user/syscall.h"
 #include "libc/string.h"
+#include "libc/user/syscall.h"
 
-void _start(int input) {
-    char* str = "Entered user space\n";
+void _start() {
+    char* str = "Entered user space on thread 1\n";
     print(str, strlen(str));
     char tmp[2];
     tmp[1] = 0;

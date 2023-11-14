@@ -64,3 +64,5 @@ int sys_print(char* str, size_t len) {
 }
 
 char sys_getc() { return inputGetc(); }
+
+void sys_exit(int code) { return; }

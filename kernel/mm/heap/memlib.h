@@ -1,7 +1,7 @@
 #pragma once
 #include <basic_includes.h>
 
-#define MAX_HEAP  (1 << 30)
+#define MAX_HEAP  (1 << 25)
 #define ALIGNMENT 16
 
 int initKernelHeapMem();

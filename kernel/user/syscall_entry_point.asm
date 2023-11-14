@@ -1,16 +1,18 @@
 [GLOBAL syscallEntryPoint]
 [extern syscalltest]
 
-%define num_syscalls 3
+%define num_syscalls 4
 
 extern sys_halt
 extern sys_print
 extern sys_getc
+extern sys_exit
 
 syscall_table:
     dq sys_halt
     dq sys_print
     dq sys_getc
+    dq sys_exit
     dq 0x0000000000000000
 
 syscall_user_to_kernel:

@@ -135,7 +135,6 @@ irq_stub_%+%1:
     mov ax, 0x3B
     mov ds, ax
     mov es, ax
-    mov ss, ax
     call restore_context
     pop rbp
     swapgs

@@ -93,7 +93,7 @@ void irqKeyboardHandler() {
             c = '\n';
         }
         else if (prev_scan != 0xE0) {
-            if (!ctrl_pressed || scan_code_1[scan2] != 'c') {
+            if (!ctrl_pressed || scan_code_1[scan2] != 'l') {
                 if (!shift_pressed) {
                     c = scan_code_1[scan2];
                 }

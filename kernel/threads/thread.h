@@ -2,6 +2,8 @@
 #include "boot/cpu/cpu.h"
 #include "libc/kernel/list.h"
 #include "mm/addressspace/addressspace.h"
+#include "signal.h"
+#include "threads/spinlock.h"
 #include <basic_includes.h>
 
 typedef struct {
@@ -50,20 +52,36 @@ enum thread_state {
 #define PRIO_MAX     19
 #define THREAD_MAGIC 0xE621CAFEDEADBEEF
 #define STACK_START  0x7FFFFFFFF000
+#define STACK_SIZE   (2 * PAGE_SIZE)
+#define KERN_GS_BASE 0xC0000102
+#define USER_GS_BASE 0xC0000101
 
 typedef struct {
-    tid_t id;
-    tid_t parent;
-    uint64_t priority;
-    uint64_t state;
-    void* stack;
-    struct list_elem elem;
-    address_space_t* space;
-    gs_base_t* gs;
-    uint64_t padding[6];
-    uint64_t magic;
+    tid_t id;               // 0x00
+    tid_t parent;           // 0x08
+    uint64_t priority;      // 0x10
+    uint64_t state;         // 0x18
+    uint64_t runtime;       // 0x20
+    spinlock lock;          // 0x28
+    uint8_t padding[7];
+    signal_t* signal;       // 0x30
+    void* stack;            // 0x38
+    struct list_elem elem;  // 0x40
+    address_space_t* space; // 0x50
+    gs_base_t* gs;          // 0x58
+    uint64_t magic;         // 0x60
 } __attribute__((packed)) thread_t;
 
 void initThread();
-thread_t* threadCreate(void* elf, uint64_t priority, uint64_t parent);
+
+void setKernGS(uint64_t gs_base);
+void setUserGS(uint64_t gs_base);
+uint64_t getKernGS();
+uint64_t getUserGS();
+tid_t threadCreate(void* elf, uint64_t priority, uint64_t parent);
+void threadSchedule(tid_t tid);
+void threadBlock(tid_t tid);
+void threadKill(tid_t tid);
+void threadSelect(tid_t tid);
+tid_t threadNext();
 void threadContextSwitch(thread_t* thread);

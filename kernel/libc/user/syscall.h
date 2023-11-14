@@ -68,7 +68,9 @@
 #define SYS_HALT  0
 #define SYS_PRINT 1
 #define SYS_GETC  2
+#define SYS_EXIT  3
 
 int halt();
 int print(char* str, size_t len);
 char getc();
+void exit(int code);
