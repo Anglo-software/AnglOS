@@ -77,17 +77,17 @@ void _start() {
 
     // initNVMe();
 
-    mainLoop();
+    // mainLoop();
 
-    // ioapic_redirection_t redir = {.destination_mode = 0, .destination = 0};
-    // keyboardSetRedir(&redir);
+    ioapic_redirection_t redir = {.destination_mode = 0, .destination = 0};
+    keyboardSetRedir(&redir);
 
-    // kmodule_t* prog_file1 = kmoduleFindByPath("/resources/testprog.elf");
-    // thread_t* thread1     = threadCreate(prog_file1->address, PRIO_DEFAULT,
-    // 0); kmodule_t* prog_file2 =
-    // kmoduleFindByPath("/resources/testprog2.elf"); thread_t* thread2     =
-    // threadCreate(prog_file2->address, PRIO_DEFAULT, 0);
-    // threadContextSwitch(thread1);
+    kmodule_t* prog_file1 = kmoduleFindByPath("/resources/testprog.elf");
+    tid_t thread1         = threadCreate(prog_file1->address, PRIO_DEFAULT, 0);
+    kmodule_t* prog_file2 = kmoduleFindByPath("/resources/testprog2.elf");
+    tid_t thread2         = threadCreate(prog_file2->address, PRIO_DEFAULT, 0);
+
+    threadSelect(thread1);
 
     while (true) {
         cpuHLT();
@@ -142,9 +142,8 @@ static void mainLoop() {
             }
             else if (!strncmp(linebuf, "run", 3)) {
                 kmodule_t* prog_file =
-                    kmoduleFindByPath("/resources/testprog.elf");
-                tid_t id =
-                    threadCreate(prog_file->address, PRIO_DEFAULT, 0);
+                    kmoduleFindByPath("/resources/testprog2.elf");
+                tid_t id = threadCreate(prog_file->address, PRIO_DEFAULT, 0);
                 threadSelect(id);
             }
             else {

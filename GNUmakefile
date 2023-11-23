@@ -96,7 +96,8 @@ angl-os.hdd: limine kernel
 clean:
 	rm -rf iso_root angl-os.iso angl-os.hdd
 	rm -rf loopback_dev img_mount
-	rm -rf kernel/angl-os.dump
+	rm -rf kernel/angl-os.asmdump
+	rm -rf kernel/angl-os.secdump
 	$(MAKE) -C kernel clean
 
 .PHONY: distclean

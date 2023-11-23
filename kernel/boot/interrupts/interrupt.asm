@@ -136,8 +136,8 @@ irq_stub_%+%1:
     mov ds, ax
     mov es, ax
     call restore_context
-    pop rbp
     swapgs
+    pop rbp
     iretq
 
     .in_kernel:

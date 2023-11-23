@@ -43,15 +43,18 @@ enum thread_state {
     THREAD_RUNNING,
     THREAD_READY,
     THREAD_BLOCKED,
-    THREAD_DYING
+    THREAD_DYING,
+    THREAD_NEW
 };
 
 #define TID_ERROR    ((tid_t)-1)
 #define PRIO_MIN     -20
 #define PRIO_DEFAULT 0
 #define PRIO_MAX     19
+#define THREAD_TIME  5000 // Default time-slice: 5ms
 #define THREAD_MAGIC 0xE621CAFEDEADBEEF
-#define STACK_START  0x7FFFFFFFF000
+#define STACK_START  0x00007FFFFFFFF000
+#define KSTACK_START 0xFFFFFFF000FFF000
 #define STACK_SIZE   (2 * PAGE_SIZE)
 #define KERN_GS_BASE 0xC0000102
 #define USER_GS_BASE 0xC0000101
@@ -61,9 +64,9 @@ typedef struct {
     tid_t parent;           // 0x08
     uint64_t priority;      // 0x10
     uint64_t state;         // 0x18
-    uint64_t runtime;       // 0x20
+    uint64_t runtime;       // 0x20 us
     spinlock lock;          // 0x28
-    uint8_t padding[7];
+    uint8_t padding[7];     //
     signal_t* signal;       // 0x30
     void* stack;            // 0x38
     struct list_elem elem;  // 0x40
@@ -73,6 +76,8 @@ typedef struct {
 } __attribute__((packed)) thread_t;
 
 void initThread();
+void threadStartTimer(uint64_t microseconds);
+void threadStopTimer();
 
 void setKernGS(uint64_t gs_base);
 void setUserGS(uint64_t gs_base);
@@ -84,4 +89,3 @@ void threadBlock(tid_t tid);
 void threadKill(tid_t tid);
 void threadSelect(tid_t tid);
 tid_t threadNext();
-void threadContextSwitch(thread_t* thread);

@@ -13,3 +13,4 @@ angl-os.iso
 kernel/angl-os.asmdump
 kernel/angl-os.secdump
 kernel/angl-os.elf
+img_mount

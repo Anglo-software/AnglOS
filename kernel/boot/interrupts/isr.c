@@ -11,7 +11,7 @@ extern uint64_t isr_stub_table[];
 void isrInstall() {
     for (int vector = 0; vector < 32; vector++) {
         idtSetDescriptor(vector, isr_stub_table[vector],
-                         IDT_DESCRIPTOR_EXCEPTION, TSS_IST_EXCEPTION);
+                         IDT_DESCRIPTOR_EXCEPTION, TSS_IST_THREAD);
     }
 }
 
@@ -71,5 +71,5 @@ void isrHandler(isr_frame_t* r) {
 void irqRegisterHandler(uint8_t n, void* handler) {
     interrupt_handlers[n] = (uint64_t)handler;
     idtSetDescriptor(n, isr_stub_table[n], IDT_DESCRIPTOR_EXTERNAL,
-                     TSS_IST_ROUTINE);
+                     TSS_IST_THREAD);
 }

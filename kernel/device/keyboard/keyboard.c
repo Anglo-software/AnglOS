@@ -3,6 +3,7 @@
 #include "boot/interrupts/isr.h"
 #include "device/input/input.h"
 #include "device/io.h"
+#include "libc/stdio.h"
 
 void irqKeyboardHandler();
 

@@ -2,6 +2,7 @@
 #include "basic_includes.h"
 #include "boot/cpu/cpu.h"
 
+#define TSS_IST_THREAD      000
 #define TSS_IST_EXCEPTION   001
 #define TSS_IST_ROUTINE     002
 
