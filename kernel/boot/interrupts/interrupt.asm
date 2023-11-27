@@ -64,7 +64,7 @@ save_context:
     pop rbx
 
     push rax
-    mov rax, [gs:0x20]
+    mov rax, [gs:0x28]
     mov [rax + 0x08], rbx
     mov [rax + 0x10], rcx
     mov [rax + 0x18], rdx
@@ -84,9 +84,6 @@ save_context:
     ret
 
 restore_context:
-    push rbp
-    mov rbp, rsp
-
     mov rax, [gs:0x28]
     mov rbx, [rax + 0x08]
     mov rcx, [rax + 0x10]
@@ -103,21 +100,28 @@ restore_context:
     mov r15, [rax + 0x68]
     mov rax, [rax + 0x00]
 
-    pop rbp
     ret
 
 extern interrupt_handlers
+extern getCurrentThread
 
 %macro irq_stub 1
 irq_stub_%+%1:
     push rbp
     mov rbp, rsp
+
+    push rax
+    call getCurrentThread
+    cmp QWORD rax, 0
+    pop rax
+    je .in_kernel
+
     push rax
     xor rax, rax
     mov ax, ds
     cmp ax, 0x30
     pop rax
-    je .in_kernel
+    je .in_syscall
 
     .in_user:
     swapgs
@@ -128,15 +132,50 @@ irq_stub_%+%1:
     mov es, ax
     mov ss, ax
 
+    mov [gs:0x38], rsp
+
     lea r15, [rel interrupt_handlers]
     mov r15, [r15 + %1 * 8]
     call r15
 
+    mov rsp, [gs:0x38]
+    mov rax, [gs:0x28]
+    mov rax, [rax + 0x78]
+    mov cr3, rax
+    mov rax, [gs:0x00]
+    cmp rax, 1
+    je .exit_syscall
+
+    .exit_user:
     mov ax, 0x3B
     mov ds, ax
     mov es, ax
     call restore_context
     swapgs
+    pop rbp
+    iretq
+
+    .in_syscall:
+    push_general
+    push_control
+
+    mov [gs:0x38], rsp
+
+    lea r15, [rel interrupt_handlers]
+    mov r15, [r15 + %1 * 8]
+    call r15
+
+    mov rsp, [gs:0x38]
+    mov rax, [gs:0x28]
+    mov rax, [rax + 0x78]
+    mov cr3, rax
+    mov rax, [gs:0x00]
+    cmp rax, 0
+    je .exit_user
+
+    .exit_syscall:
+    pop_control
+    pop_general
     pop rbp
     iretq
 
@@ -155,6 +194,7 @@ irq_stub_%+%1:
 extern isrHandler
 
 isr_common_stub:
+    cli
     push rbp
     mov rbp, rsp
     push_general
@@ -164,11 +204,17 @@ isr_common_stub:
     push qword 0
 
     push rax
-    xor eax, eax
+    call getCurrentThread
+    cmp QWORD rax, 0
+    pop rax
+    je .in_kernel
+
+    push rax
+    xor rax, rax
     mov ax, ds
     cmp ax, 0x30
     pop rax
-    je .in_kernel
+    je .in_syscall
 
     .in_user:
     swapgs
@@ -179,9 +225,22 @@ isr_common_stub:
     mov es, ax
     mov ss, ax
 
+    mov [gs:0x40], rsp
+
     lea rdi, [rsp + 0x10]
     call isrHandler
 
+    mov rsp, [gs:0x40]
+    mov rax, [gs:0x28]
+    mov rax, [rax + 0x78]
+    mov cr3, rax
+    mov rax, [gs:0x00]
+    cmp rax, 1
+    jne .exit_user
+    swapgs
+    je .exit_syscall
+
+    .exit_user:
     call restore_context
 
     pop rax
@@ -193,6 +252,35 @@ isr_common_stub:
     pop rbp
     add rsp, 0x10
     swapgs
+    sti
+    iretq
+    
+    .in_syscall:
+    mov [gs:0x40], rsp
+
+    lea rdi, [rsp + 0x10]
+    call isrHandler
+
+    mov rsp, [gs:0x40]
+    mov rax, [gs:0x28]
+    mov rax, [rax + 0x78]
+    mov cr3, rax
+    mov rax, [gs:0x00]
+    cmp rax, 0
+    jne .exit_syscall
+    swapgs
+    je .exit_user
+
+    .exit_syscall:
+    pop rax
+    pop rax
+    mov ds, ax
+    mov es, ax
+    pop_control
+    pop_general
+    pop rbp
+    add rsp, 0x10
+    sti
     iretq
 
     .in_kernel:
@@ -207,6 +295,7 @@ isr_common_stub:
     pop_general
     pop rbp
     add rsp, 0x10
+    sti
     iretq
 
 %macro isr_err_stub 1

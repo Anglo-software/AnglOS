@@ -1,6 +1,7 @@
 #include "thread.h"
 #include "boot/cpu/cpu.h"
 #include "boot/interrupts/isr.h"
+#include "boot/tss/tss.h"
 #include "device/apic/apic.h"
 #include "device/apic/timer.h"
 #include "device/io.h"
@@ -17,7 +18,7 @@ static atomic_ulong next_thread_id;
 static spinlock lock;
 static uint64_t timer_ticks;
 static uint64_t tick_microseconds;
-static thread_t* current_thread;
+static thread_t* current_thread = NULL;
 extern void* page_direct_base;
 
 extern void threadContextSwitch(thread_t* thread);
@@ -86,6 +87,8 @@ uint64_t getUserGS() {
     return ((uint64_t)lo) | ((uint64_t)hi << 32);
 }
 
+thread_t* getCurrentThread() { return current_thread; }
+
 static void irqThreadTimerHandler() {
     apicSendEOI();
     timer_ticks++;
@@ -113,7 +116,7 @@ void threadStartTimer(uint64_t microseconds) {
 void threadStopTimer() { apicTimerPeriodicStop(); }
 
 tid_t threadCreate(void* elf, uint64_t priority, uint64_t parent) {
-    uint64_t cpuid         = next_thread_id % ncpu;
+    uint64_t cpuid         = 0;
     thread_t* thread       = (thread_t*)kmalloc(sizeof(thread_t));
     void* cr3              = pagingCreateUser();
     address_space_t* space = addressSpaceNew((uint64_t)cr3);
@@ -128,31 +131,27 @@ tid_t threadCreate(void* elf, uint64_t priority, uint64_t parent) {
     if (thread->runtime = -1UL) {
         thread->runtime = 0;
     }
-    thread->parent = parent;
-    thread->id     = next_thread_id++;
-    thread->magic  = THREAD_MAGIC;
-    thread->state  = THREAD_NEW;
-    thread->stack  = (void*)STACK_START;
+    thread->parent    = parent;
+    thread->id        = next_thread_id++;
+    thread->magic     = THREAD_MAGIC;
+    thread->state     = THREAD_NEW;
+    thread->usr_stack = (void*)(STACK_START + 3 * 0x1000000 * thread->id);
+    thread->ker_stack = (void*)(KSTACK_START + 3 * 0x1000000 * thread->id);
+    thread->irq_stack = (void*)(IRQSTACK_START + 3 * 0x1000000 * thread->id);
+    thread->isr_stack = (void*)(EXPSTACK_START + 3 * 0x1000000 * thread->id);
     spinLock(&lock);
     list_push_back(&threadlist, &thread->elem);
     spinUnlock(&lock);
 
-    addressSpaceAddEntry(space, ADDRSPACE_TYPE_STACK,
-                         ADDRSPACE_FLAG_READABLE | ADDRSPACE_FLAG_USER |
-                             ADDRSPACE_FLAG_WRITEABLE,
-                         STACK_SIZE, STACK_START - STACK_SIZE);
-
-    addressSpaceAddEntry(space, ADDRSPACE_TYPE_STACK,
-                         ADDRSPACE_FLAG_READABLE | ADDRSPACE_FLAG_WRITEABLE,
-                         STACK_SIZE, KSTACK_START - STACK_SIZE);
-
     thread->gs                     = (gs_base_t*)kmalloc(sizeof(gs_base_t));
     thread->gs->cpu                = (cpu_t*)&cpus[cpuid];
-    thread->gs->kernel             = 0;
+    thread->gs->syscall            = 0;
     thread->gs->pc                 = entry;
     thread->gs->thread             = (void*)thread;
-    thread->gs->usr_rsp            = (uint64_t)thread->stack;
-    thread->gs->ker_rsp            = (uint64_t)KSTACK_START;
+    thread->gs->usr_rsp            = (uint64_t)thread->usr_stack;
+    thread->gs->ker_rsp            = (uint64_t)thread->ker_stack;
+    thread->gs->irq_rsp            = (uint64_t)thread->irq_stack;
+    thread->gs->isr_rsp            = (uint64_t)thread->isr_stack;
 
     thread->gs->ctx                = (ctx_t*)kmalloc(sizeof(ctx_t));
     thread->gs->ctx->cr3           = (uint64_t)cr3 - (uint64_t)page_direct_base;
@@ -171,6 +170,27 @@ tid_t threadCreate(void* elf, uint64_t priority, uint64_t parent) {
     thread->gs->ctx->registers.r13 = 0;
     thread->gs->ctx->registers.r14 = 0;
     thread->gs->ctx->registers.r15 = 0;
+
+    addressSpaceAddEntry(space, ADDRSPACE_TYPE_STACK,
+                         ADDRSPACE_FLAG_READABLE | ADDRSPACE_FLAG_USER |
+                             ADDRSPACE_FLAG_WRITEABLE,
+                         STACK_SIZE, (uint64_t)thread->usr_stack - STACK_SIZE);
+
+    addressSpaceAddEntry(space, ADDRSPACE_TYPE_STACK,
+                         ADDRSPACE_FLAG_READABLE | ADDRSPACE_FLAG_WRITEABLE,
+                         STACK_SIZE,
+                         (uint64_t)thread->gs->ker_rsp - STACK_SIZE);
+
+    addressSpaceAddEntry(space, ADDRSPACE_TYPE_STACK,
+                         ADDRSPACE_FLAG_READABLE | ADDRSPACE_FLAG_WRITEABLE,
+                         STACK_SIZE,
+                         (uint64_t)thread->gs->irq_rsp - STACK_SIZE);
+
+    addressSpaceAddEntry(space, ADDRSPACE_TYPE_STACK,
+                         ADDRSPACE_FLAG_READABLE | ADDRSPACE_FLAG_WRITEABLE,
+                         STACK_SIZE,
+                         (uint64_t)thread->gs->isr_rsp - STACK_SIZE);
+
     return thread->id;
 }
 
@@ -251,18 +271,27 @@ void threadSelect(tid_t tid) {
 
     setUserGS(0);
     setKernGS((uint64_t)thread->gs);
+    tss_t* tss                      = tssGet(thread->gs->cpu->cpu_id);
+    tss->ist[TSS_IST_ROUTINE - 1]   = (uint64_t)current_thread->irq_stack;
+    tss->ist[TSS_IST_EXCEPTION - 1] = (uint64_t)current_thread->isr_stack;
 
     threadContextSwitch(thread);
 }
 
 tid_t threadNext() {
+    current_thread->gs->cpu->context_switches++;
     current_thread->state = THREAD_READY;
     thread_t* next_thread = getThreadWithMinRuntime();
+    if (next_thread->state == THREAD_NEW) {
+        threadSelect(next_thread->id);
+    }
     next_thread->state = THREAD_RUNNING;
     current_thread     = next_thread;
-    setUserGS((uint64_t)next_thread->gs);
+    setUserGS((uint64_t)current_thread->gs);
     setKernGS(0UL);
-    pagingSetCR3((void*)current_thread->gs->ctx->cr3);
+    tss_t* tss                      = tssGet(current_thread->gs->cpu->cpu_id);
+    tss->ist[TSS_IST_ROUTINE - 1]   = (uint64_t)current_thread->irq_stack;
+    tss->ist[TSS_IST_EXCEPTION - 1] = (uint64_t)current_thread->isr_stack;
 
     return next_thread->id;
 }

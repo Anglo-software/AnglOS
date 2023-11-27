@@ -45,6 +45,27 @@ run-hdd-uefi: ovmf-x64 angl-os.hdd
 		-device nvme,serial=deadbeef,drive=nvm,cmb_size_mb=4 \
 		-smp 4
 
+.PHONY: run-hdd-uefi-d
+run-hdd-uefi-d: ovmf-x64 angl-os.hdd
+	qemu-system-x86_64 \
+		-M q35 \
+		-m 8192 \
+		-device VGA \
+		-bios ovmf-x64/OVMF.fd \
+		-hda angl-os.hdd \
+		-drive file=testdisk.qcow2,if=none,id=nvm \
+		-device nvme,serial=deadbeef,drive=nvm,cmb_size_mb=4 \
+		-smp 4 \
+		-s -S & \
+		gdb kernel/angl-os.elf \
+		-ex "target remote :1234" \
+		-ex "tui enable" \
+		-ex "layout asm" \
+		-ex "layout split" \
+		-ex "layout reg" \
+		-ex "tui reg general" \
+		-ex "focus cmd"
+
 ovmf-x64:
 	mkdir -p ovmf-x64
 	cd ovmf-x64 && curl -o OVMF-X64.zip https://efi.akeo.ie/OVMF/OVMF-X64.zip && 7z x OVMF-X64.zip

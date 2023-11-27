@@ -1,9 +1,6 @@
 global threadContextSwitch
 
 threadContextSwitch:
-    push rbp
-    mov rbp, rsp
-    
     mov rax, [rdi + 0x58]
     mov rsp, [rax + 0x10]
     mov rcx, [rax + 0x18]

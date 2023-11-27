@@ -10,10 +10,7 @@ void _start(int input) {
     while (true) {
         print(tmp, 1);
         for (int i = 0; i < 100000000; i++) {
-            __asm__ volatile("nop");
+            __asm__ volatile ("nop");
         }
-        // char c = getc();
-        // tmp[0] = c;
-        // print(tmp, 1);
     }
 }

@@ -4,6 +4,7 @@
 #include "libc/stdio.h"
 #include "mm/pmm/pmm.h"
 #include "threads/spinlock.h"
+#include "threads/thread.h"
 
 void* page_direct_base = (void*)0xFFFF800000000000;
 void* kheap_base       = (void*)0xFFFF900000000000;
@@ -451,7 +452,7 @@ void pagingDumpTable(void* vptr, uint16_t level) {
 
 void isrPageFaultHandler(isr_frame_t* r) {
     kprintf("\nPage Fault @ %lx: ", r->base.rip);
-    switch(r->base.error_code) {
+    switch(r->base.error_code & 0b111) {
         case 0b000: kprintf("Kernel tried to read non-present page\n"); break;
         case 0b001: kprintf("Kernel tried to read protected page\n"); break;
         case 0b010: kprintf("Kernel tried to write non-present page\n"); break;
@@ -461,8 +462,6 @@ void isrPageFaultHandler(isr_frame_t* r) {
         case 0b110: kprintf("User tried to write non-present page\n"); break;
         case 0b111: kprintf("User tried to write protected page\n"); break;
     }
-    if (r->base.vector == 0xE) {
-        kprintf("Culprit address: %lx\n", r->control_regs.cr2);
-    }
+    kprintf("Culprit address: %lx\n", r->control_regs.cr2);
     __asm__ volatile("cli; hlt;");
 }

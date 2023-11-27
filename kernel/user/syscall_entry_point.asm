@@ -51,6 +51,10 @@ syscall_kernel_to_user:
 
     push rax
     push rdx
+    
+    mov rax, [gs:0x28]
+    mov rax, [rax + 0x78]
+    mov cr3, rax
 
     xor eax, eax
     mov ax, 0x3B

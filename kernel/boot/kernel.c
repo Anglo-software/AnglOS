@@ -87,6 +87,7 @@ void _start() {
     kmodule_t* prog_file2 = kmoduleFindByPath("/resources/testprog2.elf");
     tid_t thread2         = threadCreate(prog_file2->address, PRIO_DEFAULT, 0);
 
+    threadStartTimer(10000);
     threadSelect(thread1);
 
     while (true) {

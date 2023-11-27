@@ -29,13 +29,15 @@ typedef struct {
 } ctx_t;
 
 typedef struct {
-    uint64_t kernel;  // gs:0x00
+    uint64_t syscall; // gs:0x00
     uint64_t ker_rsp; // gs:0x08
     uint64_t usr_rsp; // gs:0x10
     uint64_t pc;      // gs:0x18
     cpu_t* cpu;       // gs:0x20
     ctx_t* ctx;       // gs:0x28
     void* thread;     // gs:0x30
+    uint64_t irq_rsp; // gs:0x38
+    uint64_t isr_rsp; // gs:0x40
 } gs_base_t;
 
 typedef int64_t tid_t;
@@ -47,17 +49,19 @@ enum thread_state {
     THREAD_NEW
 };
 
-#define TID_ERROR    ((tid_t)-1)
-#define PRIO_MIN     -20
-#define PRIO_DEFAULT 0
-#define PRIO_MAX     19
-#define THREAD_TIME  5000 // Default time-slice: 5ms
-#define THREAD_MAGIC 0xE621CAFEDEADBEEF
-#define STACK_START  0x00007FFFFFFFF000
-#define KSTACK_START 0xFFFFFFF000FFF000
-#define STACK_SIZE   (2 * PAGE_SIZE)
-#define KERN_GS_BASE 0xC0000102
-#define USER_GS_BASE 0xC0000101
+#define TID_ERROR      ((tid_t)-1)
+#define PRIO_MIN       -20
+#define PRIO_DEFAULT   0
+#define PRIO_MAX       19
+#define THREAD_TIME    5000 // Default time-slice: 5ms
+#define THREAD_MAGIC   0xE621CAFEDEADBEEF
+#define STACK_START    0x00007FFFF0FFF000
+#define KSTACK_START   0xFFFFFFF000FFF000
+#define IRQSTACK_START 0xFFFFFFF001FFF000
+#define EXPSTACK_START 0xFFFFFFF002FFF000
+#define STACK_SIZE     (2 * PAGE_SIZE)
+#define KERN_GS_BASE   0xC0000102
+#define USER_GS_BASE   0xC0000101
 
 typedef struct {
     tid_t id;               // 0x00
@@ -68,11 +72,14 @@ typedef struct {
     spinlock lock;          // 0x28
     uint8_t padding[7];     //
     signal_t* signal;       // 0x30
-    void* stack;            // 0x38
+    void* usr_stack;        // 0x38
     struct list_elem elem;  // 0x40
     address_space_t* space; // 0x50
     gs_base_t* gs;          // 0x58
-    uint64_t magic;         // 0x60
+    void* ker_stack;        // 0x60
+    void* irq_stack;        // 0x68
+    void* isr_stack;        // 0x70
+    uint64_t magic;         // 0x78
 } __attribute__((packed)) thread_t;
 
 void initThread();
@@ -83,6 +90,7 @@ void setKernGS(uint64_t gs_base);
 void setUserGS(uint64_t gs_base);
 uint64_t getKernGS();
 uint64_t getUserGS();
+thread_t* getCurrentThread();
 tid_t threadCreate(void* elf, uint64_t priority, uint64_t parent);
 void threadSchedule(tid_t tid);
 void threadBlock(tid_t tid);
