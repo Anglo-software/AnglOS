@@ -83,9 +83,9 @@ void _start() {
     keyboardSetRedir(&redir);
 
     kmodule_t* prog_file1 = kmoduleFindByPath("/resources/testprog.elf");
-    tid_t thread1         = threadCreate(prog_file1->address, PRIO_DEFAULT, 0);
+    thread_t* thread1     = threadCreate(prog_file1->address, PRIO_DEFAULT, 0);
     kmodule_t* prog_file2 = kmoduleFindByPath("/resources/testprog2.elf");
-    tid_t thread2         = threadCreate(prog_file2->address, PRIO_DEFAULT, 0);
+    thread_t* thread2     = threadCreate(prog_file2->address, PRIO_DEFAULT, 0);
 
     threadStartTimer(10000);
     threadSelect(thread1);

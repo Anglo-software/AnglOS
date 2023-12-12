@@ -25,12 +25,12 @@ extern void threadContextSwitch(thread_t* thread);
 
 static uint64_t getMinRuntime() {
     uint64_t min         = -1UL;
-    struct list* threads = &threadlist;
+    struct list* threads = &ready[0];
     thread_t* thread     = NULL;
     spinLock(&lock);
     for (struct list_elem* elem          = list_begin(threads);
          elem != list_end(threads); elem = list_next(elem)) {
-        thread = list_entry(elem, thread_t, elem);
+        thread = list_entry(elem, thread_t, ready_elem);
         spinLock(&thread->lock);
         if (thread->runtime < min) {
             min = thread->runtime;
@@ -44,12 +44,12 @@ static uint64_t getMinRuntime() {
 static thread_t* getThreadWithMinRuntime() {
     uint64_t min         = -1UL;
     thread_t* minthread  = NULL;
-    struct list* threads = &threadlist;
+    struct list* threads = &ready[0];
     thread_t* thread     = NULL;
     spinLock(&lock);
     for (struct list_elem* elem          = list_begin(threads);
          elem != list_end(threads); elem = list_next(elem)) {
-        thread = list_entry(elem, thread_t, elem);
+        thread = list_entry(elem, thread_t, ready_elem);
         spinLock(&thread->lock);
         if (thread->runtime < min) {
             min       = thread->runtime;
@@ -115,7 +115,7 @@ void threadStartTimer(uint64_t microseconds) {
 
 void threadStopTimer() { apicTimerPeriodicStop(); }
 
-tid_t threadCreate(void* elf, uint64_t priority, uint64_t parent) {
+thread_t* threadCreate(void* elf, uint64_t priority, uint64_t parent) {
     uint64_t cpuid         = 0;
     thread_t* thread       = (thread_t*)kmalloc(sizeof(thread_t));
     void* cr3              = pagingCreateUser();
@@ -135,12 +135,13 @@ tid_t threadCreate(void* elf, uint64_t priority, uint64_t parent) {
     thread->id        = next_thread_id++;
     thread->magic     = THREAD_MAGIC;
     thread->state     = THREAD_NEW;
-    thread->usr_stack = (void*)(STACK_START + 3 * 0x1000000 * thread->id);
-    thread->ker_stack = (void*)(KSTACK_START + 3 * 0x1000000 * thread->id);
-    thread->irq_stack = (void*)(IRQSTACK_START + 3 * 0x1000000 * thread->id);
-    thread->isr_stack = (void*)(EXPSTACK_START + 3 * 0x1000000 * thread->id);
+    thread->usr_stack = (void*)(USRSTACK_START + 0x1000000 * thread->id);
+    thread->ker_stack = (void*)(KERSTACK_START + 0x1000000 * thread->id);
+    thread->irq_stack = (void*)(IRQSTACK_START + 0x1000000 * thread->id);
+    thread->isr_stack = (void*)(ISRSTACK_START + 0x1000000 * thread->id);
     spinLock(&lock);
-    list_push_back(&threadlist, &thread->elem);
+    list_push_back(&threadlist, &thread->all_elem);
+    list_push_back(&ready[cpuid], &thread->ready_elem);
     spinUnlock(&lock);
 
     thread->gs                     = (gs_base_t*)kmalloc(sizeof(gs_base_t));
@@ -191,83 +192,53 @@ tid_t threadCreate(void* elf, uint64_t priority, uint64_t parent) {
                          STACK_SIZE,
                          (uint64_t)thread->gs->isr_rsp - STACK_SIZE);
 
-    return thread->id;
+    return thread;
 }
 
-void threadSchedule(tid_t tid) {
-    struct list* threads = &threadlist;
-    thread_t* thread     = NULL;
-    spinLock(&lock);
-    for (struct list_elem* elem          = list_begin(threads);
-         elem != list_end(threads); elem = list_next(elem)) {
-        thread = list_entry(elem, thread_t, elem);
+void threadSchedule(thread_t* thread) {
+    if (thread) {
+        spinLock(&lock);
         spinLock(&thread->lock);
-        if (thread->id == tid) {
-            thread->state = THREAD_READY;
-            spinUnlock(&thread->lock);
-            break;
-        }
+        thread->state = THREAD_READY;
+        list_push_back(&ready[thread->gs->cpu->cpu_id], &thread->ready_elem);
         spinUnlock(&thread->lock);
+        spinUnlock(&lock);
     }
-    spinUnlock(&lock);
 }
 
-void threadBlock(tid_t tid) {
-    struct list* threads = &threadlist;
-    thread_t* thread     = NULL;
-    spinLock(&lock);
-    for (struct list_elem* elem          = list_begin(threads);
-         elem != list_end(threads); elem = list_next(elem)) {
-        thread = list_entry(elem, thread_t, elem);
+void threadBlock(thread_t* thread) {
+    if (thread) {
+        spinLock(&lock);
         spinLock(&thread->lock);
-        if (thread->id == tid) {
-            thread->state = THREAD_BLOCKED;
-            spinUnlock(&thread->lock);
-            break;
-        }
+        thread->state = THREAD_BLOCKED;
+        list_remove(&thread->ready_elem);
         spinUnlock(&thread->lock);
+        spinUnlock(&lock);
     }
-    spinUnlock(&lock);
 }
 
-void threadKill(tid_t tid) {
-    struct list* threads = &threadlist;
-    thread_t* thread     = NULL;
-    spinLock(&lock);
-    for (struct list_elem* elem          = list_begin(threads);
-         elem != list_end(threads); elem = list_next(elem)) {
-        thread = list_entry(elem, thread_t, elem);
+void threadKill(thread_t* thread) {
+    if (thread) {
+        spinLock(&lock);
         spinLock(&thread->lock);
-        if (thread->id == tid) {
-            thread->state = THREAD_DYING;
-            spinUnlock(&thread->lock);
-            break;
-        }
+        thread->state = THREAD_DYING;
+        list_remove(&thread->ready_elem);
         spinUnlock(&thread->lock);
+        spinUnlock(&lock);
     }
-    spinUnlock(&lock);
 }
 
-void threadSelect(tid_t tid) {
-    struct list* threads = &threadlist;
-    thread_t* thread     = NULL;
-    spinLock(&lock);
-    for (struct list_elem* elem          = list_begin(threads);
-         elem != list_end(threads); elem = list_next(elem)) {
-        thread = list_entry(elem, thread_t, elem);
-        spinLock(&thread->lock);
-        if (thread->id == tid) {
-            spinUnlock(&thread->lock);
-            break;
-        }
-        spinUnlock(&thread->lock);
+void threadSelect(thread_t* thread) {
+    if (!thread) {
+        return;
     }
-    spinUnlock(&lock);
 
     cpuCLI();
 
+    spinLock(&lock);
     current_thread        = thread;
     current_thread->state = THREAD_RUNNING;
+    spinUnlock(&lock);
 
     setUserGS(0);
     setKernGS((uint64_t)thread->gs);
@@ -283,7 +254,7 @@ tid_t threadNext() {
     current_thread->state = THREAD_READY;
     thread_t* next_thread = getThreadWithMinRuntime();
     if (next_thread->state == THREAD_NEW) {
-        threadSelect(next_thread->id);
+        threadSelect(next_thread);
     }
     next_thread->state = THREAD_RUNNING;
     current_thread     = next_thread;
